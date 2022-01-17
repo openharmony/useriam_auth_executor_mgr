@@ -18,7 +18,7 @@
     <oatconfig>
         <filefilterlist>
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
-			    <filteritem type="filename" name="*.png" desc="The framework image"/>
+                <filteritem type="filename" name="*.png" desc="The framework image"/>
             </filefilter>
         </filefilterlist>
     </oatconfig>
