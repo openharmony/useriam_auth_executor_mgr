@@ -1,0 +1,189 @@
+/*
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "tlv_base.h"
+
+#include "securec.h"
+
+#include "adaptor_memory.h"
+
+#define TO_RIGHT_END 24
+#define TO_RIGHT 8
+#define TO_LEFT_END 24
+#define TO_LEFT 8
+
+// short convert endian
+uint16_t Ntohs(uint16_t data)
+{
+    return data;
+}
+
+// uint32 convert endian
+uint32_t Ntohl(uint32_t data)
+{
+    return data;
+}
+
+// uint64 convert endian
+uint64_t Ntohll(uint64_t data)
+{
+    return data;
+}
+
+TlvListNode *CreateTlvList()
+{
+    TlvListNode *node = (TlvListNode *)Malloc(sizeof(TlvListNode));
+    if (node == NULL) {
+        return NULL;
+    }
+    node->next = NULL;
+    return node;
+}
+
+TlvType *CreateTlvType(int type, unsigned int length, const void *value)
+{
+    if (value == NULL || length == 0) {
+        return NULL;
+    }
+    TlvType *tlv = (TlvType *)Malloc(sizeof(TlvType));
+    if (tlv == NULL) {
+        return NULL;
+    }
+
+    tlv->type = type;
+    tlv->length = length;
+    tlv->value = (unsigned char *)Malloc(length);
+    if (tlv->value == NULL) {
+        Free(tlv);
+        return NULL;
+    }
+
+    if (memcpy_s(tlv->value, length, value, length) != EOK) {
+        Free(tlv->value);
+        tlv->value = NULL;
+        Free(tlv);
+        return NULL;
+    }
+    return tlv;
+}
+
+TlvObject *CreateTlvObject(int type, unsigned int length, const void *value)
+{
+    TlvObject *object = (TlvObject *)Malloc(sizeof(TlvListNode));
+    if (object == NULL) {
+        return NULL;
+    }
+    TlvType *tlv = CreateTlvType(type, length, value);
+    if (tlv == NULL) {
+        Free(object);
+        return NULL;
+    }
+    object->value = tlv;
+    return object;
+}
+
+static TlvType *CreateEmptyTlvType(int type)
+{
+    TlvType *tlv = (TlvType *)Malloc(sizeof(TlvType));
+    if (tlv == NULL) {
+        return NULL;
+    }
+
+    tlv->type = type;
+    tlv->length = 0;
+    tlv->value = NULL;
+    return tlv;
+}
+
+TlvObject *CreateEmptyTlvObject(int type)
+{
+    TlvObject *object = (TlvObject *)Malloc(sizeof(TlvListNode));
+    if (object == NULL) {
+        return NULL;
+    }
+    TlvType *tlv = CreateEmptyTlvType(type);
+    if (tlv == NULL) {
+        Free(object);
+        return NULL;
+    }
+    object->value = tlv;
+    return object;
+}
+
+void DestroyTlvObject(TlvObject *object)
+{
+    if (object == NULL) {
+        return;
+    }
+    TlvType *tlv = object->value;
+    if (tlv == NULL) {
+        Free(object);
+        return;
+    }
+    if (tlv->value != NULL) {
+        Free(tlv->value);
+        tlv->value = NULL;
+    }
+    Free(tlv);
+    Free(object);
+}
+
+int DestroyTlvList(TlvListNode *head)
+{
+    if (head == NULL) {
+        return PARAM_ERR;
+    }
+    TlvListNode *currNode = head->next;
+    while (currNode != NULL) {
+        TlvListNode *nextNode = currNode->next;
+        TlvType *tlv = currNode->data.value;
+        if (tlv != NULL) {
+            if (tlv->value != NULL) {
+                Free(tlv->value);
+            }
+            tlv->value = NULL;
+            Free(tlv);
+            tlv = NULL;
+        }
+        Free(currNode);
+        currNode = nextNode;
+    }
+    Free(head);
+    return OPERA_SUCC;
+}
+
+int AddTlvNode(TlvListNode *head, const TlvObject *object)
+{
+    if (head == NULL || object == NULL) {
+        return PARAM_ERR;
+    }
+
+    TlvListNode *node = (TlvListNode *)Malloc(sizeof(TlvListNode));
+    if (node == NULL) {
+        return MALLOC_FAIL;
+    }
+    node->data = *object;
+    node->next = NULL;
+    TlvListNode *temp = head->next;
+    if (temp == NULL) {
+        head->next = node;
+    } else {
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = node;
+    }
+    return OPERA_SUCC;
+}
