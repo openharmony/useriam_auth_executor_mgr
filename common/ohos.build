@@ -1,0 +1,10 @@
+{
+  "subsystem": "useriam",
+  "parts": {
+    "useriam_common": {
+      "module_list": [
+        "//base/useriam/coauth/common:useriam_common_lib"
+      ]
+    }
+  }
+}
