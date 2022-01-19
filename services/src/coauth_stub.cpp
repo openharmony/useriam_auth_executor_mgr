@@ -159,9 +159,6 @@ int32_t CoAuthStub::GetExecutorPropStub(MessageParcel& data, MessageParcel& repl
         COAUTH_HILOGE(MODULE_SERVICE, "GetExecutorPropStub failed, values is nullptr");
         return FAIL;
     }
-    buffer.clear();
-    data.ReadUInt8Vector(&buffer);
-    values->Unpack(buffer);
 
     int32_t ret = GetExecutorProp(conditions, values);
     if (!reply.WriteInt32(ret)) {
@@ -169,6 +166,12 @@ int32_t CoAuthStub::GetExecutorPropStub(MessageParcel& data, MessageParcel& repl
         return FAIL;
     }
 
+    std::vector<uint8_t> replyBuffer;
+    values->Pack(replyBuffer);
+    if (!reply.WriteUInt8Vector(replyBuffer)) {
+        COAUTH_HILOGE(MODULE_SERVICE, "failed to replyBuffer");
+        return FAIL;
+    }
     return SUCCESS;
 }
 

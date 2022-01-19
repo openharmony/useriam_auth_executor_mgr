@@ -346,7 +346,7 @@ static Buffer *ReadFileInfo()
     return parcel;
 }
 
-LinkedList *LoadFileInfo()
+LinkedList *LoadFileInfo(void)
 {
     LOG_INFO("begin");
     FileOperator *fileOperator = GetFileOperator(DEFAULT_FILE_OPERATOR);

@@ -40,7 +40,7 @@ static CredentialInfoHal *QueryCredentialByAuthType(uint32_t authType, LinkedLis
 static bool MatchCredentialById(void *data, void *condition);
 static ResultCode GenerateDeduplicateUint64(LinkedList *collection, uint64_t *destValue, DuplicateCheckFunc func);
 
-ResultCode InitUserInfoList()
+ResultCode InitUserInfoList(void)
 {
     if (g_userInfoList != NULL) {
         DestroyUserInfoList();
@@ -55,7 +55,7 @@ ResultCode InitUserInfoList()
     return RESULT_SUCCESS;
 }
 
-void DestroyUserInfoList()
+void DestroyUserInfoList(void)
 {
     DestroyLinkedList(g_userInfoList);
     g_userInfoList = NULL;
@@ -202,11 +202,7 @@ static UserInfo *QueryUserInfo(int32_t userId)
     LinkedListNode *temp = g_userInfoList->head;
     while (temp != NULL) {
         user = (UserInfo *)temp->data;
-        if (user == NULL) {
-            break;
-        }
-        LOG_ERROR("user->userId = %{public}d  userId = %{public}d", user->userId, userId);
-        if (user->userId == userId) {
+        if (user != NULL && user->userId == userId) {
             break;
         }
         temp = temp->next;
@@ -511,27 +507,32 @@ FAIL:
 
 ResultCode AddCredentialInfo(int32_t userId, CredentialInfoHal *credentialInfo)
 {
-    LOG_INFO("add begin");
     if (credentialInfo == NULL) {
         LOG_ERROR("credentialInfo is null");
         return RESULT_BAD_PARAM;
     }
-    if (credentialInfo->authType == PIN_AUTH) {
+    UserInfo *user = QueryUserInfo(userId);
+    if (user == NULL && credentialInfo->authType == PIN_AUTH) {
         ResultCode ret =  AddUser(userId, credentialInfo);
         if (ret != RESULT_SUCCESS) {
-            LOG_ERROR("add user failed");
+        LOG_ERROR("add user failed");
         }
         ret = UpdateFileInfo(g_userInfoList);
         if (ret != RESULT_SUCCESS) {
-            LOG_ERROR("UpdateFileInfo failed");
-            return ret;
+            LOG_ERROR("updateFileInfo failed");
         }
         return ret;
     }
-    UserInfo *user = QueryUserInfo(userId);
     if (user == NULL) {
-        LOG_ERROR("Don't have this user");
+        LOG_ERROR("user is null");
         return RESULT_BAD_PARAM;
+    }
+    if (credentialInfo->authType == PIN_AUTH) {
+        ResultCode ret = QueryCredentialInfo(userId, PIN_AUTH, credentialInfo);
+        if (ret != RESULT_NOT_FOUND) {
+            LOG_ERROR("double pin");
+            return RESULT_BAD_PARAM;
+        }
     }
     ResultCode ret = AddCredentialToUser(user, credentialInfo);
     if (ret != RESULT_SUCCESS) {
@@ -540,7 +541,7 @@ ResultCode AddCredentialInfo(int32_t userId, CredentialInfoHal *credentialInfo)
     }
     ret = UpdateFileInfo(g_userInfoList);
     if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("UpdateFileInfo failed");
+        LOG_ERROR("updateFileInfo failed");
         return ret;
     }
     return ret;
@@ -565,8 +566,8 @@ static bool MatchEnrolledInfoByType(void *data, void *condition)
         return false;
     }
     EnrolledInfoHal *enrolledInfo = (EnrolledInfoHal *)data;
-    uint64_t enrolledId = *(uint64_t *)condition;
-    if (enrolledInfo->enrolledId == enrolledId) {
+    uint32_t authType = *(uint32_t *)condition;
+    if (enrolledInfo->authType == authType) {
         return true;
     }
     return false;
@@ -574,7 +575,7 @@ static bool MatchEnrolledInfoByType(void *data, void *condition)
 
 ResultCode DeleteCredentialInfo(int32_t userId, uint64_t credentialId, CredentialInfoHal *credentialInfo)
 {
-    if (credentialInfo == NULL || credentialInfo->authType == PIN_AUTH) {
+    if (credentialInfo == NULL) {
         LOG_ERROR("param is invalid");
         return RESULT_BAD_PARAM;
     }

@@ -24,7 +24,6 @@
 namespace OHOS {
 namespace UserIAM {
 namespace UserAuth {
-
 typedef struct {
     uint64_t contextId;
     int32_t userId;
@@ -35,7 +34,11 @@ typedef struct {
 
 typedef struct {
     int32_t authResult;
-    AuthSolution authSolution;
+    uint64_t contextId;
+    int32_t userId;
+    uint64_t challenge;
+    uint32_t authType;
+    uint32_t authTrustLevel;
     uint64_t enrolledId;
     uint32_t version;
     uint64_t time;
@@ -47,9 +50,8 @@ int32_t RequestAuthResult(uint64_t contextId, std::vector<uint8_t> &scheduleToke
     std::vector<uint64_t> &scheduleIds);
 int32_t CancelContext(uint64_t contextId, std::vector<uint64_t> &scheduleIds);
 int32_t GetAuthTrustLevel(int32_t userId, uint32_t authType, uint32_t &authTrustLevel);
-
-}
-}
-}
+} // UserAuth
+} // UserIAM
+} // OHOS
 
 #endif // USER_IAM_USERAUTH_INTERFACE

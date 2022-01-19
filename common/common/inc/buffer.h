@@ -16,12 +16,7 @@
 #ifndef COMMON_BUFFER_H
 #define COMMON_BUFFER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "stdbool.h"
-#include "stddef.h"
 #include "stdint.h"
 #include "defines.h"
 
@@ -40,9 +35,5 @@ bool CompareBuffer(const Buffer *buffer1, const Buffer *buffer2);
 Buffer *CreateBufferByData(const uint8_t *data, const uint32_t dataSize);
 ResultCode GetBufferData(const Buffer *buffer, uint8_t *data, uint32_t *dataSize);
 bool CheckBufferWithSize(const Buffer *buffer, const uint32_t size);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

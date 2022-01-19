@@ -86,27 +86,27 @@ static ResultCode ParseExecutorResultData(ExecutorResultInfo *result, TlvListNod
         LOG_ERROR("ParseTlvWrapper failed");
         goto EXIT;
     }
-    ret = ParseExecutorResultAcl(result, parseBody);
+    ret = ParseExecutorResultAcl(result, parseBody->next);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseExecutorResultAcl failed");
         goto EXIT;
     }
-    ret = ParseExecutorResultTemplateId(result, parseBody);
+    ret = ParseExecutorResultTemplateId(result, parseBody->next);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseExecutorResultTemplateId failed");
         goto EXIT;
     }
-    ret = ParseExecutorResultAuthSubType(result, parseBody);
+    ret = ParseExecutorResultAuthSubType(result, parseBody->next);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseExecutorResultAuthSubType failed");
         goto EXIT;
     }
-    ret = ParseExecutorResultCode(result, parseBody);
+    ret = ParseExecutorResultCode(result, parseBody->next);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseExecutorResultCode failed");
         goto EXIT;
     }
-    ret = ParseExecutorResultScheduleId(result, parseBody);
+    ret = ParseExecutorResultScheduleId(result, parseBody->next);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseExecutorResultScheduleId failed");
         goto EXIT;
@@ -144,12 +144,12 @@ static ResultCode ParseRoot(ExecutorResultInfo *result, TlvListNode *body)
         LOG_ERROR("ParseTlvWrapper failed");
         goto EXIT;
     }
-    ret = ParseExecutorResultData(result, parseBody);
+    ret = ParseExecutorResultData(result, parseBody->next);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseTlvWrapper failed");
         goto EXIT;
     }
-    ret = ParseExecutorResultSign(result, parseBody);
+    ret = ParseExecutorResultSign(result, parseBody->next);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseTlvWrapper failed");
         goto EXIT;
@@ -180,14 +180,12 @@ ExecutorResultInfo *GetExecutorResultInfo(const Buffer *tlv)
         return NULL;
     }
 
-    LOG_ERROR("ParseTlvWrapper end");
-
     ExecutorResultInfo *result = Malloc(sizeof(ExecutorResultInfo));
     if (result == NULL) {
         LOG_ERROR("malloc failed");
         goto EXIT;
     }
-    ret = ParseRoot(result, parseBody);
+    ret = ParseRoot(result, parseBody->next);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseExecutorResult failed");
         goto EXIT;

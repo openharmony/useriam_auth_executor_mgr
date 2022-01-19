@@ -51,7 +51,7 @@ static bool IsInit()
     return g_poolList != NULL;
 }
 
-ResultCode InitResorcePool()
+ResultCode InitResorcePool(void)
 {
     if (!IsInit()) {
         g_poolList = CreateLinkedList(DestroyExecutorInfo);
@@ -62,7 +62,7 @@ ResultCode InitResorcePool()
     return RESULT_SUCCESS;
 }
 
-void DestroyResorcePool()
+void DestroyResorcePool(void)
 {
     DestroyLinkedList(g_poolList);
     g_poolList = NULL;
@@ -136,7 +136,6 @@ ResultCode RegisterExecutorToPool(ExecutorInfoHal *executorInfo)
         return RESULT_NO_MEMORY;
     }
     result =  g_poolList->insert(g_poolList, (void *)executorCopy);
-    LOG_ERROR("CopyExecutorInfo done authType is %{public}d", ((ExecutorInfoHal *)g_poolList->head->data)->authType);
     if (result != RESULT_SUCCESS) {
         LOG_ERROR("insert fail");
         DestroyExecutorInfo(executorCopy);
@@ -170,7 +169,6 @@ ExecutorInfoHal *CopyExecutorInfo(ExecutorInfoHal *src)
         Free(dest);
         return NULL;
     }
-    LOG_ERROR("CopyExecutorInfo done authType is %{public}d", dest->authType);
     return dest;
 }
 
@@ -195,15 +193,13 @@ ResultCode QueryExecutor(uint32_t authType, LinkedList **result)
         DestroyLinkedList(*result);
         return RESULT_NO_MEMORY;
     }
-    
-    LOG_ERROR("execute num %{public}d", g_poolList->getSize(g_poolList)); //del
+
     while (iterator->hasNext(iterator)) {
         ExecutorInfoHal *executorInfo = (ExecutorInfoHal *)iterator->next(iterator);
         if (!IsExecutorValid(executorInfo)) {
             LOG_ERROR("get invalid executor info");
             continue;
         }
-        LOG_ERROR("get invalid executor info %{public}d, %{public}d", executorInfo->authType, authType); //del
         if (executorInfo->authType != authType) {
             continue;
         }

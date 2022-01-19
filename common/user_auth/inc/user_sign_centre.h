@@ -13,18 +13,14 @@
  * limitations under the License.
  */
 
-#ifndef USERIAMTA_USER_SIGN_CENTRE_H
-#define USERIAMTA_USER_SIGN_CENTRE_H
+#ifndef USERIAM_USER_SIGN_CENTRE_H
+#define USERIAM_USER_SIGN_CENTRE_H
 
 #include <stdint.h>
 
 #include "buffer.h"
 #include "defines.h"
 #include "user_sign_centre.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define SHA256_SIGN_LEN 32
 #define AUTH_TOKEN_LEN sizeof(UserAuthTokenHal)
@@ -48,8 +44,4 @@ typedef struct {
 ResultCode UserAuthTokenSign(UserAuthTokenHal *userAuthToken);
 ResultCode UserAuthTokenVerify(const UserAuthTokenHal *userAuthToken);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // USERIAMTA_USER_SIGN_CENTRE_H
+#endif // USERIAM_USER_SIGN_CENTRE_H

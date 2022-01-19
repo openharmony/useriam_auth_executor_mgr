@@ -23,7 +23,6 @@ ohos_shared_library("useriam_common_lib") {
   sources = [
     "adaptor/src/adaptor_algorithm.c",
     "adaptor/src/adaptor_file.c",
-    "adaptor/src/adaptor_log.c",
     "adaptor/src/adaptor_memory.c",
     "adaptor/src/adaptor_time.c",
     "adaptor/src/file_operator.c",
@@ -47,6 +46,7 @@ ohos_shared_library("useriam_common_lib") {
     "hal_sdk/userauth_interface.cpp",
     "hal_sdk/useriam_common.cpp",
     "hal_sdk/useridm_interface.cpp",
+    "lock/src/lock.c",
 
     "idm/src/idm_session.c",
     "idm/src/user_idm_funcs.c",
@@ -60,6 +60,7 @@ ohos_shared_library("useriam_common_lib") {
   ]
 
   include_dirs = [
+    "lock/inc",
     "adaptor/inc",
     "coauth/inc",
     "database/inc",

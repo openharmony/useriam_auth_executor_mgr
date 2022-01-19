@@ -36,7 +36,7 @@ void CheckSystemAbility()
     }
     for (int i = 0; i < CHECK_TIMES; i++) {
         bool isExist = false;
-        sam->CheckSystemAbility(PIN_AUTH_SERVICE_SA_ID, isExist);
+        sam->CheckSystemAbility(SUBSYS_USERIAM_SYS_ABILITY_PINAUTH, isExist);
         if (!isExist) {
             COAUTH_HILOGI(MODULE_INNERKIT, "PIN_AUTH_SERVICE is not exist, start pin auth ability failed, to do next");
         } else {
@@ -50,7 +50,7 @@ void CheckSystemAbility()
     COAUTH_HILOGI(MODULE_INNERKIT, "start pin auth ability all failed");
 }
 
-REGISTER_SYSTEM_ABILITY_BY_ID(CoAuthService, COOPERATION_AUTHENTICATION_SERVICE_SA_ID, true);
+REGISTER_SYSTEM_ABILITY_BY_ID(CoAuthService, SUBSYS_USERIAM_SYS_ABILITY_AUTHEXECUTORMGR, true);
 CoAuthService::CoAuthService(int32_t systemAbilityId, bool runOnCreate)
     : SystemAbility(systemAbilityId, runOnCreate)
 {

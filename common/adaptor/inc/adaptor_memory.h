@@ -18,16 +18,8 @@
 
 #include <stddef.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void *Malloc(const size_t size);
 
 void Free(void *ptr);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

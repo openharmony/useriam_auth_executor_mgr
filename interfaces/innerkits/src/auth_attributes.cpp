@@ -67,6 +67,8 @@ int32_t AuthAttributes::GetBoolValue(AuthAttributeType attrType, bool &value)
 int32_t AuthAttributes::GetUint32Value(AuthAttributeType attrType, uint32_t &value)
 {
     int32_t ret = SUCCESS;
+    COAUTH_HILOGD(MODULE_INNERKIT, "uint32ValueMap size : %{public}04u.", uint32ValueMap_.size());
+    uint32ValueMap_.size();
     std::map<AuthAttributeType, uint32_t>::iterator iter = uint32ValueMap_.find(attrType);
     if (iter != uint32ValueMap_.end()) {
         value = iter->second;
@@ -195,16 +197,15 @@ void AuthAttributes::UnpackTag(AuthAttributeType &tag, std::vector<uint8_t> &buf
                                uint32_t &authDataLength, uint32_t &dataLength)
 {
     tag = GetUint32FromUint8(buffer, authDataLength);
-    COAUTH_HILOGD(MODULE_INNERKIT, "buffer read tag : %{public}d.", tag);
     authDataLength += sizeof(uint32_t);
     dataLength = static_cast<uint32_t >(GetUint32FromUint8(buffer, authDataLength));
-    COAUTH_HILOGD(MODULE_INNERKIT, "buffer read dataLength : %{public}d.", dataLength);
     authDataLength += sizeof(uint32_t);
 }
 
 AuthAttributes* AuthAttributes::Unpack(std::vector<uint8_t> &buffer)
 {
     if (buffer.size() == 0) {
+        COAUTH_HILOGD(MODULE_INNERKIT, ">>>>>>>>>>>>>>>>> Unpack size is 0");
         return nullptr;
     }
     uint32_t dataLength, authDataLength = 0;

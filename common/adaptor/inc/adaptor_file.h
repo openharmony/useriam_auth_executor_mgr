@@ -19,10 +19,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef enum FileOperatorType {
     DEFAULT_FILE_OPERATOR,
 } FileOperatorType;
@@ -37,9 +33,5 @@ typedef struct FileOperator {
 
 bool IsFileOperatorValid(const FileOperator *fileOperator);
 FileOperator *GetFileOperator(const FileOperatorType type);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

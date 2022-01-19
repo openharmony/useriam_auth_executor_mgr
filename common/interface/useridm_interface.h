@@ -23,7 +23,6 @@ namespace OHOS {
 namespace UserIAM {
 namespace UserIDM {
 namespace Hal {
-
 typedef struct {
     uint64_t credentialId;
     uint32_t authType;
@@ -39,9 +38,9 @@ typedef struct {
 
 int32_t OpenSession(int32_t userId, uint64_t &challenge);
 int32_t CloseSession();
-int32_t GetScheduleId(std::vector<uint8_t> authToken, int32_t userId, uint32_t authType, uint64_t authSubType,
+int32_t InitSchedulation(std::vector<uint8_t> authToken, int32_t userId, uint32_t authType, uint64_t authSubType,
     uint64_t &scheduleId);
-int32_t CancelScheduleId(uint64_t &scheduleId);
+int32_t DeleteScheduleId(uint64_t &scheduleId);
 int32_t AddCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId);
 int32_t DeleteCredential(int32_t userId, uint64_t credentialId, std::vector<uint8_t> authToken,
     CredentialInfo &credentialInfo);
@@ -50,10 +49,9 @@ int32_t GetSecureUid(int32_t userId, uint64_t &secureUid, std::vector<EnrolledIn
 int32_t DeleteUser(int32_t userId, std::vector<uint8_t> authToken, std::vector<CredentialInfo> &credentialInfos);
 int32_t DeleteUserEnforce(int32_t userId, std::vector<CredentialInfo> &credentialInfos);
 int32_t UpdateCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId, CredentialInfo &deletedCredential);
-
-}
-}
-}
-}
+} // Hal
+} // UserIDM
+} // UserIAM
+} // OHOS
 
 #endif // USER_IAM_USERIDM_INTERFACE

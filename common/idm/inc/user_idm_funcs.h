@@ -20,10 +20,6 @@
 #include "idm_session.h"
 #include "user_sign_centre.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct {
     uint8_t token[AUTH_TOKEN_LEN];
     int32_t userId;
@@ -42,13 +38,10 @@ int32_t AddCredentialFunc(const uint8_t *enrollToken, uint32_t tokenLen, uint64_
 int32_t DeleteCredentialFunc(CredentialDeleteParam param, CredentialInfoHal *credentialInfo);
 int32_t QueryCredentialFunc(int32_t userId, uint32_t authType,
     CredentialInfoHal **credentialInfoArray, uint32_t *credentialNum);
-int32_t GetUserSecureUidFunc(int32_t userId, uint64_t *secureUid, EnrolledInfoHal **enrolledInfoArray, uint32_t *enrolledNum);
+int32_t GetUserSecureUidFunc(int32_t userId, uint64_t *secureUid, EnrolledInfoHal **enrolledInfoArray,
+    uint32_t *enrolledNum);
 int32_t CancelScheduleIdFunc(uint64_t *scheduleId);
 int32_t UpdateCredentialFunc(const uint8_t *enrollToken, uint32_t tokenLen, uint64_t *credentialId,
     CredentialInfoHal *deletedCredential);
-    
-#ifdef __cplusplus
-}
-#endif
 
 #endif // USER_IDM_FUNCS_H

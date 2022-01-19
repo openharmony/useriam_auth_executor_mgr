@@ -11,12 +11,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/useriam/coauth/coauth.gni")
+import("//base/user_iam/auth_executor_mgr/auth_executor_mgr.gni")
 
 config("coauth_private_config") {
   include_dirs = [
     "${coauth_service_path}/include",
-    "//utils/system/safwk/napi/include",
+    "//utils/system/safwk/native/include",
     "${coauth_frameworks_path}/kitsimpl/include",
     "//foundation/distributeddatamgr/distributeddatamgr/frameworks/innerkitsimpl/distributeddatafwk/include",
   ]

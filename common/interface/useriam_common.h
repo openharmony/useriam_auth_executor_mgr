@@ -22,13 +22,11 @@
 namespace OHOS {
 namespace UserIAM {
 namespace Common {
-
 int32_t Init();
 int32_t Close();
 bool IsIAMInited();
-
-}
-}
-}
+} // Common
+} // UserIAM
+} // OHOS
 
 #endif // USER_IAM_COMMON_INTERFACE

@@ -38,7 +38,7 @@ sptr<ICoAuth> CoAuth::GetProxy()
         COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get system ability manager");
         return nullptr;
     }
-    sptr<IRemoteObject> obj = sam->CheckSystemAbility(COOPERATION_AUTHENTICATION_SERVICE_SA_ID);
+    sptr<IRemoteObject> obj = sam->CheckSystemAbility(SUBSYS_USERIAM_SYS_ABILITY_AUTHEXECUTORMGR);
     if (obj == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get coauth manager service");
         return nullptr;

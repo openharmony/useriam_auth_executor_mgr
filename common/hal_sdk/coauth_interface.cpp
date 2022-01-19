@@ -14,17 +14,19 @@
  */
 
 #include "coauth_interface.h"
-#include "coauth_funcs.h"
 
 #include "securec.h"
 
+extern "C" {
+#include "coauth_funcs.h"
 #include "defines.h"
 #include "adaptor_log.h"
+#include "lock.h"
+}
 
 namespace OHOS {
 namespace UserIAM {
 namespace CoAuth {
-
 static ExecutorInfo CopyExecutorInfoOut(const ExecutorInfoHal &executorInfoHal)
 {
     ExecutorInfo executorInfo;
@@ -54,8 +56,7 @@ static ScheduleInfo CopyScheduleInfoOut(const ScheduleInfoHal &scheduleInfoHal)
     scheduleInfo.authSubType = scheduleInfoHal.authSubType;
     scheduleInfo.templateId = scheduleInfoHal.templateId;
     scheduleInfo.scheduleMode = scheduleInfoHal.scheduleMode;
-    LOG_ERROR("executorInfoNum %{public}d", scheduleInfoHal.executorInfoNum);
-    for (int i = 0; i < scheduleInfoHal.executorInfoNum; i++) {
+    for (uint32_t i = 0; i < scheduleInfoHal.executorInfoNum; i++) {
         ExecutorInfo executorInfo = CopyExecutorInfoOut(scheduleInfoHal.executorInfos[i]);
         scheduleInfo.executors.push_back(executorInfo);
     }
@@ -65,47 +66,53 @@ static ScheduleInfo CopyScheduleInfoOut(const ScheduleInfoHal &scheduleInfoHal)
 int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 {
     LOG_INFO("begin");
+    GlobalLock();
     if (!scheduleInfo.executors.empty()) {
         LOG_ERROR("param is invalid");
+        GlobalUnLock();
         return RESULT_BAD_PARAM;
     }
     ScheduleInfoHal scheduleInfoHal;
     int32_t ret = GetScheduleInfo(scheduleId, &scheduleInfoHal);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("get schedule info failed");
+        GlobalUnLock();
         return ret;
     }
     scheduleInfo = CopyScheduleInfoOut(scheduleInfoHal);
-    LOG_ERROR("get schedule info schedule = %{public}llu", scheduleInfo.templateId);
+    GlobalUnLock();
     return RESULT_SUCCESS;
 }
 
 int32_t DeleteScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 {
     LOG_INFO("begin");
+    GlobalLock();
     if (!scheduleInfo.executors.empty()) {
         LOG_ERROR("param is invalid");
+        GlobalUnLock();
         return RESULT_BAD_PARAM;
     }
     ScheduleInfoHal scheduleInfoHal;
     int32_t ret = GetScheduleInfo(scheduleId, &scheduleInfoHal);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("get schedule info failed");
+        GlobalUnLock();
         return ret;
     }
     scheduleInfo = CopyScheduleInfoOut(scheduleInfoHal);
     (void)RemoveCoAuthSchedule(scheduleId);
+    GlobalUnLock();
     return RESULT_SUCCESS;
 }
 
 static Buffer *CreateBufferByVector(std::vector<uint8_t> &executorFinishMsg)
 {
-    if (executorFinishMsg.empty() || executorFinishMsg.size() == 0) {
+    if (executorFinishMsg.empty()) {
         LOG_ERROR("vector is empty");
-        LOG_ERROR("size is %{public}u", executorFinishMsg.size());
         return nullptr;
     }
-    LOG_INFO("size is %{public}u", executorFinishMsg.size());
+    LOG_INFO("executorFinishMsg size is %{public}u", executorFinishMsg.size());
     Buffer *data = CreateBufferByData(&executorFinishMsg[0], executorFinishMsg.size());
     return data;
 }
@@ -113,44 +120,55 @@ static Buffer *CreateBufferByVector(std::vector<uint8_t> &executorFinishMsg)
 int32_t GetScheduleToken(std::vector<uint8_t> executorFinishMsg, ScheduleToken &scheduleToken)
 {
     LOG_INFO("begin");
+    GlobalLock();
     Buffer *executorMsg = CreateBufferByVector(executorFinishMsg);
     if (executorMsg == nullptr) {
         LOG_ERROR("create msg failed");
+        GlobalUnLock();
         return RESULT_NO_MEMORY;
     }
     ScheduleTokenHal scheduleTokenHal;
     int32_t ret = ScheduleFinish(executorMsg, &scheduleTokenHal);
     if (ret != RESULT_SUCCESS) {
+        GlobalUnLock();
         return ret;
     }
     if (memcpy_s(&scheduleToken, sizeof(ScheduleToken), &scheduleTokenHal, sizeof(ScheduleTokenHal)) != EOK) {
         LOG_ERROR("copy scheduleToken failed");
+        GlobalUnLock();
         return RESULT_BAD_COPY;
     }
-    LOG_INFO("done");
+    GlobalUnLock();
     return RESULT_SUCCESS;
 }
 
 int32_t ExecutorRegister(ExecutorInfo executorInfo, uint64_t &executorId)
 {
     LOG_INFO("begin");
+    GlobalLock();
     ExecutorInfoHal executorInfoHal = CopyExecutorInfoIn(executorInfo);
-    LOG_ERROR("authType is %{public}d", executorInfoHal.authType);
-    return RegisterExecutor(&executorInfoHal, &executorId);
+    int32_t ret = RegisterExecutor(&executorInfoHal, &executorId);
+    GlobalUnLock();
+    return ret;
 }
 
 int32_t ExecutorUnRegister(uint64_t executorId)
 {
     LOG_INFO("begin");
-    return UnRegisterExecutor(executorId);
+    GlobalLock();
+    int32_t ret = UnRegisterExecutor(executorId);
+    GlobalUnLock();
+    return ret;
 }
 
 bool IsExecutorExist(uint32_t authType)
 {
     LOG_INFO("begin");
-    return IsExecutorExistFunc(authType);
+    GlobalLock();
+    bool ret = IsExecutorExistFunc(authType);
+    GlobalUnLock();
+    return ret;
 }
-
-}
-}
-}
+} // CoAuth
+} // UserIAM
+} // OHOS

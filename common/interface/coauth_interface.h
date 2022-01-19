@@ -12,18 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef USER_IAM_COAUTH_INTERFACE
 #define USER_IAM_COAUTH_INTERFACE
 
-#include "stdint.h"
 #include "vector"
 #include "common_defines.h"
 
 namespace OHOS {
 namespace UserIAM {
 namespace CoAuth {
-
 typedef struct {
     uint32_t scheduleResult;
     uint64_t scheduleId;
@@ -60,7 +57,6 @@ int32_t GetScheduleToken(std::vector<uint8_t> executorFinishMsg, ScheduleToken &
 int32_t ExecutorRegister(ExecutorInfo executorInfo, uint64_t &executorId);
 int32_t ExecutorUnRegister(uint64_t executorId);
 bool IsExecutorExist(uint32_t authType);
-
 }
 }
 }

@@ -28,7 +28,7 @@ static bool IsFileExist(const char *fileName)
     if (fileOperator == NULL) {
         return false;
     }
-    fclose(fileOperator);
+    (void)fclose(fileOperator);
     return true;
 }
 
@@ -46,10 +46,10 @@ static int32_t ReadFile(const char *fileName, uint8_t *buf, uint32_t len)
     size_t readLen = fread(buf, sizeof(uint8_t), len, fileOperator);
     if (readLen != len) {
         LOG_ERROR("read file fail");
-        fclose(fileOperator);
+        (void)fclose(fileOperator);
         return RESULT_BAD_READ;
     }
-    fclose(fileOperator);
+    (void)fclose(fileOperator);
     return RESULT_SUCCESS;
 }
 
@@ -65,13 +65,12 @@ static int32_t WriteFile(const char *fileName, const uint8_t *buf, uint32_t len)
         return RESULT_BAD_PARAM;
     }
     size_t writeLen = fwrite(buf, sizeof(uint8_t), len, fileOperator);
-    LOG_ERROR("write file writeLen = %{public}u", writeLen);
     if (writeLen != len) {
         LOG_ERROR("write file fail");
-        fclose(fileOperator);
+        (void)fclose(fileOperator);
         return RESULT_BAD_WRITE;
     }
-    fclose(fileOperator);
+    (void)fclose(fileOperator);
     return RESULT_SUCCESS;
 }
 
@@ -88,17 +87,17 @@ static int32_t GetFileLen(const char *fileName, uint32_t *len)
     }
     if (fseek(fileOperator, 0L, SEEK_END) != 0) {
         LOG_ERROR("seek file fail");
-        fclose(fileOperator);
+        (void)fclose(fileOperator);
         return RESULT_GENERAL_ERROR;
     }
     long fileLen = ftell(fileOperator);
     if (fileLen < 0 || fileLen > UINT32_MAX) {
         LOG_ERROR("tell file fail");
-        fclose(fileOperator);
+        (void)fclose(fileOperator);
         return RESULT_GENERAL_ERROR;
     }
     *len = fileLen;
-    fclose(fileOperator);
+    (void)fclose(fileOperator);
     return RESULT_SUCCESS;
 }
 
@@ -116,7 +115,7 @@ static int32_t DeleteFile(const char *fileName)
     return RESULT_SUCCESS;
 }
 
-FileOperator *GetDefaultFileOperator()
+FileOperator *GetDefaultFileOperator(void)
 {
     static FileOperator fileOperator = {
         .isFileExist = IsFileExist,

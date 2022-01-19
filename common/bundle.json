@@ -1,0 +1,40 @@
+{
+    "name": "@openharmony/useriam_common",
+    "version": "3.1.0",
+    "description": "Useriam common",
+    "homePage": "https://gitee.com/openharmony",
+    "author": {},
+    "repository": "",
+    "license": "Apache License 2.0",
+    "publishAs": "code-segment",
+    "segment": {
+      "destPath" : "base/useriam/coauth/common"
+    },
+    "dirs": {},
+    "scripts": {},
+    "component": {
+      "name": "useriam_common",
+      "subsystem": "useriam",
+      "adapted_system_type": [ "standard" ],
+      "syscap": [],
+      "features": [],
+      "rom": "800KB",
+      "ram": "2000KB",
+      "deps": {
+        "components": [
+            "hiviewdfx_hilog_native"
+        ],
+        "third_party": [
+        ]
+      },
+      "build": {
+        "sub_component": [
+            "//base/user_iam/auth_executor_mgr/common:useriam_common_lib"	  
+        ],
+        "inner_kits": [
+        ],
+        "test": [
+        ]
+      }
+    }
+  }

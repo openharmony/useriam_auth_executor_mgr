@@ -21,10 +21,6 @@
 #include "buffer.h"
 #include "defines.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef enum AuthAttributeType {
     AUTH_INVALID = 0,
     AUTH_ROOT = 1000000,
@@ -57,9 +53,5 @@ typedef struct ExecutorResultInfo {
 
 ExecutorResultInfo *GetExecutorResultInfo(const Buffer *executorResultInfo);
 void DestoryExecutorResultInfo(ExecutorResultInfo *result);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // USERIAM_EXECUTOR_MESSAGE_H

@@ -13,24 +13,16 @@
  * limitations under the License.
  */
 
-#ifndef USERIAMTA_IDM_FILE_MANAGER_H
-#define USERIAMTA_IDM_FILE_MANAGER_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef IDM_FILE_MANAGER_H
+#define IDM_FILE_MANAGER_H
 
 #include "stdint.h"
 
 #include "defines.h"
 #include "linked_list.h"
 
-LinkedList *LoadFileInfo();
+LinkedList *LoadFileInfo(void);
 ResultCode UpdateFileInfo(LinkedList *userInfoList);
 ResultCode DeleteFile();
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // USERIAMTA_IDM_FILE_MANAGER_H
+#endif // IDM_FILE_MANAGER_H
