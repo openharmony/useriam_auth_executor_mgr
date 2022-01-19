@@ -210,15 +210,8 @@ int32_t CoAuthProxy::GetExecutorProp(AuthResPool::AuthAttributes &conditions,
         COAUTH_HILOGE(MODULE_INNERKIT, "data WriteUInt8Vector buffer failed!");
         return FAIL;
     }
-    if (values->Pack(buffer)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "values pack buffer failed!");
-        return FAIL;
-    }
-    if (!data.WriteUInt8Vector(buffer)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "data WriteUInt8Vector buffer failed!");
-        return FAIL;
-    }
 
+    std::vector<uint8_t> valuesReply;
     bool ret = SendRequest(static_cast<int32_t>(ICoAuth::COAUTH_GET_PROPERTY), data, reply);
     if (!ret) {
         COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest is failed, error code: %d", ret);
@@ -227,6 +220,12 @@ int32_t CoAuthProxy::GetExecutorProp(AuthResPool::AuthAttributes &conditions,
     if (!reply.ReadInt32(result)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "Readback fail!");
         return FAIL;
+    }
+    if (!reply.ReadUInt8Vector(&valuesReply)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "Readback fail!");
+        return FAIL;
+    } else {
+        values->Unpack(valuesReply);
     }
     return result;
 }

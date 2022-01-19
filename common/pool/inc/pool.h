@@ -19,10 +19,6 @@
 #include "buffer.h"
 #include "linked_list.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define PUBLIC_KEY_LEN 32
 
 typedef enum ExecutorType {
@@ -40,15 +36,11 @@ typedef struct ExecutorInfoHal {
     uint8_t pubKey[PUBLIC_KEY_LEN];
 } ExecutorInfoHal;
 
-ResultCode InitResorcePool();
-void DestroyResorcePool();
+ResultCode InitResorcePool(void);
+void DestroyResorcePool(void);
 ResultCode RegisterExecutorToPool(ExecutorInfoHal *executorInfo);
 ResultCode UnregisterExecutorToPool(uint64_t executorId);
 ResultCode QueryExecutor(uint32_t authType, LinkedList **result);
 ExecutorInfoHal *CopyExecutorInfo(ExecutorInfoHal *src);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

@@ -40,7 +40,7 @@ ResultCode InitUserAuthContextList()
     return RESULT_SUCCESS;
 }
 
-void DestoryUserAuthContextList()
+void DestoryUserAuthContextList(void)
 {
     DestroyLinkedList(g_contextList);
     g_contextList = NULL;
@@ -67,7 +67,6 @@ UserAuthContext *GenerateContext(AuthSolutionHal params)
         return NULL;
     }
     uint32_t authTypeATL;
-    LOG_INFO("params.userId = %{public}u, params.authType = %{public}u", params.userId, params.authType);
     params.authType = 1;
     ResultCode ret = SingleAuthTrustLevel(params.userId, params.authType, &authTypeATL);
     if (ret != RESULT_SUCCESS || authTypeATL < params.authTrustLevel) {

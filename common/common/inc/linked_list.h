@@ -20,10 +20,6 @@
 #include "stdint.h"
 #include "defines.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef void (*DESTROY_DATA_FUNC)(void *data);
 typedef bool (*MATCH_FUNC)(void *data, void *condition);
 typedef bool (*HANDLE_DATA_FUNC)(void *data, void *arg);
@@ -52,9 +48,5 @@ typedef struct LinkedList {
 
 LinkedList *CreateLinkedList(DESTROY_DATA_FUNC destroyDataFunc);
 void DestroyLinkedList(LinkedList *list);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

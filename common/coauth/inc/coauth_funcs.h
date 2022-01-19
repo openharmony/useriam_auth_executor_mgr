@@ -22,10 +22,6 @@
 #include "coauth_sign_centre.h"
 #include "pool.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct {
     ExecutorInfoHal executorInfos[MAX_EXECUTOR_SIZE];
     uint32_t executorInfoNum;
@@ -41,9 +37,5 @@ int32_t RegisterExecutor(const ExecutorInfoHal *executorInfo, uint64_t *executor
 int32_t UnRegisterExecutor(uint64_t executorId);
 
 bool IsExecutorExistFunc(uint32_t authType);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // COAUTH_FUNCS_H

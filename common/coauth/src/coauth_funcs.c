@@ -73,13 +73,6 @@ int32_t ScheduleFinish(const Buffer *executorMsg, ScheduleTokenHal *scheduleToke
     scheduleToken->scheduleResult = RESULT_GENERAL_ERROR;
     // ExecutorResultInfo *resultInfo = Malloc(sizeof(ExecutorResultInfo));
     ExecutorResultInfo *resultInfo = GetExecutorResultInfo(executorMsg);
-    // // mock
-
-    // resultInfo->authSubType = 1;
-    // resultInfo->result = 0;
-    // resultInfo->scheduleId = 10;
-    // resultInfo->capabilityLevel = 3;
-    // resultInfo->templateId = 10001;
     if (resultInfo == NULL) {
         LOG_ERROR("tlv parse failed");
         return RESULT_BAD_PARAM;
@@ -117,7 +110,7 @@ int32_t ScheduleFinish(const Buffer *executorMsg, ScheduleTokenHal *scheduleToke
         LOG_ERROR("remove failed");
     }
     ret = TokenDataGetAndSign(coAuthSchedule.executors[0].authType, resultInfo, scheduleToken);
-    // DestoryBuffer(publicKey);
+    DestoryBuffer(publicKey);
 
 EXIT:
     DestoryExecutorResultInfo(resultInfo);
@@ -133,7 +126,6 @@ int32_t RegisterExecutor(const ExecutorInfoHal *registerInfo, uint64_t *executor
     }
 
     ExecutorInfoHal executorInfo = *registerInfo;
-    LOG_ERROR("authType is %{public}d", executorInfo.authType);
     int32_t ret = RegisterExecutorToPool(&executorInfo);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("register failed");

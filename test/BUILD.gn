@@ -10,9 +10,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# import("//build/ohos.gni")
-import("//base/useriam/coauth/coauth.gni")
-#import("//foundation/distributeddatamgr/distributedgallery/distributedgallery.gni")
+
+import("//base/user_iam/auth_executor_mgr/auth_executor_mgr.gni")
 import("//build/test.gni")
 
 group("coauth_unittest_test") {

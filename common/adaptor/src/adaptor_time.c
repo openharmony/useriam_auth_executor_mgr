@@ -21,7 +21,7 @@
 #define MS_OF_S 1000
 #define NS_OF_MS 1000000
 
-uint64_t GetRtcTime()
+uint64_t GetRtcTime(void)
 {
     struct timespec curTime;
     int res = clock_gettime(CLOCK_REALTIME, &curTime);
@@ -32,7 +32,7 @@ uint64_t GetRtcTime()
     return curTime.tv_sec * MS_OF_S + curTime.tv_nsec / NS_OF_MS;
 }
 
-uint64_t GetSystemTime()
+uint64_t GetSystemTime(void)
 {
     struct timespec curTime;
     int res = clock_gettime(CLOCK_MONOTONIC, &curTime);

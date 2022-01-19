@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,23 +13,18 @@
  * limitations under the License.
  */
 
-#include "auth_message.h"
+#include "lock.h"
 
-namespace OHOS {
-namespace UserIAM {
-namespace AuthResPool {
-AuthMessage* AuthMessage::FromUint8Array(std::vector<uint8_t> &msg)
+#include "pthread.h"
+
+static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void GlobalLock(void)
 {
-    msg = authMessage_;
-    return this;
+    (void)pthread_mutex_lock(&g_mutex);
 }
 
-AuthMessage::AuthMessage(std::vector<uint8_t> &msg)
+void GlobalUnLock(void)
 {
-    authMessage_ = msg;
+    (void)pthread_mutex_unlock(&g_mutex);
 }
-
-AuthMessage::~AuthMessage() = default;
-}  // namespace ohos
-}  // namespace userIAM
-}  // namespace authResPool

@@ -13,12 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef USERIAMTA_IDM_DATABASE_H
-#define USERIAMTA_IDM_DATABASE_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef IDM_DATABASE_H
+#define IDM_DATABASE_H
 
 #include <stdint.h>
 
@@ -26,9 +22,9 @@ extern "C" {
 #include "adaptor_memory.h"
 #include "idm_common.h"
 
-ResultCode InitUserInfoList();
-void DestroyUserInfoList();
-UserInfo *InitUserInfoNode();
+ResultCode InitUserInfoList(void);
+void DestroyUserInfoList(void);
+UserInfo *InitUserInfoNode(void);
 
 ResultCode GetSecureUid(int32_t userId, uint64_t *secUid);
 ResultCode GetEnrolledInfo(int32_t userId, EnrolledInfoHal **enrolledInfos, uint32_t *num);
@@ -40,8 +36,4 @@ ResultCode QueryCredentialInfoAll(int32_t userId, CredentialInfoHal **credential
 ResultCode QueryCredentialInfo(int32_t userId, uint32_t authType, CredentialInfoHal *credentialInfo);
 ResultCode DeleteCredentialInfo(int32_t userId, uint64_t credentialId, CredentialInfoHal *credentialInfo);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // USERIAMTA_IDM_DATABASE_H
+#endif // IDM_DATABASE_H

@@ -42,7 +42,7 @@ uint64_t Ntohll(uint64_t data)
     return data;
 }
 
-TlvListNode *CreateTlvList()
+TlvListNode *CreateTlvList(void)
 {
     TlvListNode *node = (TlvListNode *)Malloc(sizeof(TlvListNode));
     if (node == NULL) {
@@ -52,7 +52,7 @@ TlvListNode *CreateTlvList()
     return node;
 }
 
-TlvType *CreateTlvType(int type, unsigned int length, const void *value)
+TlvType *CreateTlvType(int32_t type, uint32_t length, const void *value)
 {
     if (value == NULL || length == 0) {
         return NULL;
@@ -64,7 +64,7 @@ TlvType *CreateTlvType(int type, unsigned int length, const void *value)
 
     tlv->type = type;
     tlv->length = length;
-    tlv->value = (unsigned char *)Malloc(length);
+    tlv->value = (uint8_t *)Malloc(length);
     if (tlv->value == NULL) {
         Free(tlv);
         return NULL;
@@ -79,7 +79,7 @@ TlvType *CreateTlvType(int type, unsigned int length, const void *value)
     return tlv;
 }
 
-TlvObject *CreateTlvObject(int type, unsigned int length, const void *value)
+TlvObject *CreateTlvObject(int32_t type, uint32_t length, const void *value)
 {
     TlvObject *object = (TlvObject *)Malloc(sizeof(TlvListNode));
     if (object == NULL) {
@@ -94,7 +94,7 @@ TlvObject *CreateTlvObject(int type, unsigned int length, const void *value)
     return object;
 }
 
-static TlvType *CreateEmptyTlvType(int type)
+static TlvType *CreateEmptyTlvType(int32_t type)
 {
     TlvType *tlv = (TlvType *)Malloc(sizeof(TlvType));
     if (tlv == NULL) {
@@ -107,7 +107,7 @@ static TlvType *CreateEmptyTlvType(int type)
     return tlv;
 }
 
-TlvObject *CreateEmptyTlvObject(int type)
+TlvObject *CreateEmptyTlvObject(int32_t type)
 {
     TlvObject *object = (TlvObject *)Malloc(sizeof(TlvListNode));
     if (object == NULL) {
@@ -140,7 +140,7 @@ void DestroyTlvObject(TlvObject *object)
     Free(object);
 }
 
-int DestroyTlvList(TlvListNode *head)
+int32_t DestroyTlvList(TlvListNode *head)
 {
     if (head == NULL) {
         return PARAM_ERR;
@@ -164,7 +164,7 @@ int DestroyTlvList(TlvListNode *head)
     return OPERA_SUCC;
 }
 
-int AddTlvNode(TlvListNode *head, const TlvObject *object)
+int32_t AddTlvNode(TlvListNode *head, const TlvObject *object)
 {
     if (head == NULL || object == NULL) {
         return PARAM_ERR;

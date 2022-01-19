@@ -13,21 +13,13 @@
  * limitations under the License.
  */
 
-#ifndef USERIAMTA_TRUST_LEVEL_H
-#define USERIAMTA_TRUST_LEVEL_H
+#ifndef USERIAM_TRUST_LEVEL_H
+#define USERIAM_TRUST_LEVEL_H
 
 #include <stdint.h>
 
 #include "defines.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 ResultCode SingleAuthTrustLevel(uint32_t userId, uint32_t authType, uint32_t *atl);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // USERIAMTA_TRUST_LEVEL_H
+#endif // USERIAM_TRUST_LEVEL_H

@@ -125,6 +125,5 @@ ResultCode SingleAuthTrustLevel(uint32_t userId, uint32_t authType, uint32_t *at
         }
     }
 
-    LOG_ERROR("can't find the atl");
     return RESULT_NOT_FOUND;
 }

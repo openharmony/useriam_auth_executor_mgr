@@ -20,23 +20,15 @@
 #include "stdint.h"
 #include "stdbool.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 ResultCode OpenEditSession(int32_t userId, uint64_t *challenge);
 ResultCode CloseEditSession();
 
 ResultCode AssociateCoauthSchedule(uint64_t scheduleId);
-void BreakOffCoauthSchedule();
+void BreakOffCoauthSchedule(void);
 
-bool IsSessionTimeout();
+bool IsSessionTimeout(void);
 ResultCode GetUserId(int32_t *userId);
 ResultCode GetChallenge(uint64_t *challenge);
 ResultCode GetScheduleId(uint64_t *scheduleId);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // USER_IDM_SESSION_H

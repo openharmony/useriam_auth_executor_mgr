@@ -28,7 +28,7 @@
     0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, \
     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, \
     0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, \
-};
+}
 
 static uint8_t g_userAuthTokenKey[SHA256_KEY_LEN] = DEMO_KEY;
 
@@ -50,31 +50,23 @@ ResultCode UserAuthTokenSign(UserAuthTokenHal *userAuthToken)
         LOG_ERROR("userAuthToken is NULL");
         return RESULT_BAD_PARAM;
     }
-
     userAuthToken->version = TOKEN_VERSION;
     ResultCode ret = RESULT_SUCCESS;
     Buffer *data = CreateBufferByData((uint8_t *)userAuthToken, AUTH_TOKEN_DATA_LEN);
     Buffer *key = CreateBufferByData(g_userAuthTokenKey, SHA256_KEY_LEN);
-    Buffer *rightSign = NULL;
+    Buffer *sign = NULL;
     if (data == NULL || key == NULL) {
         LOG_ERROR("lack of member");
         ret = RESULT_NO_MEMORY;
         goto EXIT;
     }
 
-    if (memcpy_s(data->buf, data->maxSize, userAuthToken, AUTH_TOKEN_DATA_LEN) != EOK) {
-        LOG_ERROR("data copy failed");
-        ret = RESULT_BAD_COPY;
-        goto EXIT;
-    }
-    data->contentSize = SHA256_KEY_LEN;
-
-    if (HmacSha256(key, data, &rightSign) != RESULT_SUCCESS || !IsBufferValid(rightSign)) {
+    if (HmacSha256(key, data, &sign) != RESULT_SUCCESS || !IsBufferValid(sign)) {
         ret = RESULT_GENERAL_ERROR;
         goto EXIT;
     }
 
-    if (memcpy_s(userAuthToken->sign, SHA256_SIGN_LEN, rightSign->buf, rightSign->contentSize) != EOK) {
+    if (memcpy_s(userAuthToken->sign, SHA256_SIGN_LEN, sign->buf, sign->contentSize) != EOK) {
         LOG_ERROR("sign copy failed");
         ret = RESULT_BAD_COPY;
         goto EXIT;
@@ -83,7 +75,7 @@ ResultCode UserAuthTokenSign(UserAuthTokenHal *userAuthToken)
 EXIT:
     DestoryBuffer(data);
     DestoryBuffer(key);
-    DestoryBuffer(rightSign);
+    DestoryBuffer(sign);
     return ret;
 }
 

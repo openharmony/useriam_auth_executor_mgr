@@ -20,10 +20,6 @@
 #include <stdint.h>
 #include "buffer.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define ED25519_FIX_SIGN_BUFFER_SIZE 64
 
 typedef struct {
@@ -33,7 +29,7 @@ typedef struct {
 
 bool IsEd25519KeyPairValid(const KeyPair *keyPair);
 void DestoryKeyPair(KeyPair *keyPair);
-KeyPair *GenerateEd25519KeyPair();
+KeyPair *GenerateEd25519KeyPair(void);
 int32_t Ed25519Sign(const KeyPair *keyPair, const Buffer *data, Buffer **sign);
 int32_t Ed25519Verify(const Buffer *pubKey, const Buffer *data, const Buffer *sign);
 
@@ -41,10 +37,6 @@ int32_t HmacSha256(const Buffer *hmacKey, const Buffer *data, Buffer **hmac);
 int32_t HmacSha512(const Buffer *hmacKey, const Buffer *data, Buffer **hmac);
 
 int32_t SecureRandom(uint8_t *buffer, uint32_t size);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

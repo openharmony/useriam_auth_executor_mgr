@@ -73,7 +73,8 @@ int32_t RequestAuthResultFunc(uint64_t contextId, const Buffer *scheduleToken, U
         return RESULT_BAD_PARAM;
     }
     ScheduleTokenHal scheduleTokenStruct;
-    if (memcpy_s(&scheduleTokenStruct, sizeof(ScheduleTokenHal), scheduleToken->buf, scheduleToken->contentSize) != EOK) {
+    if (memcpy_s(&scheduleTokenStruct, sizeof(ScheduleTokenHal), scheduleToken->buf,
+        scheduleToken->contentSize) != EOK) {
         LOG_ERROR("scheduleTokenStruct copy failed");
         return RESULT_BAD_COPY;
     }

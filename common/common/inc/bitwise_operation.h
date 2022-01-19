@@ -13,22 +13,12 @@
  * limitations under the License.
  */
 
-#ifndef USERIAMTA_BITWISE_OPERATION_H
-#define USERIAMTA_BITWISE_OPERATION_H
+#ifndef BITWISE_OPERATION_H
+#define BITWISE_OPERATION_H
 
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 uint64_t GetUint64(uint32_t high, uint32_t low);
 void SplitUint64(uint64_t number, uint32_t *high, uint32_t *low);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // USERIAMTA_BITWISE_OPERATION_H
+#endif // BITWISE_OPERATION_H

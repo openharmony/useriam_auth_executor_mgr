@@ -17,95 +17,117 @@
 
 #include "securec.h"
 
+extern "C" {
 #include "idm_session.h"
 #include "user_idm_funcs.h"
 #include "adaptor_log.h"
 #include "coauth_interface.h"
 #include "coauth_sign_centre.h"
 #include "idm_database.h"
+#include "lock.h"
+}
 
 namespace OHOS {
 namespace UserIAM {
 namespace UserIDM {
 namespace Hal {
-
-typedef struct {
+struct CredentialInfo {
     uint64_t credentialId;
     uint32_t authType;
     uint64_t authSubType;
     uint64_t templateId;
-} CredentialInfo;
+};
 
-typedef struct {
+struct EnrolledInfo {
     uint32_t authType;
     uint64_t enrolledId;
-} EnrolledInfo;
+};
 
 int32_t OpenSession(int32_t userId, uint64_t &challenge)
 {
-    return OpenEditSession(userId, &challenge);
+    GlobalLock();
+    int32_t ret = OpenEditSession(userId, &challenge);
+    LOG_INFO("challenge is %{public}llu", challenge);
+    GlobalUnLock();
+    return ret;
 }
 
 int32_t CloseSession()
 {
-    return CloseEditSession();
+    GlobalLock();
+    int32_t ret = CloseEditSession();
+    GlobalUnLock();
+    return ret;
 }
 
-int32_t GetScheduleId(std::vector<uint8_t> authToken, int32_t userId, uint32_t authType, uint64_t authSubType,
+int32_t InitSchedulation(std::vector<uint8_t> authToken, int32_t userId, uint32_t authType, uint64_t authSubType,
     uint64_t &scheduleId)
 {
     LOG_INFO("begin");
+    GlobalLock();
     if (authToken.size() != sizeof(UserAuth::UserAuthToken) && authType != PIN_AUTH) {
         LOG_ERROR("authToken len is invalid");
+        GlobalUnLock();
         return RESULT_BAD_PARAM;
     }
-    LOG_ERROR("1111");
     PermissionCheckParam param;
-    if (authToken.size() == sizeof(UserAuth::UserAuthToken) && 
+    if (authToken.size() == sizeof(UserAuth::UserAuthToken) &&
         memcpy_s(param.token, AUTH_TOKEN_LEN, &authToken[0], authToken.size()) != EOK) {
-        LOG_ERROR("1111");
+        GlobalUnLock();
         return RESULT_BAD_COPY;
     }
-    LOG_ERROR("1111");
     param.authType = authType;
     param.userId = userId;
     param.authSubType = authSubType;
-    return CheckEnrollPermission(param, &scheduleId);
+    int32_t ret = CheckEnrollPermission(param, &scheduleId);
+    GlobalUnLock();
+    return ret;
 }
 
-int32_t CancelScheduleId(uint64_t &scheduleId)
+int32_t DeleteScheduleId(uint64_t &scheduleId)
 {
     LOG_INFO("begin");
-    return CancelScheduleIdFunc(&scheduleId);
+    GlobalLock();
+    int32_t ret = CancelScheduleIdFunc(&scheduleId);
+    GlobalUnLock();
+    return ret;
 }
 
 int32_t AddCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId)
 {
     LOG_INFO("begin");
+    GlobalLock();
     if (enrollToken.size() != sizeof(CoAuth::ScheduleToken)) {
-        LOG_ERROR("enrollToken is invalid %{public}u", enrollToken.size());
+        LOG_ERROR("enrollToken is invalid, size is %{public}u", enrollToken.size());
+        GlobalUnLock();
         return RESULT_BAD_PARAM;
     }
     uint8_t enrollTokenIn[sizeof(ScheduleTokenHal)];
     if (memcpy_s(enrollTokenIn, sizeof(ScheduleTokenHal), &enrollToken[0], enrollToken.size()) != EOK) {
         LOG_ERROR("enrollToken copy failed");
+        GlobalUnLock();
         return RESULT_BAD_COPY;
     }
-    return AddCredentialFunc(enrollTokenIn, (uint32_t)sizeof(ScheduleTokenHal), &credentialId);
+    int32_t ret = AddCredentialFunc(enrollTokenIn, (uint32_t)sizeof(ScheduleTokenHal), &credentialId);
+    GlobalUnLock();
+    return ret;
 }
 
 int32_t DeleteCredential(int32_t userId, uint64_t credentialId, std::vector<uint8_t> authToken,
     CredentialInfo &credentialInfo)
 {
     LOG_INFO("begin");
+    GlobalLock();
     authToken.resize(sizeof(UserAuth::UserAuthToken));
     if (authToken.size() != sizeof(UserAuth::UserAuthToken)) {
         LOG_ERROR("authToken len is invalid");
+        GlobalUnLock();
         return RESULT_BAD_PARAM;
     }
     CredentialDeleteParam param;
     if (memcpy_s(param.token, AUTH_TOKEN_LEN, &authToken[0], authToken.size()) != EOK) {
         LOG_ERROR("param token copy failed");
+        GlobalUnLock();
         return RESULT_BAD_COPY;
     }
     param.userId = userId;
@@ -114,48 +136,57 @@ int32_t DeleteCredential(int32_t userId, uint64_t credentialId, std::vector<uint
     int32_t ret = DeleteCredentialFunc(param, &credentialInfoHal);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("delete failed");
+        GlobalUnLock();
         return ret;
     }
     if (memcpy_s(&credentialInfo, sizeof(CredentialInfo), &credentialInfoHal, sizeof(CredentialInfoHal)) != EOK) {
         LOG_ERROR("copy failed");
+        GlobalUnLock();
         return RESULT_BAD_COPY;
     }
+    GlobalUnLock();
     return RESULT_SUCCESS;
 }
 
 int32_t QueryCredential(int32_t userId, uint32_t authType, std::vector<CredentialInfo> &credentialInfos)
 {
     LOG_INFO("begin");
+    GlobalLock();
     CredentialInfoHal *credentialInfoHals = nullptr;
     uint32_t num = 0;
     int32_t ret = QueryCredentialFunc(userId, authType, &credentialInfoHals, &num);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("query credential failed");
+        GlobalUnLock();
         return ret;
     }
     for (int i = 0; i < num; i++) {
         CredentialInfo credentialInfo;
-        if (memcpy_s(&credentialInfo, sizeof(CredentialInfo), 
+        if (memcpy_s(&credentialInfo, sizeof(CredentialInfo),
             &credentialInfoHals[i], sizeof(CredentialInfoHal)) != EOK) {
             LOG_ERROR("credentialInfo copy failed");
             free(credentialInfoHals);
             credentialInfos.clear();
+            GlobalUnLock();
             return RESULT_BAD_COPY;
         }
         credentialInfos.push_back(credentialInfo);
     }
     free(credentialInfoHals);
+    GlobalUnLock();
     return RESULT_SUCCESS;
 }
 
 int32_t GetSecureUid(int32_t userId, uint64_t &secureUid, std::vector<EnrolledInfo> &enrolledInfos)
 {
     LOG_INFO("begin");
+    GlobalLock();
     EnrolledInfoHal *enrolledInfoHals = nullptr;
     uint32_t num = 0;
     int32_t ret = GetUserSecureUidFunc(userId, &secureUid, &enrolledInfoHals, &num);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("get user secureUid failed");
+        GlobalUnLock();
         return ret;
     }
     for (int i = 0; i < num; i++) {
@@ -164,92 +195,109 @@ int32_t GetSecureUid(int32_t userId, uint64_t &secureUid, std::vector<EnrolledIn
             LOG_ERROR("credentialInfo copy failed");
             free(enrolledInfoHals);
             enrolledInfos.clear();
+            GlobalUnLock();
             return RESULT_BAD_COPY;
         }
         enrolledInfos.push_back(enrolledInfo);
     }
     free(enrolledInfoHals);
+    GlobalUnLock();
     return RESULT_SUCCESS;
 }
 
 int32_t DeleteUserEnforce(int32_t userId, std::vector<CredentialInfo> &credentialInfos)
 {
     LOG_INFO("begin");
+    GlobalLock();
     CredentialInfoHal *credentialInfoHals = nullptr;
     uint32_t num = 0;
     int32_t ret = DeleteUserInfo(userId, &credentialInfoHals, &num);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("query credential failed");
+        GlobalUnLock();
         return ret;
     }
     for (int i = 0; i < num; i++) {
         CredentialInfo credentialInfo;
-        if (memcpy_s(&credentialInfo, sizeof(CredentialInfo), 
+        if (memcpy_s(&credentialInfo, sizeof(CredentialInfo),
             &credentialInfoHals[i], sizeof(CredentialInfoHal)) != EOK) {
             LOG_ERROR("credentialInfo copy failed");
             free(credentialInfoHals);
             credentialInfos.clear();
+            GlobalUnLock();
             return RESULT_BAD_COPY;
         }
         credentialInfos.push_back(credentialInfo);
     }
     free(credentialInfoHals);
+    GlobalUnLock();
     return RESULT_SUCCESS;
 }
 
 int32_t DeleteUser(int32_t userId, std::vector<uint8_t> authToken, std::vector<CredentialInfo> &credentialInfos)
 {
     LOG_INFO("begin");
+    GlobalLock();
     authToken.resize(sizeof(UserAuthTokenHal));
     if (authToken.size() != sizeof(UserAuthTokenHal)) {
         LOG_ERROR("authToken is invalid");
+        GlobalUnLock();
         return RESULT_BAD_PARAM;
     }
-    // UserAuthTokenHal authTokenStruct;
-    // if (memcpy_s(&authTokenStruct, sizeof(UserAuthTokenHal), &authToken[0], authToken.size()) != EOK) {
-    //     LOG_ERROR("authTokenStruct copy failed");
-    //     return RESULT_BAD_COPY;
-    // }
-    // uint64_t challenge;
-    // int32_t ret = GetChallenge(&challenge);
-    // if (ret != RESULT_SUCCESS) {
-    //     LOG_ERROR("get challenge failed");
-    //     return ret;
-    // }
-    // if (challenge != authTokenStruct.challenge || UserAuthTokenVerify(&authTokenStruct) != RESULT_SUCCESS) {
-    //     LOG_ERROR("verify token failed");
-    //     return RESULT_BAD_SIGN;
-    // }
+    UserAuthTokenHal authTokenStruct;
+    if (memcpy_s(&authTokenStruct, sizeof(UserAuthTokenHal), &authToken[0], authToken.size()) != EOK) {
+        LOG_ERROR("authTokenStruct copy failed");
+        GlobalUnLock();
+        return RESULT_BAD_COPY;
+    }
+    uint64_t challenge;
+    int32_t ret = GetChallenge(&challenge);
+    if (ret != RESULT_SUCCESS) {
+        LOG_ERROR("get challenge failed");
+        GlobalUnLock();
+        return ret;
+    }
+    if (challenge != authTokenStruct.challenge || UserAuthTokenVerify(&authTokenStruct) != RESULT_SUCCESS) {
+        LOG_ERROR("verify token failed");
+        GlobalUnLock();
+        return RESULT_BAD_SIGN;
+    }
+    GlobalUnLock();
     return DeleteUserEnforce(userId, credentialInfos);
 }
 
 int32_t UpdateCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId, CredentialInfo &deletedCredential)
 {
     LOG_INFO("begin");
+    GlobalLock();
     if (enrollToken.size() != sizeof(CoAuth::ScheduleToken)) {
         LOG_ERROR("enrollToken is invalid");
+        GlobalUnLock();
         return RESULT_BAD_PARAM;
     }
     uint8_t enrollTokenIn[sizeof(ScheduleTokenHal)];
     if (memcpy_s(enrollTokenIn, sizeof(ScheduleTokenHal), &enrollToken[0], enrollToken.size()) != EOK) {
         LOG_ERROR("enrollToken copy failed");
+        GlobalUnLock();
         return RESULT_BAD_COPY;
     }
     CredentialInfoHal credentialInfoHal;
-    int32_t ret = 
+    int32_t ret =
         UpdateCredentialFunc(enrollTokenIn, (uint32_t)sizeof(ScheduleTokenHal), &credentialId, &credentialInfoHal);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("update failed");
+        GlobalUnLock();
         return ret;
     }
     if (memcpy_s(&deletedCredential, sizeof(CredentialInfo), &credentialInfoHal, sizeof(CredentialInfoHal)) != EOK) {
         LOG_ERROR("copy failed");
+        GlobalUnLock();
         return RESULT_BAD_COPY;
     }
+    GlobalUnLock();
     return RESULT_SUCCESS;
 }
-
-}
-}
-}
-}
+} // Hal
+} // UserIDM
+} // UserIAM
+} // OHOS

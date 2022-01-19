@@ -18,10 +18,6 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef enum {
     OPERA_SUCC = 0,
     PARAM_ERR = 1001,
@@ -33,9 +29,9 @@ typedef enum {
 } ErrCode;
 
 typedef struct {
-    int type;
-    unsigned int length;
-    unsigned char *value;
+    int32_t type;
+    uint32_t length;
+    uint8_t *value;
 } TlvType;
 
 typedef struct {
@@ -62,16 +58,12 @@ uint32_t Ntohl(uint32_t data);
 // uint64 convert endian
 uint64_t Ntohll(uint64_t data);
 
-TlvListNode *CreateTlvList();
-int DestroyTlvList(TlvListNode *list);
-TlvObject *CreateTlvObject(int type, unsigned int length, const void *value);
-TlvObject *CreateEmptyTlvObject(int type);
-TlvType *CreateTlvType(int type, unsigned int length, const void *value);
+TlvListNode *CreateTlvList(void);
+int32_t DestroyTlvList(TlvListNode *list);
+TlvObject *CreateTlvObject(int32_t type, uint32_t length, const void *value);
+TlvObject *CreateEmptyTlvObject(int32_t type);
+TlvType *CreateTlvType(int32_t type, uint32_t length, const void *value);
 void DestroyTlvObject(TlvObject *object);
-int AddTlvNode(TlvListNode *list, const TlvObject *object);
-
-#ifdef __cplusplus
-}
-#endif
+int32_t AddTlvNode(TlvListNode *list, const TlvObject *object);
 
 #endif // TLV_BASE_H

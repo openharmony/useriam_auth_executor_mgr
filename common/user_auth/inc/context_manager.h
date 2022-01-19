@@ -13,14 +13,10 @@
  * limitations under the License.
  */
 
-#ifndef USERIAMTA_CONTEXT_MANAGER_H
-#define USERIAMTA_CONTEXT_MANAGER_H
+#ifndef USERIAM_CONTEXT_MANAGER_H
+#define USERIAM_CONTEXT_MANAGER_H
 
 #include "linked_list.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct UserAuthContext {
     uint64_t contextId;
@@ -40,7 +36,7 @@ typedef struct {
 } AuthSolutionHal;
 
 ResultCode InitUserAuthContextList();
-void DestoryUserAuthContextList();
+void DestoryUserAuthContextList(void);
 UserAuthContext *GenerateContext(AuthSolutionHal params);
 
 UserAuthContext *GetContext(uint64_t contextId);
@@ -48,8 +44,4 @@ ResultCode ScheduleOnceFinish(UserAuthContext *context, uint64_t scheduleId);
 void DestoryContext(UserAuthContext *context);
 ResultCode GetScheduleIds(UserAuthContext *context, uint64_t **scheduleIds, uint32_t *scheduleNum);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // USERIAMTA_CONTEXT_MANAGER_H
+#endif // USERIAM_CONTEXT_MANAGER_H

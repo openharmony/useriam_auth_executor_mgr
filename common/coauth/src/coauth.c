@@ -47,7 +47,7 @@ void DestroyCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
     DestroySchedule(coAuthSchedule);
 }
 
-ResultCode InitCoAuth()
+ResultCode InitCoAuth(void)
 {
     if (!IsCoAuthInit()) {
         g_scheduleList = CreateLinkedList(DestroySchedule);
@@ -58,7 +58,7 @@ ResultCode InitCoAuth()
     return RESULT_SUCCESS;
 }
 
-void DestoryCoAuth()
+void DestoryCoAuth(void)
 {
     DestroyLinkedList(g_scheduleList);
     g_scheduleList = NULL;
@@ -141,7 +141,7 @@ ResultCode GetCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
         g_scheduleList->destroyIterator(iterator);
         return RESULT_SUCCESS;
     }
-    LOG_ERROR("can't find schedule"); //del
+
     g_scheduleList->destroyIterator(iterator);
     return result;
 }
@@ -175,8 +175,7 @@ static ResultCode GenerateValidScheduleId(uint64_t *scheduleId)
             return RESULT_GENERAL_ERROR;
         }
         if (!IsScheduleIdDuplicate(tempRandom)) {
-            //mock *scheduleId = tempRandom;
-            *scheduleId = 10;
+            *scheduleId = tempRandom;
             return RESULT_SUCCESS;
         }
     }
@@ -207,7 +206,8 @@ static ResultCode MountExecutor(uint32_t authType, CoAuthSchedule *coAuthSchedul
             ret = RESULT_UNKNOWN;
             goto EXIT;
         }
-        if (memcpy_s(coAuthSchedule->executors + i, sizeof(ExecutorInfoHal), tempNode->data, sizeof(ExecutorInfoHal)) != EOK) {
+        if (memcpy_s(coAuthSchedule->executors + i, sizeof(ExecutorInfoHal),
+            tempNode->data, sizeof(ExecutorInfoHal)) != EOK) {
             LOG_ERROR("copy executorinfo failed");
             ret = RESULT_UNKNOWN;
             goto EXIT;

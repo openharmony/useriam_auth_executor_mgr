@@ -128,7 +128,7 @@ ResultCode AssociateCoauthSchedule(uint64_t scheduleId)
     return RESULT_SUCCESS;
 }
 
-void BreakOffCoauthSchedule()
+void BreakOffCoauthSchedule(void)
 {
     if (!IsSessionExist()) {
         return;
@@ -149,7 +149,7 @@ ResultCode GetScheduleId(uint64_t *scheduleId)
     return RESULT_SUCCESS;
 }
 
-bool IsSessionTimeout()
+bool IsSessionTimeout(void)
 {
     if (!IsSessionExist()) {
         return RESULT_NEED_INIT;
@@ -159,6 +159,5 @@ bool IsSessionTimeout()
         LOG_ERROR("timeout, %{public}llu, %{public}llu", currentTime, g_session->time);
         return true;
     }
-    LOG_ERROR("time not out, %{public}llu, %{public}llu", currentTime, g_session->time);
     return false;
 }

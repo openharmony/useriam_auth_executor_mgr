@@ -11,11 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/useriam/coauth/coauth.gni")
+import("//base/user_iam/auth_executor_mgr/auth_executor_mgr.gni")
 import("//build/ohos/sa_profile/sa_profile.gni")
 
 ohos_sa_profile("coauth_sa_profile") {
-  sources = [ "5203.xml" ]
+  sources = [ "931.xml" ]
   part_name = "${coauth_native_part_name}"
 }
 ohos_prebuilt_etc("useriam.init") {
@@ -25,6 +25,6 @@ ohos_prebuilt_etc("useriam.init") {
     source = "useriam.rc"
   }
   relative_install_dir = "init"
-  part_name = "coauthmgr"
-  subsystem_name = "coauth"
+  part_name = "auth_executor_mgr"
+  subsystem_name = "useriam"
 }

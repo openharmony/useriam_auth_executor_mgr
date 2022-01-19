@@ -21,10 +21,6 @@
 #include "user_sign_centre.h"
 #include "context_manager.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct {
     uint64_t scheduleId;
     uint8_t ExecutorSign[SHA256_SIGN_LEN];
@@ -34,9 +30,5 @@ int32_t GenerateSolutionFunc(AuthSolutionHal param, uint64_t **scheduleIdArray, 
 int32_t RequestAuthResultFunc(uint64_t contextId, const Buffer *scheduleToken, UserAuthTokenHal *authToken,
     uint64_t **scheduleIdArray, uint32_t *scheduleNum);
 int32_t CancelContextFunc(uint64_t contextId, uint64_t **scheduleIdArray, uint32_t *scheduleNum);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // USER_AUTH_FUNCS_H

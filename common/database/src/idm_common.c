@@ -48,7 +48,7 @@ void DestroyEnrolledNode(void *enrolled)
     Free(enrolled);
 }
 
-UserInfo *InitUserInfoNode()
+UserInfo *InitUserInfoNode(void)
 {
     UserInfo *userInfo = Malloc(sizeof(UserInfo));
     if (userInfo == NULL) {

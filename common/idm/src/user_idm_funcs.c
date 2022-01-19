@@ -145,7 +145,6 @@ int32_t AddCredentialFunc(const uint8_t *enrollToken, uint32_t tokenLen, uint64_
     if (ret == RESULT_SUCCESS) {
         *credentialId = credentialInfo.credentialId;
     }
-    LOG_ERROR("credentialId = %{public}llu", *credentialId);
     return ret;
 }
 
@@ -155,25 +154,25 @@ int32_t DeleteCredentialFunc(CredentialDeleteParam param, CredentialInfoHal *cre
         LOG_ERROR("param is null");
         return RESULT_BAD_PARAM;
     }
-    // UserAuthTokenHal token;
-    // if (memcpy_s(&token, sizeof(UserAuthTokenHal), param.token, AUTH_TOKEN_LEN) != EOK) {
-    //     LOG_ERROR("token copy failed");
-    //     return RESULT_BAD_COPY;
-    // }
+    UserAuthTokenHal token;
+    if (memcpy_s(&token, sizeof(UserAuthTokenHal), param.token, AUTH_TOKEN_LEN) != EOK) {
+        LOG_ERROR("token copy failed");
+        return RESULT_BAD_COPY;
+    }
 
-    // uint64_t challenge;
-    // int32_t ret = GetChallenge(&challenge);
-    // if (ret != RESULT_SUCCESS || challenge != token.challenge || IsSessionTimeout()) {
-    //     LOG_ERROR("check challenge failed");
-    //     return RESULT_BAD_SIGN;
-    // }
+    uint64_t challenge;
+    int32_t ret = GetChallenge(&challenge);
+    if (ret != RESULT_SUCCESS || challenge != token.challenge || IsSessionTimeout()) {
+        LOG_ERROR("check challenge failed");
+        return RESULT_BAD_SIGN;
+    }
 
-    // ret = UserAuthTokenVerify(&token);
-    // if (ret != RESULT_SUCCESS) {
-    //     LOG_ERROR("failed to verify the token");
-    //     return RESULT_BAD_SIGN;
-    // }
-    int32_t ret = DeleteCredentialInfo(param.userId, param.credentialId, credentialInfo);
+    ret = UserAuthTokenVerify(&token);
+    if (ret != RESULT_SUCCESS) {
+        LOG_ERROR("failed to verify the token");
+        return RESULT_BAD_SIGN;
+    }
+    ret = DeleteCredentialInfo(param.userId, param.credentialId, credentialInfo);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("delete database info failed");
         return RESULT_BAD_SIGN;
@@ -212,7 +211,8 @@ int32_t QueryCredentialFunc(int32_t userId, uint32_t authType,
     return RESULT_SUCCESS;
 }
 
-int32_t GetUserSecureUidFunc(int32_t userId, uint64_t *secureUid, EnrolledInfoHal **enrolledInfoArray, uint32_t *enrolledNum)
+int32_t GetUserSecureUidFunc(int32_t userId, uint64_t *secureUid, EnrolledInfoHal **enrolledInfoArray,
+    uint32_t *enrolledNum)
 {
     if (secureUid == NULL || enrolledInfoArray == NULL || enrolledNum == NULL) {
         LOG_ERROR("param is null");
@@ -245,7 +245,8 @@ int32_t CancelScheduleIdFunc(uint64_t *scheduleId)
 int32_t UpdateCredentialFunc(const uint8_t *enrollToken, uint32_t tokenLen, uint64_t *credentialId,
     CredentialInfoHal *deletedCredential)
 {
-    if (enrollToken == NULL || credentialId == NULL || tokenLen != sizeof(ScheduleTokenHal) || deletedCredential == NULL) {
+    if (enrollToken == NULL || credentialId == NULL || tokenLen != sizeof(ScheduleTokenHal) ||
+        deletedCredential == NULL) {
         LOG_ERROR("param is invalid");
         return RESULT_BAD_PARAM;
     }

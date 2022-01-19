@@ -18,10 +18,6 @@
 
 #include "pool.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define INAVLID_SESSION_ID 0
 #define MAX_EXECUTOR_SIZE 2
 
@@ -45,8 +41,8 @@ typedef struct CoAuthSchedule {
     ExecutorInfoHal executors[MAX_EXECUTOR_SIZE];
 } CoAuthSchedule;
 
-ResultCode InitCoAuth();
-void DestoryCoAuth();
+ResultCode InitCoAuth(void);
+void DestoryCoAuth(void);
 
 CoAuthSchedule *GenerateAuthSchedule(uint64_t contextId, uint32_t authType, uint64_t authSubType,
     uint64_t templateId);
@@ -56,9 +52,5 @@ ResultCode AddCoAuthSchedule(CoAuthSchedule *coAuthSchedule);
 ResultCode RemoveCoAuthSchedule(uint64_t scheduleId);
 ResultCode GetCoAuthSchedule(CoAuthSchedule *coAuthSchedule);
 void DestroyCoAuthSchedule(CoAuthSchedule *coAuthSchedule);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

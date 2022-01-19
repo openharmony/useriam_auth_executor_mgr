@@ -15,7 +15,7 @@
 <info>
     <process>useriam</process>
     <systemability>
-        <name>5203</name>
+        <name>931</name>
         <libpath>libcoauthservice.z.so</libpath>
         <run-on-create>true</run-on-create>
         <distributed>false</distributed>

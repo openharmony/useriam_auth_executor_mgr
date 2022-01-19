@@ -104,13 +104,18 @@ int32_t ExecutorCallbackStub::OnGetPropertyStub(MessageParcel& data, MessageParc
     std::shared_ptr<AuthAttributes> conditions = std::make_shared<AuthAttributes>();
     data.ReadUInt8Vector(&buffer);
     conditions->Unpack(buffer);
-    buffer.clear();
+    
     std::shared_ptr<AuthAttributes> values = std::make_shared<AuthAttributes>();
-    data.ReadUInt8Vector(&buffer);
-    values->Unpack(buffer);
     int32_t ret = OnGetProperty(conditions, values);
     if (!reply.WriteInt32(ret)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteInt32(ret)");
+        return FAIL;
+    }
+
+    std::vector<uint8_t> replyBuffer;
+    values->Pack(replyBuffer);
+    if (!reply.WriteUInt8Vector(replyBuffer)) {
+        COAUTH_HILOGE(MODULE_SERVICE, "failed to replyBuffer");
         return FAIL;
     }
     return SUCCESS;
@@ -176,6 +181,11 @@ int32_t ExecutorCallbackStub::OnGetProperty(std::shared_ptr<AuthAttributes> cond
     if (callback_ == nullptr) {
         return FAIL;
     } else {
+        if (values == nullptr) {
+            COAUTH_HILOGE(MODULE_INNERKIT, "ExecutorCallbackStub::OnGetProperty values is null.");
+        } else {
+            COAUTH_HILOGE(MODULE_INNERKIT, "ExecutorCallbackStub::OnGetProperty values is not null.");
+        }
         ret = callback_->OnGetProperty(conditions, values);
     }
     return ret;

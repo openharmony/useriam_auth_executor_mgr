@@ -13,9 +13,9 @@
 
 import("//build/ohos.gni")
 
-coauth_native_part_name = "coauthmgr"
+coauth_native_part_name = "auth_executor_mgr"
 
-coauth_root_path = "//base/useriam/coauth/"
+coauth_root_path = "//base/user_iam/auth_executor_mgr/"
 
 coauth_service_path = "${coauth_root_path}/services"
 

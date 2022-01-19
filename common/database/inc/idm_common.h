@@ -13,16 +13,11 @@
  * limitations under the License.
  */
 
-#ifndef USERIAMTA_IDM_COMMON_H
-#define USERIAMTA_IDM_COMMON_H
+#ifndef IDM_COMMON_H
+#define IDM_COMMON_H
 
 #include <stdint.h>
-
 #include "linked_list.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define MAX_USER 1000
 #define MAX_CREDENTIAL 5
@@ -50,10 +45,6 @@ typedef struct {
 void DestroyUserInfoNode(void *userInfo);
 void DestroyCredentialNode(void *credential);
 void DestroyEnrolledNode(void *enrolled);
-UserInfo *InitUserInfoNode();
+UserInfo *InitUserInfoNode(void);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // USERIAMTA_IDM_COMMON_H
+#endif // IDM_COMMON_H

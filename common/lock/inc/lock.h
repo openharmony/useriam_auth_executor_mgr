@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,23 +13,10 @@
  * limitations under the License.
  */
 
-#include "auth_message.h"
+#ifndef USER_IAM_LOCK
+#define USER_IAM_LOCK
 
-namespace OHOS {
-namespace UserIAM {
-namespace AuthResPool {
-AuthMessage* AuthMessage::FromUint8Array(std::vector<uint8_t> &msg)
-{
-    msg = authMessage_;
-    return this;
-}
+void GlobalLock(void);
+void GlobalUnLock(void);
 
-AuthMessage::AuthMessage(std::vector<uint8_t> &msg)
-{
-    authMessage_ = msg;
-}
-
-AuthMessage::~AuthMessage() = default;
-}  // namespace ohos
-}  // namespace userIAM
-}  // namespace authResPool
+#endif

@@ -13,17 +13,13 @@
  * limitations under the License.
  */
 
-#ifndef USERIAMTA_COAUTH_SIGN_CENTRE_H
-#define USERIAMTA_COAUTH_SIGN_CENTRE_H
+#ifndef COAUTH_SIGN_CENTRE_H
+#define COAUTH_SIGN_CENTRE_H
 
 #include <stdint.h>
 
 #include "buffer.h"
 #include "defines.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define SHA256_SIGN_LEN 32
 #define COAUTH_TOKEN_LEN sizeof(ScheduleTokenHal)
@@ -47,8 +43,4 @@ typedef struct {
 ResultCode CoAuthTokenSign(ScheduleTokenHal *userAuthToken);
 ResultCode CoAuthTokenVerify(const ScheduleTokenHal *userAuthToken);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // USERIAMTA_COAUTH_SIGN_CENTRE_H
+#endif // COAUTH_SIGN_CENTRE_H

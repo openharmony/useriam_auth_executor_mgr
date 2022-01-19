@@ -129,6 +129,11 @@ int32_t ExecutorCallbackProxy::OnGetProperty(std::shared_ptr<AuthAttributes> con
     MessageParcel data;
     MessageParcel reply;
     int32_t result = 0;
+    if (values == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "ExecutorCallbackProxy values is null.");
+        return FAIL;
+    }
+
     if (!data.WriteInterfaceToken(ExecutorCallbackProxy::GetDescriptor())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
         return FAIL;
@@ -141,15 +146,17 @@ int32_t ExecutorCallbackProxy::OnGetProperty(std::shared_ptr<AuthAttributes> con
     if (!data.WriteUInt8Vector(buffer)) {
         return FAIL;
     }
-    if (values->Pack(buffer)) {
-        return FAIL;
-    }
-    if (!data.WriteUInt8Vector(buffer)) {
-        return FAIL;
-    }
-    bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_GET_PROPERTY), data, reply);
+
+    std::vector<uint8_t> valuesReply;
+    bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_GET_PROPERTY), data, reply); // must sync
     if (ret) {
         result = reply.ReadInt32();
+        if (!reply.ReadUInt8Vector(&valuesReply)) {
+            COAUTH_HILOGE(MODULE_INNERKIT, "Readback fail!");
+            return FAIL;
+        } else {
+            values->Unpack(valuesReply);
+        }
         COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
     }
     return result;

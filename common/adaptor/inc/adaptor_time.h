@@ -18,15 +18,7 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-uint64_t GetSystemTime();
-uint64_t GetRtcTime();
-
-#ifdef __cplusplus
-}
-#endif
+uint64_t GetSystemTime(void);
+uint64_t GetRtcTime(void);
 
 #endif

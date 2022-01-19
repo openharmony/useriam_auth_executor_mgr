@@ -1,0 +1,68 @@
+{
+    "name": "@openharmony/auth_executor_mgr",
+    "version": "3.1.0",
+    "description": "Auth executor manager",
+    "homePage": "https://gitee.com/openharmony",
+    "author": {},
+    "repository": "",
+    "license": "Apache License 2.0",
+    "publishAs": "code-segment",
+    "segment": {
+      "destPath" : "base/user_iam/auth_executor_mgr"
+    },
+    "dirs": {},
+    "scripts": {},
+    "component": {
+      "name": "auth_executor_mgr",
+      "subsystem": "useriam",
+      "adapted_system_type": [ "standard" ],
+      "syscap": ["SystemCapability.UserIAM.AuthExecutorMgr"],
+      "features": [],
+      "rom": "1024KB",
+      "ram": "2500KB",
+      "deps": {
+        "components": [
+            "hiviewdfx_hilog_native",
+            "ipc",
+            "safwk",
+            "samgr_standard"
+        ],
+        "third_party": [
+            "openssl"
+        ]
+      },
+      "build": {
+        "sub_component": [
+            "//base/user_iam/auth_executor_mgr/sa_profile:coauth_sa_profile",
+            "//base/user_iam/auth_executor_mgr/services:coauthservice",
+            "//base/user_iam/auth_executor_mgr/sa_profile:useriam.init"		  
+        ],
+        "inner_kits": [
+          {
+            "type": "so",
+            "name": "//base/user_iam/auth_executor_mgr/interfaces/innerkits:coauth_framework",
+            "header": {
+              "header_files": [
+                "auth_attributes.h",
+                "auth_executor.h",
+                "auth_executor_registry.h",
+                "auth_info.h",
+                "auth_message.h",
+                "co_auth.h",
+                "coauth_callback.h",
+                "coauth_info_define.h",
+                "executor_callback.h",
+                "executor_messenger.h",
+                "query_callback.h",
+                "set_prop_callback.h"
+              ],
+              "header_base": "//base/user_iam/auth_executor_mgr/interfaces/innerkits/include"
+            }
+          }
+        ],
+        "test": [
+            "//base/user_iam/auth_executor_mgr/test:coauth_unittest_test"
+        ]
+      }
+    }
+  }
