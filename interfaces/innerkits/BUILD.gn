@@ -16,52 +16,55 @@ import("//base/user_iam/auth_executor_mgr/auth_executor_mgr.gni")
 config("coauth_private_config") {
   include_dirs = [
     "${coauth_service_path}/include",
-    "//utils/system/safwk/native/include",
+    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "${coauth_frameworks_path}/kitsimpl/include",
     "//foundation/distributeddatamgr/distributeddatamgr/frameworks/innerkitsimpl/distributeddatafwk/include",
   ]
 }
 
 config("coauth_public_config") {
-  include_dirs = [ "include",
-  "${coauth_frameworks_path}/kitsimpl/include",
+  include_dirs = [
+    "include",
+    "${coauth_frameworks_path}/kitsimpl/include",
   ]
 }
 
 ohos_shared_library("coauth_framework") {
   sources = [
-    "../../frameworks/kitsimpl/src/coauth_proxy.cpp",
-    "../../frameworks/kitsimpl/src/coauth.cpp",
-    "../../frameworks/kitsimpl/src/query_callback_proxy.cpp",
-    "../../frameworks/kitsimpl/src/query_callback_stub.cpp",
-    "../../frameworks/kitsimpl/src/executor_callback_stub.cpp",
-    "../../frameworks/kitsimpl/src/executor_callback_proxy.cpp",
-    "../../interfaces/innerkits/src/auth_attributes.cpp",
-    "../../interfaces/innerkits/src/auth_message.cpp",
-    "../../frameworks/kitsimpl/src/executor_messenger_proxy.cpp",
-    "../../frameworks/kitsimpl/src/executor_messenger_stub.cpp",
     "../../frameworks/kitsimpl/src/auth_executor_registry.cpp",
-    "../../interfaces/innerkits/src/auth_executor.cpp",
     "../../frameworks/kitsimpl/src/auth_info.cpp",
-    "../../frameworks/kitsimpl/src/set_prop_callback_proxy.cpp",
-    "../../frameworks/kitsimpl/src/set_prop_callback_stub.cpp",
+    "../../frameworks/kitsimpl/src/coauth.cpp",
     "../../frameworks/kitsimpl/src/coauth_callback_proxy.cpp",
     "../../frameworks/kitsimpl/src/coauth_callback_stub.cpp",
+    "../../frameworks/kitsimpl/src/coauth_proxy.cpp",
+    "../../frameworks/kitsimpl/src/executor_callback_proxy.cpp",
+    "../../frameworks/kitsimpl/src/executor_callback_stub.cpp",
+    "../../frameworks/kitsimpl/src/executor_messenger_proxy.cpp",
+    "../../frameworks/kitsimpl/src/executor_messenger_stub.cpp",
+    "../../frameworks/kitsimpl/src/query_callback_proxy.cpp",
+    "../../frameworks/kitsimpl/src/query_callback_stub.cpp",
+    "../../frameworks/kitsimpl/src/set_prop_callback_proxy.cpp",
+    "../../frameworks/kitsimpl/src/set_prop_callback_stub.cpp",
+    "../../interfaces/innerkits/src/auth_attributes.cpp",
+    "../../interfaces/innerkits/src/auth_executor.cpp",
+    "../../interfaces/innerkits/src/auth_message.cpp",
   ]
 
   configs = [
     "${coauth_utils_path}:utils_config",
-    ":coauth_private_config"
+    ":coauth_private_config",
   ]
 
-  public_configs = [ ":coauth_public_config",
-  "${coauth_utils_path}:utils_config" ]
+  public_configs = [
+    ":coauth_public_config",
+    "${coauth_utils_path}:utils_config",
+  ]
 
   deps = [
-    "//utils/native/base:utils",
     "//foundation/distributeddatamgr/distributeddatamgr/interfaces/innerkits/distributeddata:distributeddata_inner",
     "//foundation/distributeddatamgr/distributeddatamgr/services/distributeddataservice/adapter:distributeddata_adapter",
-   ]
+    "//utils/native/base:utils",
+  ]
 
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",

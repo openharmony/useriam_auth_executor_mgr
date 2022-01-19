@@ -15,27 +15,25 @@ import("//base/user_iam/auth_executor_mgr/auth_executor_mgr.gni")
 
 config("coauth_private_config") {
   include_dirs = [
-    "//utils/system/safwk/native/include",
+    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "//base/user_iam/auth_executor_mgr/frameworks/innerkitsimpl/distributeddatafwk/include",
     "${coauth_frameworks_path}/kitsimpl/include",
     "//base/user_iam/auth_executor_mgr/common/interface",
-    ]
+  ]
 }
 
 config("coauth_public_config") {
-  include_dirs = [
-    "include",
-  ]
+  include_dirs = [ "include" ]
 }
 
 ohos_shared_library("coauthservice") {
   sources = [
+    "src/auth_res_manager.cpp",
+    "src/auth_res_pool.cpp",
+    "src/coauth_manager.cpp",
     "src/coauth_service.cpp",
     "src/coauth_stub.cpp",
-    "src/auth_res_pool.cpp",
     "src/coauth_thread_pool.cpp",
-    "src/auth_res_manager.cpp",
-    "src/coauth_manager.cpp",
     "src/executor_messenger.cpp",
   ]
 
@@ -48,10 +46,10 @@ ohos_shared_library("coauthservice") {
 
   deps = [
     "${coauth_innerkits_path}:coauth_framework",
-    "//drivers/peripheral/display/hal:hdi_display_device",
-    "//utils/native/base:utils",
     "//base/startup/syspara_lite/interfaces/innerkits/native/syspara:syspara",
     "//base/user_iam/auth_executor_mgr/common:useriam_common_lib",
+    "//drivers/peripheral/display/hal:hdi_display_device",
+    "//utils/native/base:utils",
   ]
 
   external_deps = [

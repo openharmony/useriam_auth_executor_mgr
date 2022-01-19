@@ -15,7 +15,7 @@ import("//base/user_iam/auth_executor_mgr/auth_executor_mgr.gni")
 import("//build/ohos/sa_profile/sa_profile.gni")
 
 ohos_sa_profile("coauth_sa_profile") {
-  sources = [ "923.xml" ]
+  sources = [ "931.xml" ]
   part_name = "${coauth_native_part_name}"
 }
 ohos_prebuilt_etc("useriam.init") {

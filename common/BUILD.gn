@@ -26,33 +26,26 @@ ohos_shared_library("useriam_common_lib") {
     "adaptor/src/adaptor_memory.c",
     "adaptor/src/adaptor_time.c",
     "adaptor/src/file_operator.c",
-
+    "coauth/src/coauth.c",
     "coauth/src/coauth_funcs.c",
     "coauth/src/coauth_sign_centre.c",
-    "coauth/src/coauth.c",
     "coauth/src/executor_message.c",
-
     "common/src/bitwise_operation.c",
     "common/src/buffer.c",
     "common/src/linked_list.c",
     "common/src/tlv_base.c",
     "common/src/tlv_wrapper.c",
-
     "database/src/idm_common.c",
     "database/src/idm_database.c",
     "database/src/idm_file_manager.c",
-
     "hal_sdk/coauth_interface.cpp",
     "hal_sdk/userauth_interface.cpp",
     "hal_sdk/useriam_common.cpp",
     "hal_sdk/useridm_interface.cpp",
-    "lock/src/lock.c",
-
     "idm/src/idm_session.c",
     "idm/src/user_idm_funcs.c",
-
+    "lock/src/lock.c",
     "pool/src/pool.c",
-
     "user_auth/src/auth_level.c",
     "user_auth/src/context_manager.c",
     "user_auth/src/user_auth_funcs.c",
@@ -73,11 +66,9 @@ ohos_shared_library("useriam_common_lib") {
   ]
 
   deps = [
-    "//utils/native/base:utils",
     "//third_party/openssl:libcrypto_static",
+    "//utils/native/base:utils",
   ]
 
-  external_deps = [
-    "hiviewdfx_hilog_native:libhilog",
-  ]
+  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
 }
