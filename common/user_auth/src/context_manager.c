@@ -66,10 +66,9 @@ UserAuthContext *GenerateContext(AuthSolutionHal params)
         LOG_ERROR("contextId is duplicate");
         return NULL;
     }
-    uint32_t authTypeATL;
-    params.authType = 1;
-    ResultCode ret = SingleAuthTrustLevel(params.userId, params.authType, &authTypeATL);
-    if (ret != RESULT_SUCCESS || authTypeATL < params.authTrustLevel) {
+    uint32_t authTypeAtl;
+    ResultCode ret = SingleAuthTrustLevel(params.userId, params.authType, &authTypeAtl);
+    if (ret != RESULT_SUCCESS || authTypeAtl < params.authTrustLevel) {
         LOG_ERROR("authTrustLevel is satisfied");
     }
 
@@ -196,6 +195,7 @@ static bool IsContextDuplicate(uint64_t contextId)
         if (context->contextId == contextId) {
             return true;
         }
+        tempNode = tempNode->next;
     }
     return false;
 }
