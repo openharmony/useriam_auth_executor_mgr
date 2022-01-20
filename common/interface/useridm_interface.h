@@ -26,7 +26,7 @@ namespace Hal {
 typedef struct {
     uint64_t credentialId;
     uint32_t authType;
-    uint32_t authSubType;
+    uint64_t authSubType;
     uint64_t templateId;
     uint32_t capabilityLevel;
 } CredentialInfo;
