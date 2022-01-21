@@ -71,17 +71,21 @@ int32_t ScheduleFinish(const Buffer *executorMsg, ScheduleTokenHal *scheduleToke
         return RESULT_BAD_PARAM;
     }
     scheduleToken->scheduleResult = RESULT_GENERAL_ERROR;
-    // ExecutorResultInfo *resultInfo = Malloc(sizeof(ExecutorResultInfo));
     ExecutorResultInfo *resultInfo = GetExecutorResultInfo(executorMsg);
     if (resultInfo == NULL) {
         LOG_ERROR("tlv parse failed");
         return RESULT_BAD_PARAM;
     }
+    scheduleToken->scheduleId = resultInfo->scheduleId;
     CoAuthSchedule coAuthSchedule;
     coAuthSchedule.scheduleId = resultInfo->scheduleId;
     int32_t ret = GetCoAuthSchedule(&coAuthSchedule);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("get coAuth schedule failed");
+        goto EXIT;
+    }
+    if (resultInfo->result != RESULT_SUCCESS) {
+        LOG_ERROR("executor result failed");
         goto EXIT;
     }
 
@@ -103,11 +107,6 @@ int32_t ScheduleFinish(const Buffer *executorMsg, ScheduleTokenHal *scheduleToke
         LOG_ERROR("verify sign failed");
         DestoryBuffer(publicKey);
         goto EXIT;
-    }
-
-    ret = RemoveCoAuthSchedule(coAuthSchedule.scheduleId);
-    if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("remove failed");
     }
     ret = TokenDataGetAndSign(coAuthSchedule.executors[0].authType, resultInfo, scheduleToken);
     DestoryBuffer(publicKey);
