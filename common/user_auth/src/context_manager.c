@@ -209,6 +209,9 @@ ResultCode GetScheduleIds(UserAuthContext *context, uint64_t **scheduleIds, uint
     LinkedList *schedules = context->scheduleList;
     *scheduleNum = schedules->getSize(schedules);
     *scheduleIds = Malloc(*scheduleNum * sizeof(uint64_t));
+    if (*scheduleNum == 0) {
+        return RESULT_SUCCESS;
+    }
     if (*scheduleIds == NULL) {
         LOG_ERROR("scheduleIds malloc failed");
         return RESULT_NO_MEMORY;
