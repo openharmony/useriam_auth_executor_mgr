@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
-#include "userauth_interface.h"
+#include "useridm_interface.h"
 
+#include "userauth_interface.h"
 #include "securec.h"
 
 extern "C" {
@@ -31,17 +32,6 @@ namespace OHOS {
 namespace UserIAM {
 namespace UserIDM {
 namespace Hal {
-struct CredentialInfo {
-    uint64_t credentialId;
-    uint32_t authType;
-    uint64_t authSubType;
-    uint64_t templateId;
-};
-
-struct EnrolledInfo {
-    uint32_t authType;
-    uint64_t enrolledId;
-};
 
 int32_t OpenSession(int32_t userId, uint64_t &challenge)
 {
