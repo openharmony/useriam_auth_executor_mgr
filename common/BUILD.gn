@@ -30,7 +30,6 @@ ohos_shared_library("useriam_common_lib") {
     "coauth/src/coauth_funcs.c",
     "coauth/src/coauth_sign_centre.c",
     "coauth/src/executor_message.c",
-    "common/src/bitwise_operation.c",
     "common/src/buffer.c",
     "common/src/linked_list.c",
     "common/src/tlv_base.c",
