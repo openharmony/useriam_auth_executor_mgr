@@ -181,11 +181,6 @@ int32_t ExecutorCallbackStub::OnGetProperty(std::shared_ptr<AuthAttributes> cond
     if (callback_ == nullptr) {
         return FAIL;
     } else {
-        if (values == nullptr) {
-            COAUTH_HILOGE(MODULE_INNERKIT, "ExecutorCallbackStub::OnGetProperty values is null.");
-        } else {
-            COAUTH_HILOGE(MODULE_INNERKIT, "ExecutorCallbackStub::OnGetProperty values is not null.");
-        }
         ret = callback_->OnGetProperty(conditions, values);
     }
     return ret;
