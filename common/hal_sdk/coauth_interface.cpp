@@ -49,10 +49,10 @@ static ExecutorInfoHal CopyExecutorInfoIn(const ExecutorInfo &executorInfo)
     return executorInfoHal;
 }
 
-static ScheduleInfo CopyScheduleInfoOut(const ScheduleInfoHal &scheduleInfoHal)
+static void CopyScheduleInfoOut(ScheduleInfo &scheduleInfo, const ScheduleInfoHal &scheduleInfoHal)
 {
     LOG_INFO("begin");
-    ScheduleInfo scheduleInfo;
+    scheduleInfo.executors.clear();
     scheduleInfo.authSubType = scheduleInfoHal.authSubType;
     scheduleInfo.templateId = scheduleInfoHal.templateId;
     scheduleInfo.scheduleMode = scheduleInfoHal.scheduleMode;
@@ -60,18 +60,12 @@ static ScheduleInfo CopyScheduleInfoOut(const ScheduleInfoHal &scheduleInfoHal)
         ExecutorInfo executorInfo = CopyExecutorInfoOut(scheduleInfoHal.executorInfos[i]);
         scheduleInfo.executors.push_back(executorInfo);
     }
-    return scheduleInfo;
 }
 
 int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 {
     LOG_INFO("begin");
     GlobalLock();
-    if (!scheduleInfo.executors.empty()) {
-        LOG_ERROR("param is invalid");
-        GlobalUnLock();
-        return RESULT_BAD_PARAM;
-    }
     ScheduleInfoHal scheduleInfoHal;
     int32_t ret = GetScheduleInfo(scheduleId, &scheduleInfoHal);
     if (ret != RESULT_SUCCESS) {
@@ -79,7 +73,7 @@ int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
         GlobalUnLock();
         return ret;
     }
-    scheduleInfo = CopyScheduleInfoOut(scheduleInfoHal);
+    CopyScheduleInfoOut(scheduleInfo, scheduleInfoHal);
     GlobalUnLock();
     return RESULT_SUCCESS;
 }
@@ -88,19 +82,15 @@ int32_t DeleteScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 {
     LOG_INFO("begin");
     GlobalLock();
-    if (!scheduleInfo.executors.empty()) {
-        LOG_ERROR("param is invalid");
-        GlobalUnLock();
-        return RESULT_BAD_PARAM;
-    }
     ScheduleInfoHal scheduleInfoHal;
     int32_t ret = GetScheduleInfo(scheduleId, &scheduleInfoHal);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("get schedule info failed");
+        (void)RemoveCoAuthSchedule(scheduleId);
         GlobalUnLock();
         return ret;
     }
-    scheduleInfo = CopyScheduleInfoOut(scheduleInfoHal);
+    CopyScheduleInfoOut(scheduleInfo, scheduleInfoHal);
     (void)RemoveCoAuthSchedule(scheduleId);
     GlobalUnLock();
     return RESULT_SUCCESS;
@@ -108,10 +98,6 @@ int32_t DeleteScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 
 static Buffer *CreateBufferByVector(std::vector<uint8_t> &executorFinishMsg)
 {
-    if (executorFinishMsg.empty()) {
-        LOG_ERROR("vector is empty");
-        return nullptr;
-    }
     LOG_INFO("executorFinishMsg size is %{public}u", executorFinishMsg.size());
     Buffer *data = CreateBufferByData(&executorFinishMsg[0], executorFinishMsg.size());
     return data;
@@ -120,6 +106,11 @@ static Buffer *CreateBufferByVector(std::vector<uint8_t> &executorFinishMsg)
 int32_t GetScheduleToken(std::vector<uint8_t> executorFinishMsg, ScheduleToken &scheduleToken)
 {
     LOG_INFO("begin");
+    if (executorFinishMsg.empty()) {
+        LOG_ERROR("executorFinishMsg is empty");
+        ScheduleInfo scheduleInfo;
+        return DeleteScheduleInfo(scheduleToken.scheduleId, scheduleInfo);
+    }
     GlobalLock();
     Buffer *executorMsg = CreateBufferByVector(executorFinishMsg);
     if (executorMsg == nullptr) {
@@ -128,6 +119,7 @@ int32_t GetScheduleToken(std::vector<uint8_t> executorFinishMsg, ScheduleToken &
         return RESULT_NO_MEMORY;
     }
     ScheduleTokenHal scheduleTokenHal;
+    scheduleTokenHal.scheduleId = scheduleToken.scheduleId;
     int32_t ret = ScheduleFinish(executorMsg, &scheduleTokenHal);
     if (ret != RESULT_SUCCESS) {
         GlobalUnLock();

@@ -50,11 +50,14 @@ int32_t ExecutorMessenger::Finish(uint64_t scheduleId, int32_t srcType, int32_t 
 {
     COAUTH_HILOGD(MODULE_SERVICE, "ExecutorMessenger::Finish");
     if (finalResult == nullptr) {
+        CoAuth::ScheduleInfo scheduleInfo;
+        DeleteScheduleInfo(scheduleId, scheduleInfo);
         COAUTH_HILOGE(MODULE_SERVICE, "finalResult is nullptr");
         return FAIL;
     }
-
     if (ScheResPool_ == nullptr) {
+        CoAuth::ScheduleInfo scheduleInfo;
+        DeleteScheduleInfo(scheduleId, scheduleInfo);
         COAUTH_HILOGE(MODULE_SERVICE, "ScheResPool_ is nullptr");
         return FAIL;
     } else {
@@ -70,15 +73,19 @@ int32_t ExecutorMessenger::Finish(uint64_t scheduleId, int32_t srcType, int32_t 
             UserIAM::CoAuth::ScheduleToken signScheduleToken;
             std::vector<uint8_t> executorFinishMsg;
             std::vector<uint8_t> scheduleToken;
+            signScheduleToken.scheduleId = scheduleId;
             finalResult->GetUint8ArrayValue(AUTH_RESULT, executorFinishMsg);
             int32_t signRet = UserIAM::CoAuth::GetScheduleToken(executorFinishMsg, signScheduleToken);
             if (signRet != SUCCESS) {
+                callback->OnFinish(signRet, scheduleToken);
+                ScheResPool_->DeleteScheduleCallback(scheduleId);
                 return signRet;
             }
-
             scheduleToken.resize(sizeof(UserIAM::CoAuth::ScheduleToken));
             if (memcpy_s(&scheduleToken[0], scheduleToken.size(), &signScheduleToken,
                 sizeof(UserIAM::CoAuth::ScheduleToken)) != EOK) {
+                callback->OnFinish(FAIL, scheduleToken);
+                ScheResPool_->DeleteScheduleCallback(scheduleId);
                 COAUTH_HILOGE(MODULE_SERVICE, "copy scheduleToken failed");
                 return FAIL;
             }
