@@ -31,6 +31,7 @@ int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfoHal *scheduleInfo)
 {
     if (scheduleInfo == NULL) {
         LOG_ERROR("scheduleInfo is null");
+        return RESULT_BAD_PARAM;
     }
     CoAuthSchedule coAuthSchedule;
     coAuthSchedule.scheduleId = scheduleId;
@@ -70,22 +71,21 @@ int32_t ScheduleFinish(const Buffer *executorMsg, ScheduleTokenHal *scheduleToke
         LOG_ERROR("param is invalid");
         return RESULT_BAD_PARAM;
     }
+
     scheduleToken->scheduleResult = RESULT_GENERAL_ERROR;
+    int32_t ret = RESULT_GENERAL_ERROR;
     ExecutorResultInfo *resultInfo = GetExecutorResultInfo(executorMsg);
-    if (resultInfo == NULL) {
-        LOG_ERROR("tlv parse failed");
-        return RESULT_BAD_PARAM;
-    }
-    scheduleToken->scheduleId = resultInfo->scheduleId;
-    CoAuthSchedule coAuthSchedule;
-    coAuthSchedule.scheduleId = resultInfo->scheduleId;
-    int32_t ret = GetCoAuthSchedule(&coAuthSchedule);
-    if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("get coAuth schedule failed");
+    if (resultInfo == NULL || scheduleToken->scheduleId != resultInfo->scheduleId ||
+        resultInfo->result != RESULT_SUCCESS) {
+        LOG_ERROR("executor msg is invalid");
         goto EXIT;
     }
-    if (resultInfo->result != RESULT_SUCCESS) {
-        LOG_ERROR("executor result failed");
+
+    CoAuthSchedule coAuthSchedule;
+    coAuthSchedule.scheduleId = resultInfo->scheduleId;
+    ret = GetCoAuthSchedule(&coAuthSchedule);
+    if (ret != RESULT_SUCCESS) {
+        LOG_ERROR("get coAuth schedule failed");
         goto EXIT;
     }
 
@@ -113,7 +113,7 @@ int32_t ScheduleFinish(const Buffer *executorMsg, ScheduleTokenHal *scheduleToke
 
 EXIT:
     DestoryExecutorResultInfo(resultInfo);
-    (void)RemoveCoAuthSchedule(coAuthSchedule.scheduleId);
+    (void)RemoveCoAuthSchedule(scheduleToken->scheduleId);
     return ret;
 }
 
