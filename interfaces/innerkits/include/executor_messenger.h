@@ -32,6 +32,7 @@ public:
     virtual int32_t Finish(uint64_t scheduleId, int32_t srcType, int32_t resultCode,
                            std::shared_ptr<AuthAttributes> finalResult) override;
 private:
+    void DeleteScheduleInfoById(uint64_t scheduleId);
     UserIAM::CoAuth::AuthResPool* ScheResPool_;
 };
 } // namespace AuthResPool
