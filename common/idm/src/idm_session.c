@@ -31,6 +31,7 @@ struct SessionInfo {
     bool isScheduleValid;
     int32_t userId;
     uint64_t time;
+    uint64_t validAuthTokenTime;
     uint64_t challenge;
 } *g_session;
 
@@ -82,10 +83,29 @@ ResultCode OpenEditSession(int32_t userId, uint64_t *challenge)
         return RESULT_GENERAL_ERROR;
     }
     g_session->time = GetSystemTime();
+    g_session->validAuthTokenTime = g_session->time;
 
     *challenge = g_session->challenge;
     g_session->isScheduleValid = false;
     return RESULT_SUCCESS;
+}
+
+void RefreshValidTokenTime(void)
+{
+    if (!IsSessionExist()) {
+        LOG_ERROR("session is invalid");
+        return;
+    }
+    g_session->validAuthTokenTime = GetSystemTime();
+}
+
+bool IsValidTokenTime(uint64_t tokenTime)
+{
+    if (!IsSessionExist()) {
+        LOG_ERROR("session is invalid");
+        return false;
+    }
+    return tokenTime >= g_session->validAuthTokenTime;
 }
 
 ResultCode CloseEditSession()

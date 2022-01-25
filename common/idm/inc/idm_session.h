@@ -31,4 +31,7 @@ ResultCode GetUserId(int32_t *userId);
 ResultCode GetChallenge(uint64_t *challenge);
 ResultCode GetScheduleId(uint64_t *scheduleId);
 
+void RefreshValidTokenTime(void);
+bool IsValidTokenTime(uint64_t tokenTime);
+
 #endif // USER_IDM_SESSION_H

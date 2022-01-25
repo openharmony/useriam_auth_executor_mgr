@@ -23,8 +23,8 @@
 typedef struct {
     uint8_t token[AUTH_TOKEN_LEN];
     int32_t userId;
-    uint32_t authSubType;
     uint32_t authType;
+    uint64_t authSubType;
 } PermissionCheckParam;
 
 typedef struct {
