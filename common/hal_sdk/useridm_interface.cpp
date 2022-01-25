@@ -207,6 +207,7 @@ int32_t DeleteUserEnforce(int32_t userId, std::vector<CredentialInfo> &credentia
         GlobalUnLock();
         return ret;
     }
+    RefreshValidTokenTime();
     for (int i = 0; i < num; i++) {
         CredentialInfo credentialInfo;
         if (memcpy_s(&credentialInfo, sizeof(CredentialInfo),
@@ -247,7 +248,8 @@ int32_t DeleteUser(int32_t userId, std::vector<uint8_t> authToken, std::vector<C
         GlobalUnLock();
         return ret;
     }
-    if (challenge != authTokenStruct.challenge || UserAuthTokenVerify(&authTokenStruct) != RESULT_SUCCESS) {
+    if (challenge != authTokenStruct.challenge || !IsValidTokenTime(authTokenStruct.time) ||
+        UserAuthTokenVerify(&authTokenStruct) != RESULT_SUCCESS) {
         LOG_ERROR("verify token failed");
         GlobalUnLock();
         return RESULT_BAD_SIGN;
@@ -279,6 +281,7 @@ int32_t UpdateCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialI
         GlobalUnLock();
         return ret;
     }
+    RefreshValidTokenTime();
     if (memcpy_s(&deletedCredential, sizeof(CredentialInfo), &credentialInfoHal, sizeof(CredentialInfoHal)) != EOK) {
         LOG_ERROR("copy failed");
         GlobalUnLock();

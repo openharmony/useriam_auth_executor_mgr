@@ -31,11 +31,16 @@ static int32_t PinPermissionCheck(int32_t userId, UserAuthTokenHal *authToken)
     if (ret == RESULT_NOT_FOUND) {
         return RESULT_SUCCESS;
     } else if (ret == RESULT_SUCCESS) {
+        LOG_INFO("pin already exists, legal token is required");
         uint64_t challenge;
         ret = GetChallenge(&challenge);
         if (ret != RESULT_SUCCESS || challenge != authToken->challenge) {
-            LOG_ERROR("check challenge failed");
-            return RESULT_BAD_SIGN;
+            LOG_ERROR("check challenge failed, token is invalid");
+            return RESULT_BAD_MATCH;
+        }
+        if (!IsValidTokenTime(authToken->time)) {
+            LOG_ERROR("check token time failed, token is invalid");
+            return RESULT_VERIFY_TOKEN_FAIL;
         }
         return UserAuthTokenVerify(authToken);
     } else {
@@ -55,8 +60,12 @@ static int32_t FacePermissionCheck(int32_t userId, UserAuthTokenHal *authToken)
     uint64_t challenge;
     ret = GetChallenge(&challenge);
     if (ret != RESULT_SUCCESS || challenge != authToken->challenge) {
-        LOG_ERROR("check challenge failed");
-        return RESULT_BAD_SIGN;
+        LOG_ERROR("check challenge failed, token is invalid");
+        return RESULT_BAD_MATCH;
+    }
+    if (!IsValidTokenTime(authToken->time)) {
+        LOG_ERROR("check token time failed, token is invalid");
+        return RESULT_VERIFY_TOKEN_FAIL;
     }
     return UserAuthTokenVerify(authToken);
 }
