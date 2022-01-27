@@ -47,7 +47,7 @@ int32_t AuthResPool::Insert(uint64_t scheduleId, uint64_t executorNum, sptr<ICoA
     scheResPool_.insert(std::make_pair(scheduleId, scheduleRegister));
     if (scheResPool_.begin() != scheResPool_.end()) {
         resultCode = SUCCESS;
-        COAUTH_HILOGE(MODULE_SERVICE, "scheResPool_ is not null");
+        COAUTH_HILOGI(MODULE_SERVICE, "scheResPool_ is not null");
     } else {
         resultCode = FAIL;
         COAUTH_HILOGE(MODULE_SERVICE, "scheResPool_ is null");
