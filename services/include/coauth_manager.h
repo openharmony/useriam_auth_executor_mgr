@@ -36,7 +36,7 @@ public:
     void CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<ICoAuthCallback> callback);
 private:
     void SetAuthAttributes(std::shared_ptr<ResAuthAttributes> commandAttrs,
-                              ScheduleInfo &scheduleInfo, AuthInfo &authInfo);
+                           ScheduleInfo &scheduleInfo, AuthInfo &authInfo);
     class ResICoAuthCallbackDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
         ResICoAuthCallbackDeathRecipient(uint64_t scheduleId, CoAuthManager* parent);

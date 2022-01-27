@@ -65,7 +65,9 @@ enum AuthAttributeType {
     /* calleruid */
     AUTH_CALLER_UID = 100027,
     /* result */
-    AUTH_RESULT = 100028
+    AUTH_RESULT = 100028,
+    /* algorithm setinfo */
+    ALGORITHM_INFO
 };
 
 enum AuthType {

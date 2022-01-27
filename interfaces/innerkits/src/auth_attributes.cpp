@@ -40,6 +40,7 @@ AuthAttributes::AuthAttributes()
     InsertMap(AUTH_CONTROLLER, BOOLTYPE);
     InsertMap(AUTH_CALLER_UID, UINT64TYPE);
     InsertMap(AUTH_RESULT, UINT8ARRAYTYPE);
+    InsertMap(ALGORITHM_INFO, UINT8ARRAYTYPE);
 }
 
 void AuthAttributes::clear()
@@ -319,7 +320,7 @@ int32_t AuthAttributes::Pack(std::vector<uint8_t> &buffer)
         tag = authAttributesPosition_.find(existAttributes_[i])->first;
         writePointer = static_cast<uint8_t*>(static_cast<void *>(&tag));
         buffer.insert(buffer.end(), writePointer, writePointer + sizeof(AuthAttributeType));
-        COAUTH_HILOGE(MODULE_INNERKIT, "data Write tag : %{public}d.", tag);
+        COAUTH_HILOGD(MODULE_INNERKIT, "data Write tag : %{public}d.", tag);
         PackToBuffer(authAttributesPosition_.find(existAttributes_[i]), dataLength, writePointer, buffer);
     }
 
@@ -385,7 +386,6 @@ void  AuthAttributes::PackToBuffer(std::map<AuthAttributeType, ValueType>::itera
             WriteDataLength(buffer, writePointer, sizeof(uint32_t));
             writePointer = static_cast<uint8_t*>(static_cast<void *>(&uint32Value));
             buffer.insert(buffer.end(), writePointer, writePointer + sizeof(uint32_t));
-            COAUTH_HILOGE(MODULE_INNERKIT, "uint32Value : %{public}d.", uint32Value);
             break;
         case UINT64TYPE:
             GetUint64Value(iter->first, uint64Value);

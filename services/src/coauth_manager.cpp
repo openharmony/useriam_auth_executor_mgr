@@ -28,7 +28,7 @@ void CoAuthManager::coAuth(uint64_t scheduleId, AuthInfo &authInfo, sptr<ICoAuth
 void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<ICoAuthCallback> callback)
 {
     if (callback == nullptr) {
-        COAUTH_HILOGI(MODULE_SERVICE, "Schedule callback is null.");
+        COAUTH_HILOGE(MODULE_SERVICE, "Schedule callback is null.");
         return;
     }
     int32_t executeRet = SUCCESS;
@@ -60,7 +60,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
         std::vector<uint8_t> publicKey(scheduleInfo.executors[i].publicKey,
                                        scheduleInfo.executors[i].publicKey + PUBLIC_KEY_LEN);
         int32_t findRet = coAuthResMgrPtr_->FindExecutorCallback(authType, executorCallback);
-        if ((findRet != 0) || (executorCallback == nullptr)) {
+        if ((findRet != SUCCESS) || (executorCallback == nullptr)) {
             COAUTH_HILOGE(MODULE_SERVICE, "executor callback not found.");
             continue;
         }
@@ -193,6 +193,7 @@ void CoAuthManager::RegistResourceManager(AuthResManager* resMgr)
 {
     coAuthResMgrPtr_ = resMgr;
 }
+
 CoAuthManager::ResICoAuthCallbackDeathRecipient::ResICoAuthCallbackDeathRecipient(
     uint64_t scheduleId, CoAuthManager* parent) : scheduleId(scheduleId), parent_(parent)
 {
