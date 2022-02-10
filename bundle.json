@@ -16,7 +16,7 @@
       "name": "auth_executor_mgr",
       "subsystem": "useriam",
       "adapted_system_type": [ "standard" ],
-      "syscap": ["SystemCapability.UserIAM.AuthExecutorMgr"],
+      "syscap": ["SystemCapability.UserIAM.AuthExecutorManager"],
       "features": [],
       "rom": "500KB",
       "ram": "2500KB",
