@@ -346,6 +346,41 @@ static Buffer *ReadFileInfo()
     return parcel;
 }
 
+static bool StreamReadFileInfo(Buffer *parcel, LinkedList *userInfoList)
+{
+    uint32_t index = 0;
+    uint32_t userNum;
+    uint32_t version;
+    ResultCode result = StreamRead(parcel, &index, &version, sizeof(uint32_t));
+    if (result != RESULT_SUCCESS) {
+        LOG_ERROR("read version failed");
+        return false;
+    }
+    result = StreamRead(parcel, &index, &userNum, sizeof(uint32_t));
+    if (result != RESULT_SUCCESS) {
+        LOG_ERROR("read userNum failed");
+        return false;
+    }
+    for (uint32_t i = 0; i < userNum; i++) {
+        UserInfo *userInfo = InitUserInfoNode();
+        if (userInfo == NULL) {
+            LOG_ERROR("userInfoNode init failed");
+            return false;
+        }
+        result = StreamReadUserInfo(parcel, &index, userInfo);
+        if (result != RESULT_SUCCESS) {
+            DestroyUserInfoNode(userInfo);
+            return false;
+        }
+        result = userInfoList->insert(userInfoList, userInfo);
+        if (result != RESULT_SUCCESS) {
+            DestroyUserInfoNode(userInfo);
+            return false;
+        }
+    }
+    return true;
+}
+
 LinkedList *LoadFileInfo(void)
 {
     LOG_INFO("begin");
@@ -370,41 +405,12 @@ LinkedList *LoadFileInfo(void)
         DestoryBuffer(parcel);
         return NULL;
     }
-    uint32_t index = 0;
-    uint32_t userNum;
-    uint32_t version;
-    ResultCode result = StreamRead(parcel, &index, &version, sizeof(uint32_t));
-    if (result != RESULT_SUCCESS) {
-        LOG_ERROR("read version failed");
-        goto FAIL;
-    }
-    result = StreamRead(parcel, &index, &userNum, sizeof(uint32_t));
-    if (result != RESULT_SUCCESS) {
-        LOG_ERROR("read userNum failed");
-        goto FAIL;
-    }
-    for (uint32_t i = 0; i < userNum; i++) {
-        UserInfo *userInfo = InitUserInfoNode();
-        if (userInfo == NULL) {
-            LOG_ERROR("userInfoNode init failed");
-            goto FAIL;
-        }
-        result = StreamReadUserInfo(parcel, &index, userInfo);
-        if (result != RESULT_SUCCESS) {
-            DestroyUserInfoNode(userInfo);
-            goto FAIL;
-        }
-        result = userInfoList->insert(userInfoList, userInfo);
-        if (result != RESULT_SUCCESS) {
-            DestroyUserInfoNode(userInfo);
-            goto FAIL;
-        }
+    if (!StreamReadFileInfo(parcel, userInfoList)) {
+        LOG_ERROR("StreamReadFileInfo failed");
+        DestoryBuffer(parcel);
+        DestroyLinkedList(userInfoList);
+        return NULL;
     }
     DestoryBuffer(parcel);
     return userInfoList;
-
-FAIL:
-    DestoryBuffer(parcel);
-    DestroyLinkedList(userInfoList);
-    return NULL;
 }
