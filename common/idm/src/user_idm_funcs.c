@@ -116,6 +116,14 @@ EXIT:
     return ret;
 }
 
+static void GetInfoFromToken(CredentialInfoHal *credentialInfo, ScheduleTokenHal token)
+{
+    credentialInfo->authType = token.authType;
+    credentialInfo->authSubType = token.authSubType;
+    credentialInfo->templateId = token.templateId;
+    credentialInfo->capabilityLevel = token.capabilityLevel;
+}
+
 int32_t AddCredentialFunc(const uint8_t *enrollToken, uint32_t tokenLen, uint64_t *credentialId)
 {
     if (enrollToken == NULL || credentialId == NULL || tokenLen != sizeof(ScheduleTokenHal)) {
@@ -146,10 +154,7 @@ int32_t AddCredentialFunc(const uint8_t *enrollToken, uint32_t tokenLen, uint64_
         return ret;
     }
     CredentialInfoHal credentialInfo;
-    credentialInfo.authType = token.authType;
-    credentialInfo.authSubType = token.authSubType;
-    credentialInfo.templateId = token.templateId;
-    credentialInfo.capabilityLevel = token.capabilityLevel;
+    GetInfoFromToken(&credentialInfo, token);
     ret = AddCredentialInfo(userId, &credentialInfo);
     if (ret == RESULT_SUCCESS) {
         *credentialId = credentialInfo.credentialId;

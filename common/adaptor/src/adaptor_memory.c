@@ -15,10 +15,11 @@
 #include "adaptor_memory.h"
 
 #include <stdlib.h>
+#define MAX_SIZE 1073741824
 
 void *Malloc(const size_t size)
 {
-    if (size == 0) {
+    if (size == 0 || size > MAX_SIZE) {
         return NULL;
     }
     return malloc(size);
