@@ -303,10 +303,7 @@ int32_t UpdateCredentialFunc(const uint8_t *enrollToken, uint32_t tokenLen, uint
     }
 
     CredentialInfoHal credentialInfo;
-    credentialInfo.authType = token.authType;
-    credentialInfo.authSubType = token.authSubType;
-    credentialInfo.templateId = token.templateId;
-    credentialInfo.capabilityLevel = token.capabilityLevel;
+    GetInfoFromToken(&credentialInfo, token);
     ret = AddCredentialInfo(userId, &credentialInfo);
     if (ret == RESULT_SUCCESS) {
         *credentialId = credentialInfo.credentialId;
