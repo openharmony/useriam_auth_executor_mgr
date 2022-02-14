@@ -130,6 +130,7 @@ ResultCode GetEnrolledInfoAuthType(int32_t userId, uint32_t authType, EnrolledIn
             *enrolledInfo = *nodeInfo;
             return RESULT_SUCCESS;
         }
+        temp = temp->next;
     }
 
     return RESULT_NOT_FOUND;
