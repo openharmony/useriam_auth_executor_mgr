@@ -21,6 +21,7 @@
 #include "pool.h"
 
 typedef enum Asl {
+    ASL0 = 0,
     ASL1 = 1,
     ASL2 = 2,
     ASL3 = 3,
@@ -28,12 +29,14 @@ typedef enum Asl {
 } Asl;
 
 typedef enum Acl {
+    ACL0 = 0,
     ACL1 = 1,
     ACL2 = 2,
     ACL3 = 3,
 } Acl;
 
 typedef enum Atl {
+    ATL0 = 0,
     ATL1 = 10000,
     ATL2 = 20000,
     ATL3 = 30000,
@@ -41,16 +44,15 @@ typedef enum Atl {
 } Atl;
 
 typedef struct {
-    Asl asl;
-    Acl acl;
     Atl atl;
+    Acl acl;
+    Asl asl;
 } AtlGeneration;
 
 // Used to map the authentication capability level and authentication security level to the authentication trust level.
 static AtlGeneration g_generationAtl[] = {
-    {ASL1, ACL1, ATL1}, {ASL1, ACL2, ATL1}, {ASL1, ACL3, ATL2},
-    {ASL2, ACL1, ATL1}, {ASL2, ACL2, ATL2}, {ASL2, ACL3, ATL3},
-    {ASL3, ACL1, ATL2}, {ASL3, ACL2, ATL3}, {ASL3, ACL3, ATL4},
+    {ATL4, ACL3, ASL2}, {ATL3, ACL2, ASL2}, {ATL2, ACL2, ASL1},
+    {ATL2, ACL1, ASL2}, {ATL1, ACL1, ASL0}, {ATL0, ACL0, ASL0},
 };
 
 static ResultCode GetAsl(uint32_t authType, uint32_t *asl)
@@ -119,7 +121,7 @@ ResultCode SingleAuthTrustLevel(uint32_t userId, uint32_t authType, uint32_t *at
     }
 
     for (uint32_t i = 0; i < sizeof(g_generationAtl) / sizeof(AtlGeneration); i++) {
-        if (authSecureLevel == g_generationAtl[i].asl && authCapabilityLevel == g_generationAtl[i].acl) {
+        if (authSecureLevel >= g_generationAtl[i].asl && authCapabilityLevel >= g_generationAtl[i].acl) {
             *atl = g_generationAtl[i].atl;
             return RESULT_SUCCESS;
         }
