@@ -32,7 +32,7 @@ class CoAuth : public DelayedRefSingleton<CoAuth> {
 
 public:
     DISALLOW_COPY_AND_MOVE(CoAuth);
-    void coAuth(uint64_t scheduleId, AuthInfo &authInfo, std::shared_ptr<CoAuthCallback> callback);
+    void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, std::shared_ptr<CoAuthCallback> callback);
     int32_t Cancel(uint64_t scheduleId);
     int32_t GetExecutorProp(AuthResPool::AuthAttributes &conditions,
                             std::shared_ptr<AuthResPool::AuthAttributes> values);

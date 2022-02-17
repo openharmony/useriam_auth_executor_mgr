@@ -26,18 +26,18 @@ void ExecutorCallbackProxy::OnMessengerReady(const sptr<IExecutorMessenger> &mes
     MessageParcel reply;
     if (!data.WriteInterfaceToken(ExecutorCallbackProxy::GetDescriptor())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
-        return ;
+        return;
     }
 
     if (!data.WriteRemoteObject(messenger.GetRefPtr()->AsObject())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write RemoteObject failed!");
-        return ;
+        return;
     }
     bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_MESSENGER_READY), data, reply);
     if (ret) {
         COAUTH_HILOGI(MODULE_INNERKIT, "ret = %{public}d", ret);
     }
-    return ;
+    return;
 }
 
 int32_t ExecutorCallbackProxy::OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey,

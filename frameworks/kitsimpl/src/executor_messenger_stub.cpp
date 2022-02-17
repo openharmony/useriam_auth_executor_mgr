@@ -24,7 +24,7 @@ const std::string PERMISSION_ACCESS_COAUTH = "ohos.permission.ACCESS_COAUTH";
 int32_t ExecutorMessengerStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
                                                MessageParcel &reply, MessageOption &option)
 {
-    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub::OnRemoteRequest, cmd = %d, flags= %d",
+    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub::OnRemoteRequest, cmd = %{public}u, flags= %{public}d",
                   code, option.GetFlags());
     std::u16string descripter = ExecutorMessengerStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();

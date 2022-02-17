@@ -47,7 +47,7 @@ public:
                               const sptr<AuthResPool::IExecutorCallback> &callback) = 0;
     virtual void QueryStatus(AuthResPool::AuthExecutor &executorInfo,
                              const sptr<AuthResPool::IQueryCallback> &callback) = 0;
-    virtual void coAuth(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback) = 0;
+    virtual void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback) = 0;
     virtual int32_t Cancel(uint64_t scheduleId) = 0;
     virtual int32_t GetExecutorProp(AuthResPool::AuthAttributes &conditions,
                                     std::shared_ptr<AuthResPool::AuthAttributes> values) = 0;

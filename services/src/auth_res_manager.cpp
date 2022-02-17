@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <cinttypes>
 #include "executor_messenger.h"
 #include "auth_res_manager.h"
 
@@ -62,11 +63,11 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
         sptr<UserIAM::AuthResPool::IExecutorMessenger> messenger =
         new UserIAM::AuthResPool::ExecutorMessenger(&coAuthResPool_);
         callback->OnMessengerReady(messenger);
-        COAUTH_HILOGD(MODULE_SERVICE, "register is sucessfull,exeID is XXXX%{public}04llx!!!", executorId);
+        COAUTH_HILOGD(MODULE_SERVICE, "register is sucessfull,exeID is XXXX%{public}04" PRIx64, executorId);
         return executorId; // executorId returned after successful registration
     }
     if (result == FAIL) {
-        COAUTH_HILOGE(MODULE_SERVICE, "register  is failure!");
+        COAUTH_HILOGE(MODULE_SERVICE, "register is failure!");
         return INVALID_EXECUTOR_ID; // If the registration fails, an invalid id0 is returned
     }
     return executorId;

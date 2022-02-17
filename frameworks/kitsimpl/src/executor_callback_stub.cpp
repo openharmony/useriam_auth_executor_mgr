@@ -138,7 +138,7 @@ int32_t ExecutorCallbackStub::OnSetPropertyStub(MessageParcel& data, MessageParc
 void ExecutorCallbackStub::OnMessengerReady(const sptr<IExecutorMessenger> &messenger)
 {
     if (callback_ == nullptr) {
-        return ;
+        return;
     } else {
         callback_->OnMessengerReady(messenger);
     }

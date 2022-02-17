@@ -69,25 +69,25 @@ void CoAuth::ResetProxy(const wptr<IRemoteObject>& remote)
     }
 }
 
-void CoAuth::coAuth(uint64_t scheduleId, AuthInfo &authInfo, std::shared_ptr<CoAuthCallback> callback)
+void CoAuth::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, std::shared_ptr<CoAuthCallback> callback)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "coAuth enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "BeginSchedule enter");
     if (callback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "coAuth failed, callback is nullptr");
-        return ;
+        COAUTH_HILOGE(MODULE_INNERKIT, "BeginSchedule failed, callback is nullptr");
+        return;
     }
     auto proxy = GetProxy();
     if (proxy == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "coAuth failed, remote is nullptr");
+        COAUTH_HILOGE(MODULE_INNERKIT, "BeginSchedule failed, remote is nullptr");
         return;
     }
 
     sptr<ICoAuthCallback> icoAuthCallback = new CoAuthCallbackStub(callback);
     if (icoAuthCallback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "coAuth failed, icoAuthCallback is nullptr");
-        return ;
+        COAUTH_HILOGE(MODULE_INNERKIT, "BeginSchedule failed, icoAuthCallback is nullptr");
+        return;
     }
-    return proxy->coAuth(scheduleId, authInfo, icoAuthCallback);
+    return proxy->BeginSchedule(scheduleId, authInfo, icoAuthCallback);
 }
 
 int32_t CoAuth::Cancel(uint64_t scheduleId)
