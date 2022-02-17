@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <cinttypes>
 #include "auth_attributes.h"
 
 namespace OHOS {
@@ -20,27 +21,28 @@ namespace UserIAM {
 namespace AuthResPool {
 AuthAttributes::AuthAttributes()
 {
-    InsertMap(AUTH_RESULT_CODE, UINT32TYPE);
-    InsertMap(AUTH_SIGNATURE, UINT8ARRAYTYPE);
-    InsertMap(AUTH_IDENTIFY_MODE, UINT32TYPE);
-    InsertMap(AUTH_TEMPLATE_ID, UINT64TYPE);
-    InsertMap(AUTH_TEMPLATE_ID_LIST, UINT64ARRAYTYPE);
-    InsertMap(AUTH_REMAIN_COUNT, UINT32TYPE);
-    InsertMap(AUTH_REMAIN_TIME, UINT32TYPE);
-    InsertMap(AUTH_SESSION_ID, UINT64TYPE);
-    InsertMap(AUTH_CALLER_NAME, UINT8ARRAYTYPE);
-    InsertMap(AUTH_SCHEDULE_VERSION, UINT32TYPE);
-    InsertMap(AUTH_LOCK_OUT_TEMPLATE, UINT64TYPE);
-    InsertMap(AUTH_UNLOCK_TEMPLATE, UINT64TYPE);
-    InsertMap(AUTH_SUBTYPE, UINT64TYPE);
-    InsertMap(AUTH_SCHEDULE_MODE, UINT32TYPE);
-    InsertMap(AUTH_PROPERTY_MODE, UINT32TYPE);
-    InsertMap(AUTH_TYPE, UINT32TYPE);
-    InsertMap(AUTH_CREDENTIAL_ID, UINT64TYPE);
-    InsertMap(AUTH_CONTROLLER, BOOLTYPE);
-    InsertMap(AUTH_CALLER_UID, UINT64TYPE);
-    InsertMap(AUTH_RESULT, UINT8ARRAYTYPE);
-    InsertMap(ALGORITHM_INFO, UINT8ARRAYTYPE);
+    authAttributesPosition_ =  {{AUTH_RESULT_CODE, UINT32TYPE},
+                                {AUTH_RESULT_CODE, UINT32TYPE},
+                                {AUTH_SIGNATURE, UINT8ARRAYTYPE},
+                                {AUTH_IDENTIFY_MODE, UINT32TYPE},
+                                {AUTH_TEMPLATE_ID, UINT64TYPE},
+                                {AUTH_TEMPLATE_ID_LIST, UINT64ARRAYTYPE},
+                                {AUTH_REMAIN_COUNT, UINT32TYPE},
+                                {AUTH_REMAIN_TIME, UINT32TYPE},
+                                {AUTH_SESSION_ID, UINT64TYPE},
+                                {AUTH_CALLER_NAME, UINT8ARRAYTYPE},
+                                {AUTH_SCHEDULE_VERSION, UINT32TYPE},
+                                {AUTH_LOCK_OUT_TEMPLATE, UINT64TYPE},
+                                {AUTH_UNLOCK_TEMPLATE, UINT64TYPE},
+                                {AUTH_SUBTYPE, UINT64TYPE},
+                                {AUTH_SCHEDULE_MODE, UINT32TYPE},
+                                {AUTH_PROPERTY_MODE, UINT32TYPE},
+                                {AUTH_TYPE, UINT32TYPE},
+                                {AUTH_CREDENTIAL_ID, UINT64TYPE},
+                                {AUTH_CONTROLLER, BOOLTYPE},
+                                {AUTH_CALLER_UID, UINT64TYPE},
+                                {AUTH_RESULT, UINT8ARRAYTYPE},
+                                {ALGORITHM_INFO, UINT8ARRAYTYPE}};
 }
 
 void AuthAttributes::clear()
@@ -92,7 +94,7 @@ int32_t AuthAttributes::GetUint64Value(AuthAttributeType attrType, uint64_t &val
 int32_t AuthAttributes::GetUint32ArrayValue(AuthAttributeType attrType, std::vector<uint32_t> &value)
 {
     int32_t ret = SUCCESS;
-    std::map<AuthAttributeType, std::vector<uint32_t> >::iterator iter = uint32ArraylValueMap_.find(attrType);
+    std::map<AuthAttributeType, std::vector<uint32_t>>::iterator iter = uint32ArraylValueMap_.find(attrType);
     if (iter != uint32ArraylValueMap_.end()) {
         value = iter->second;
     } else {
@@ -104,7 +106,7 @@ int32_t AuthAttributes::GetUint32ArrayValue(AuthAttributeType attrType, std::vec
 int32_t AuthAttributes::GetUint64ArrayValue(AuthAttributeType attrType, std::vector<uint64_t> &value)
 {
     int32_t ret = SUCCESS;
-    std::map<AuthAttributeType, std::vector<uint64_t> >::iterator iter = uint64ArraylValueMap_.find(attrType);
+    std::map<AuthAttributeType, std::vector<uint64_t>>::iterator iter = uint64ArraylValueMap_.find(attrType);
     if (iter != uint64ArraylValueMap_.end()) {
         value = iter->second;
     } else {
@@ -116,7 +118,7 @@ int32_t AuthAttributes::GetUint64ArrayValue(AuthAttributeType attrType, std::vec
 int32_t AuthAttributes::GetUint8ArrayValue(AuthAttributeType attrType, std::vector<uint8_t> &value)
 {
     int32_t ret = SUCCESS;
-    std::map<AuthAttributeType, std::vector<uint8_t> >::iterator iter = uint8ArrayValueMap_.find(attrType);
+    std::map<AuthAttributeType, std::vector<uint8_t>>::iterator iter = uint8ArrayValueMap_.find(attrType);
     if (iter != uint8ArrayValueMap_.end()) {
         value = iter->second;
     } else {
@@ -144,7 +146,7 @@ int32_t AuthAttributes::SetUint32Value(AuthAttributeType attrType, uint32_t valu
     }
     uint32ValueMap_[attrType] = value;
     existAttributes_.push_back(attrType);
-    COAUTH_HILOGD(MODULE_INNERKIT, "SetUint32Value : %{public}d.", value);
+    COAUTH_HILOGD(MODULE_INNERKIT, "SetUint32Value : %{public}u.", value);
     return ret;
 }
 
@@ -197,7 +199,7 @@ void AuthAttributes::UnpackTag(AuthAttributeType &tag, std::vector<uint8_t> &buf
 {
     tag = GetUint32FromUint8(buffer, authDataLength);
     authDataLength += sizeof(uint32_t);
-    dataLength = static_cast<uint32_t >(GetUint32FromUint8(buffer, authDataLength));
+    dataLength = static_cast<uint32_t>(GetUint32FromUint8(buffer, authDataLength));
     authDataLength += sizeof(uint32_t);
 }
 
@@ -206,7 +208,8 @@ AuthAttributes* AuthAttributes::Unpack(std::vector<uint8_t> &buffer)
     if (buffer.size() == 0) {
         return nullptr;
     }
-    uint32_t dataLength, authDataLength = 0;
+    uint32_t dataLength;
+    uint32_t authDataLength = 0;
     AuthAttributeType tag;
     std::vector<uint32_t> uint32ArraylValue;
     std::vector<uint64_t> uint64ArraylValue;
@@ -287,7 +290,7 @@ std::vector<uint32_t> AuthAttributes::GetUint32ArrayFromUint8(std::vector<uint8_
     for (uint32_t i = 0; i < len / sizeof(uint32_t); i++) {
         uint32_t uint32data = GetUint32FromUint8(data, begin + i * sizeof(uint32_t));
         tmp.push_back(uint32data);
-        COAUTH_HILOGD(MODULE_INNERKIT, "buffer read uint32ArrayValue : %{public}d.", uint32data);
+        COAUTH_HILOGD(MODULE_INNERKIT, "buffer read uint32ArrayValue : %{public}u.", uint32data);
     }
     return tmp;
 }
@@ -298,7 +301,7 @@ std::vector<uint64_t> AuthAttributes::GetUint64ArrayFromUint8(std::vector<uint8_
     for (uint32_t i = 0; i < len / sizeof(uint64_t); i++) {
         uint64_t uint64data = GetUint64FromUint8(data, begin + i * sizeof(uint64_t));
         tmp.push_back(uint64data);
-        COAUTH_HILOGD(MODULE_INNERKIT, "buffer read uint64ArrayValue : %{public}llu.", uint64data);
+        COAUTH_HILOGD(MODULE_INNERKIT, "buffer read uint64ArrayValue : %{public}" PRIu64, uint64data);
     }
     return tmp;
 }
@@ -306,10 +309,10 @@ std::vector<uint64_t> AuthAttributes::GetUint64ArrayFromUint8(std::vector<uint8_
 int32_t AuthAttributes::Pack(std::vector<uint8_t> &buffer)
 {
     uint8_t *writePointer;
-    uint32_t dataLength = 0, tag, authDataLength = 0;
-
+    uint32_t dataLength = 0;
+    uint32_t tag;
+    uint32_t authDataLength = 0;
     buffer.clear();
-
     sort(existAttributes_.begin(), existAttributes_.end());
     for (int32_t i = 0; i != existAttributes_.size(); i++) {
         if (existAttributes_[i] == AUTH_ROOT ||
@@ -320,7 +323,7 @@ int32_t AuthAttributes::Pack(std::vector<uint8_t> &buffer)
         tag = authAttributesPosition_.find(existAttributes_[i])->first;
         writePointer = static_cast<uint8_t*>(static_cast<void *>(&tag));
         buffer.insert(buffer.end(), writePointer, writePointer + sizeof(AuthAttributeType));
-        COAUTH_HILOGD(MODULE_INNERKIT, "data Write tag : %{public}d.", tag);
+        COAUTH_HILOGD(MODULE_INNERKIT, "data Write tag : %{public}u.", tag);
         PackToBuffer(authAttributesPosition_.find(existAttributes_[i]), dataLength, writePointer, buffer);
     }
 

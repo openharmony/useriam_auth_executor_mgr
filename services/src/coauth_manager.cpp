@@ -20,7 +20,7 @@ namespace OHOS {
 namespace UserIAM {
 namespace CoAuth {
 /* Apply for collaborative scheduling */
-void CoAuthManager::coAuth(uint64_t scheduleId, AuthInfo &authInfo, sptr<ICoAuthCallback> callback)
+void CoAuthManager::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, sptr<ICoAuthCallback> callback)
 {
     CoAuthHandle(scheduleId, authInfo, callback);
 }
@@ -55,7 +55,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
     }
     for (std::size_t i = 0; i < executorNum; i++) {
         uint32_t authType = scheduleInfo.executors[i].authType;
-        COAUTH_HILOGD(MODULE_SERVICE, "get authType = XXXX%{public}04d", authType);
+        COAUTH_HILOGD(MODULE_SERVICE, "get authType = %{public}u", authType);
         sptr<ResIExecutorCallback> executorCallback;
         std::vector<uint8_t> publicKey(scheduleInfo.executors[i].publicKey,
                                        scheduleInfo.executors[i].publicKey + PUBLIC_KEY_LEN);
@@ -111,7 +111,7 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
     for (std::size_t i = 0; i < executorNum; i++) {
         uint32_t authType = scheduleInfo.executors[i].authType;
         sptr<ResIExecutorCallback> executorCallback;
-        COAUTH_HILOGD(MODULE_SERVICE, "get exeID = XXXX%{public}04d", authType);
+        COAUTH_HILOGD(MODULE_SERVICE, "get exeID = %{public}u", authType);
         int32_t findRet = coAuthResMgrPtr_->FindExecutorCallback(authType, executorCallback);
         if ((findRet != 0) || (executorCallback == nullptr)) {
             COAUTH_HILOGE(MODULE_SERVICE, "executor callback not found.");
@@ -147,7 +147,7 @@ void CoAuthManager::SetExecutorProp(ResAuthAttributes &conditions, sptr<ISetProp
     std::vector<uint8_t> extraInfo;
     uint32_t authType;
     conditions.GetUint32Value(AUTH_TYPE, authType);
-    COAUTH_HILOGD(MODULE_SERVICE, "get authType = XXXX%{public}d", authType);
+    COAUTH_HILOGD(MODULE_SERVICE, "get authType = XXXX%{public}u", authType);
     coAuthResMgrPtr_->FindExecutorCallback(authType, execallback);
     if (execallback == nullptr) {
         COAUTH_HILOGE(MODULE_SERVICE, "executor callback not found.");
@@ -171,7 +171,7 @@ int32_t CoAuthManager::GetExecutorProp(ResAuthAttributes &conditions, std::share
     uint32_t authType;
     sptr<ResIExecutorCallback> execallback = nullptr;
     conditions.GetUint32Value(AUTH_TYPE, authType);
-    COAUTH_HILOGD(MODULE_SERVICE, "authType is %{public}d", authType);
+    COAUTH_HILOGD(MODULE_SERVICE, "authType is %{public}u", authType);
     coAuthResMgrPtr_->FindExecutorCallback(authType, execallback);
     if (execallback == nullptr) {
         COAUTH_HILOGE(MODULE_SERVICE, "executor callback not found.");

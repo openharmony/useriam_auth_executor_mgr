@@ -27,7 +27,7 @@ namespace UserIAM {
 namespace CoAuth {
 class CoAuthManager {
 public:
-    void coAuth(uint64_t scheduleId, AuthInfo &authInfo, sptr<ICoAuthCallback> callback);
+    void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, sptr<ICoAuthCallback> callback);
     int32_t Cancel(uint64_t scheduleId);
     int32_t GetExecutorProp(ResAuthAttributes &conditions, std::shared_ptr<ResAuthAttributes> values);
     void SetExecutorProp(ResAuthAttributes &conditions, sptr<ISetPropCallback> callback);

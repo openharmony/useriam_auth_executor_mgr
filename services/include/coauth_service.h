@@ -43,12 +43,14 @@ public:
     virtual uint64_t Register(std::shared_ptr<ResAuthExecutor> executorInfo,
                               const sptr<ResIExecutorCallback> &callback) override;
     virtual void QueryStatus(ResAuthExecutor &executorInfo, const sptr<ResIQueryCallback> &callback) override;
-    virtual void coAuth(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback) override;
+    virtual void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback) override;
     virtual int32_t Cancel(uint64_t scheduleId) override;
     virtual int32_t GetExecutorProp(ResAuthAttributes &conditions, std::shared_ptr<ResAuthAttributes> values) override;
     virtual void SetExecutorProp(ResAuthAttributes &conditions, const sptr<ISetPropCallback> &callback) override;
 
 private:
+    void SendRegisterBroadcast();
+
     CoAuthRunningState state_ = CoAuthRunningState::STATE_STOPPED;
     AuthResManager authResMgr_;
     CoAuthManager  coAuthMgr_;

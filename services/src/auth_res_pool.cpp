@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "auth_res_pool.h"
+#include <cinttypes>
 #include "coauth_info_define.h"
+#include "auth_res_pool.h"
 
 namespace OHOS {
 namespace UserIAM {
@@ -59,14 +60,14 @@ int32_t AuthResPool::FindExecutorCallback(uint64_t executorID, sptr<ResIExecutor
 {
     int32_t resultCode = 0;
     std::lock_guard<std::mutex> lock(authMutex_);
-    std::map<uint64_t, std::shared_ptr<ExecutorRegister>> ::iterator iter = authResPool_.find(executorID);
+    std::map<uint64_t, std::shared_ptr<ExecutorRegister>>::iterator iter = authResPool_.find(executorID);
     if (iter != authResPool_.end()) {
         resultCode = SUCCESS;
         callback = iter->second->callback;
         COAUTH_HILOGI(MODULE_SERVICE, "callback is found");
     } else {
         resultCode = FAIL;
-        COAUTH_HILOGE(MODULE_SERVICE, "callback is not found, size is %{public}d", authResPool_.size());
+        COAUTH_HILOGE(MODULE_SERVICE, "callback is not found, size is %{public}u", authResPool_.size());
     }
     return resultCode;
 }
@@ -76,7 +77,7 @@ int32_t AuthResPool::FindExecutorCallback(uint32_t authType, sptr<ResIExecutorCa
     int32_t resultCode = SUCCESS;
     AuthType getAuthType;
     std::lock_guard<std::mutex> lock(authMutex_);
-    std::map<uint64_t, std::shared_ptr<ExecutorRegister>> ::iterator iter;
+    std::map<uint64_t, std::shared_ptr<ExecutorRegister>>::iterator iter;
     for (iter = authResPool_.begin(); iter != authResPool_.end(); ++iter) {
         iter->second->executorInfo->GetAuthType(getAuthType);
         if (getAuthType == (int32_t)authType) {
@@ -85,7 +86,7 @@ int32_t AuthResPool::FindExecutorCallback(uint32_t authType, sptr<ResIExecutorCa
             return resultCode;
         }
     }
-    COAUTH_HILOGE(MODULE_SERVICE, "Executor callback is not found, size is %{public}d", authResPool_.size());
+    COAUTH_HILOGE(MODULE_SERVICE, "Executor callback is not found, size is %{public}u", authResPool_.size());
     callback = nullptr;
     resultCode = FAIL;
     return resultCode;
@@ -95,11 +96,11 @@ int32_t AuthResPool::DeleteExecutorCallback(uint64_t executorID)
 {
     int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(authMutex_);
-    std::map<uint64_t, std::shared_ptr<ExecutorRegister>> ::iterator iter = authResPool_.find(executorID);
+    std::map<uint64_t, std::shared_ptr<ExecutorRegister>>::iterator iter = authResPool_.find(executorID);
     if (iter != authResPool_.end()) {
         authResPool_.erase(iter);
         resultCode = SUCCESS;
-        COAUTH_HILOGI(MODULE_SERVICE, "executor callback XXXX%{public}04llx is deleted", executorID);
+        COAUTH_HILOGI(MODULE_SERVICE, "executor callback XXXX%{public}" PRIx64 " is deleted", executorID);
     } else {
         resultCode = FAIL;
         COAUTH_HILOGE(MODULE_SERVICE, "executorID is not found and do not delete callback");
@@ -111,7 +112,7 @@ int32_t AuthResPool::FindScheduleCallback(uint64_t scheduleId, sptr<ICoAuthCallb
 {
     int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(scheMutex_);
-    std::map<uint64_t, std::shared_ptr<ScheduleRegister>> ::iterator iter = scheResPool_.find(scheduleId);
+    std::map<uint64_t, std::shared_ptr<ScheduleRegister>>::iterator iter = scheResPool_.find(scheduleId);
     if (iter != scheResPool_.end()) {
         resultCode = SUCCESS;
         callback = iter->second->callback;
@@ -127,7 +128,7 @@ int32_t AuthResPool::ScheduleCountMinus(uint64_t scheduleId)
 {
     int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(scheMutex_);
-    std::map<uint64_t, std::shared_ptr<ScheduleRegister>> ::iterator iter = scheResPool_.find(scheduleId);
+    std::map<uint64_t, std::shared_ptr<ScheduleRegister>>::iterator iter = scheResPool_.find(scheduleId);
     if (iter != scheResPool_.end()) {
         iter->second->executorNum--;
         resultCode = SUCCESS;
@@ -143,7 +144,7 @@ int32_t AuthResPool::GetScheduleCount(uint64_t scheduleId, uint64_t &scheduleCou
 {
     int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(scheMutex_);
-    std::map<uint64_t, std::shared_ptr<ScheduleRegister>> ::iterator iter = scheResPool_.find(scheduleId);
+    std::map<uint64_t, std::shared_ptr<ScheduleRegister>>::iterator iter = scheResPool_.find(scheduleId);
     if (iter != scheResPool_.end()) {
         scheduleCount = iter->second->executorNum;
         resultCode = SUCCESS;
@@ -159,7 +160,7 @@ int32_t AuthResPool::DeleteScheduleCallback(uint64_t scheduleId)
 {
     int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(scheMutex_);
-    std::map<uint64_t, std::shared_ptr<ScheduleRegister>> ::iterator iter = scheResPool_.find(scheduleId);
+    std::map<uint64_t, std::shared_ptr<ScheduleRegister>>::iterator iter = scheResPool_.find(scheduleId);
     if (iter != scheResPool_.end()) {
         scheResPool_.erase(iter);
         resultCode = SUCCESS;

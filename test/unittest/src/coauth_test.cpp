@@ -356,7 +356,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest010, TestSize.Level0)
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest010 start");
     AuthInfo authInfo;
     std::shared_ptr<CoAuthCallback> callback = nullptr;
-    CoAuth::GetInstance().coAuth(1, authInfo, callback);
+    CoAuth::GetInstance().BeginSchedule(1, authInfo, callback);
     SUCCEED();
 }
 
@@ -385,7 +385,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest011, TestSize.Level0)
         }
     };
     std::shared_ptr<CoAuthCallback> callback = std::make_shared<MyCoAuthCallback>();
-    CoAuth::GetInstance().coAuth(1, authInfo, callback);
+    CoAuth::GetInstance().BeginSchedule(1, authInfo, callback);
     SUCCEED();
 }
 /**
@@ -401,7 +401,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest012, TestSize.Level0)
     authInfo.SetPkgName(value);
     authInfo.SetCallerUid(10000);
     std::shared_ptr<CoAuthCallback> callback = nullptr;
-    CoAuth::GetInstance().coAuth(1, authInfo, callback);
+    CoAuth::GetInstance().BeginSchedule(1, authInfo, callback);
     SUCCEED();
 }
 
@@ -524,6 +524,8 @@ HWTEST_F(CoAuthTest, UseriamUtTest018, TestSize.Level0)
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
     conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
     conditions.SetUint64Value(AUTH_SESSION_ID, 1);
+    conditions.SetUint32Value(AUTH_PROPERTY_MODE, 1);
+    conditions.SetUint64Value(AUTH_TEMPLATE_ID, 1);
 
     std::vector<uint64_t> val1;
     val1.push_back(1);

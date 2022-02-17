@@ -35,7 +35,7 @@ void SetPropCallbackProxy::OnResult(uint32_t result, std::vector<uint8_t> &extra
 
     bool ret = SendRequest(static_cast<int32_t>(ISetPropCallback::ONRESULT), data, reply);
     if (!ret) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest is failed, error code: %d", ret);
+        COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest is failed, error code: %{public}d", ret);
     }
 }
 

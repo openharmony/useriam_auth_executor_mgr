@@ -65,9 +65,9 @@ private:
     std::map<AuthAttributeType, bool> boolValueMap_;
     std::map<AuthAttributeType, uint32_t> uint32ValueMap_;
     std::map<AuthAttributeType, uint64_t> uint64ValueMap_;
-    std::map<AuthAttributeType, std::vector<uint32_t> > uint32ArraylValueMap_;
-    std::map<AuthAttributeType, std::vector<uint64_t> > uint64ArraylValueMap_;
-    std::map<AuthAttributeType, std::vector<uint8_t> > uint8ArrayValueMap_;
+    std::map<AuthAttributeType, std::vector<uint32_t>> uint32ArraylValueMap_;
+    std::map<AuthAttributeType, std::vector<uint64_t>> uint64ArraylValueMap_;
+    std::map<AuthAttributeType, std::vector<uint8_t>> uint8ArrayValueMap_;
     std::map<AuthAttributeType, ValueType> authAttributesPosition_;
     std::vector<AuthAttributeType> existAttributes_;
     AuthAttributeType GetUint32FromUint8(std::vector<uint8_t> &data, uint32_t begin);

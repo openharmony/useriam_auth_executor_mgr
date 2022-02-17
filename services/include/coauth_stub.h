@@ -34,7 +34,7 @@ public:
 private:
     int32_t RegisterStub(MessageParcel& data, MessageParcel& reply);
     int32_t QueryStatusStub(MessageParcel& data, MessageParcel& reply);
-    int32_t coAuthStub(MessageParcel &data, MessageParcel &reply);
+    int32_t BeginScheduleStub(MessageParcel &data, MessageParcel &reply);
     int32_t CancelStub(MessageParcel &data, MessageParcel &reply);
     int32_t GetExecutorPropStub(MessageParcel &data, MessageParcel &reply);
     int32_t SetExecutorPropStub(MessageParcel &data, MessageParcel &reply);

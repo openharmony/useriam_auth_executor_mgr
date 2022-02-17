@@ -39,7 +39,7 @@ int32_t AuthInfo::SetPkgName(std::string value)
 
 int32_t AuthInfo::SetCallerUid(uint64_t value)
 {
-    callerUid_= value;
+    callerUid_ = value;
     return SUCCESS;
 }
 } // namespace CoAuth

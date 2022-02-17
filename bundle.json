@@ -18,7 +18,7 @@
       "adapted_system_type": [ "standard" ],
       "syscap": ["SystemCapability.UserIAM.AuthExecutorMgr"],
       "features": [],
-      "rom": "500KB",
+      "rom": "1024KB",
       "ram": "2500KB",
       "deps": {
         "components": [

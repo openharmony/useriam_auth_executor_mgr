@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cinttypes>
 #include <message_parcel.h>
 #include "coauth_hilog_wrapper.h"
 #include "coauth_errors.h"
@@ -23,7 +24,7 @@ namespace CoAuth {
 int32_t CoAuthStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
                                     MessageParcel &reply, MessageOption &option)
 {
-    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub::OnRemoteRequest, cmd = %d, flags= %d",
+    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub::OnRemoteRequest, cmd = %{public}u, flags= %{public}d",
                   code, option.GetFlags());
     std::u16string descripter = CoAuthStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();
@@ -38,7 +39,7 @@ int32_t CoAuthStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
         case static_cast<int32_t>(ICoAuth::COAUTH_QUERY_STATUS):
             return QueryStatusStub(data, reply);
         case static_cast<int32_t>(ICoAuth::COAUTH_SCHEDULE_REQUEST):
-            return coAuthStub(data, reply);
+            return BeginScheduleStub(data, reply);
         case static_cast<int32_t>(ICoAuth::COAUTH_SCHEDULE_CANCEL):
             return CancelStub(data, reply);
         case static_cast<int32_t>(ICoAuth::COAUTH_GET_PROPERTY):
@@ -58,7 +59,7 @@ void CoAuthStub::ReadAuthExecutor(AuthResPool::AuthExecutor &executorInfo, Messa
 
     uint64_t authAbility = data.ReadUint64();
     executorInfo.SetAuthAbility(authAbility);
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadInt64,authAbility:%{public}llu", authAbility);
+    COAUTH_HILOGD(MODULE_INNERKIT, "ReadInt64,authAbility:%{public}" PRIu64, authAbility);
 
     int32_t executorSecLevel = data.ReadInt32();
     executorInfo.SetExecutorSecLevel(static_cast<ExecutorSecureLevel>(executorSecLevel));
@@ -108,7 +109,7 @@ int32_t CoAuthStub::QueryStatusStub(MessageParcel& data, MessageParcel& reply)
     return SUCCESS;
 }
 
-int32_t CoAuthStub::coAuthStub(MessageParcel& data, MessageParcel& reply)
+int32_t CoAuthStub::BeginScheduleStub(MessageParcel& data, MessageParcel& reply)
 {
     AuthInfo authInfo;
 
@@ -116,10 +117,10 @@ int32_t CoAuthStub::coAuthStub(MessageParcel& data, MessageParcel& reply)
     authInfo.SetPkgName(GetPkgName);
     uint64_t GetCallerUid = data.ReadUint64();
     authInfo.SetCallerUid(GetCallerUid);
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64,GetCallerUid:%{public}llu", GetCallerUid);
+    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64,GetCallerUid:%{public}" PRIu64, GetCallerUid);
 
     uint64_t scheduleId = data.ReadUint64();
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64,scheduleId:%{public}llu", scheduleId);
+    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64,scheduleId:%{public}" PRIu64, scheduleId);
 
     sptr<ICoAuthCallback> callback = iface_cast<ICoAuthCallback>(data.ReadRemoteObject());
     if (callback == nullptr) {
@@ -127,7 +128,7 @@ int32_t CoAuthStub::coAuthStub(MessageParcel& data, MessageParcel& reply)
         return FAIL;
     }
 
-    coAuth(scheduleId, authInfo, callback);
+    BeginSchedule(scheduleId, authInfo, callback);
 
     return SUCCESS;
 }
@@ -137,7 +138,7 @@ int32_t CoAuthStub::CancelStub(MessageParcel& data, MessageParcel& reply)
     COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub: CancelStub enter");
 
     uint64_t scheduleId = data.ReadUint64();
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64 scheduleId:%{public}llu", scheduleId);
+    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64 scheduleId:%{public}" PRIu64, scheduleId);
 
     int ret = Cancel(scheduleId);
     if (!reply.WriteInt32(ret)) {

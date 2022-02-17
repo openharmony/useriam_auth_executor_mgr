@@ -33,7 +33,7 @@ ohos_shared_library("coauth_framework") {
   sources = [
     "../../frameworks/kitsimpl/src/auth_executor_registry.cpp",
     "../../frameworks/kitsimpl/src/auth_info.cpp",
-    "../../frameworks/kitsimpl/src/coauth.cpp",
+    "../../frameworks/kitsimpl/src/co_auth.cpp",
     "../../frameworks/kitsimpl/src/coauth_callback_proxy.cpp",
     "../../frameworks/kitsimpl/src/coauth_callback_stub.cpp",
     "../../frameworks/kitsimpl/src/coauth_proxy.cpp",

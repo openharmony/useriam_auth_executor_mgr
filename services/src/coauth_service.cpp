@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <cinttypes>
 #include <file_ex.h>
 #include <string_ex.h>
 #include <system_ability.h>
@@ -22,6 +23,7 @@
 #include <unistd.h>
 #include <thread>
 #include "useriam_common.h"
+#include "common_event_manager.h"
 #include "coauth_service.h"
 
 namespace OHOS {
@@ -84,6 +86,8 @@ void CoAuthService::OnStart()
     }
 
     // Send registration broadcast
+    SendRegisterBroadcast();
+
     // Start other sevice
     std::thread checkThread(OHOS::UserIAM::CoAuth::CheckSystemAbility);
     checkThread.join();
@@ -123,7 +127,7 @@ uint64_t CoAuthService::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     }
 
     uint64_t exeID = authResMgr_.Register(executorInfo, callback);
-    COAUTH_HILOGE(MODULE_SERVICE, "exeID is XXXX%{public}04llx", exeID);
+    COAUTH_HILOGE(MODULE_SERVICE, "exeID is XXXX%{public}" PRIx64, exeID);
     return exeID;
 }
 
@@ -138,13 +142,13 @@ void CoAuthService::QueryStatus(ResAuthExecutor &executorInfo, const sptr<ResIQu
 }
 
 /* Apply for collaborative scheduling */
-void CoAuthService::coAuth(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback)
+void CoAuthService::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback)
 {
     if (callback == nullptr) {
         COAUTH_HILOGE(MODULE_SERVICE, "callback is nullptr");
         return;
     }
-    return coAuthMgr_.coAuth(scheduleId, authInfo, callback);
+    return coAuthMgr_.BeginSchedule(scheduleId, authInfo, callback);
 }
 
 /* Cancel collaborative schedule */
@@ -171,6 +175,16 @@ int32_t CoAuthService::GetExecutorProp(ResAuthAttributes &conditions, std::share
         return FAIL;
     }
     return coAuthMgr_.GetExecutorProp(conditions, values);
+}
+
+void CoAuthService::SendRegisterBroadcast()
+{
+    EventFwk::Want want;
+    want.SetAction(REGISTER_NOTIFICATION);
+    EventFwk::CommonEventData data;
+    data.SetWant(want);
+    bool ret = EventFwk::CommonEventManager::PublishCommonEvent(data);
+    COAUTH_HILOGI(MODULE_SERVICE, "send broadcast result = %{public}d", ret);
 }
 } // namespace CoAu
 } // namespace UserIAM
