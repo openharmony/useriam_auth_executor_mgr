@@ -85,10 +85,6 @@ private:
                       std::vector<uint8_t> &buffer);
     void Write64Array(std::vector<uint64_t> &uint64ArraylValue, uint8_t *writePointer,
                       std::vector<uint8_t> &buffer);
-    void InsertMap(AuthAttributeType a, ValueType b)
-    {
-        authAttributesPosition_.insert(std::map<AuthAttributeType, ValueType>::value_type(a, b));
-    }
 };
 } // namespace AuthResPool
 } // namespace UserIAM

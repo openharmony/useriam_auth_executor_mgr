@@ -14,6 +14,7 @@
  */
 
 #include "coauth_manager.h"
+#include "inner_event.h"
 #include "coauth_thread_pool.h"
 
 namespace OHOS {
@@ -53,6 +54,22 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
         COAUTH_HILOGW(MODULE_SERVICE, "Save schedule callback error.");
         return callback->OnFinish(saveRet, scheduleToken);
     }
+    OHOS::AppExecFwk::InnerEvent::Callback task = std::bind(&CoAuthManager::TimeOut, this, scheduleId);
+    COAUTH_HILOGW(MODULE_SERVICE, "CoAuthManager::Excute MonitorCall");
+    CallMonitor::GetInstance().MonitorCall(delay_time, scheduleId, task);
+    BeginExecute(scheduleInfo, executorNum, scheduleId, authInfo, executeRet);
+
+    if (executeRet != SUCCESS) {
+        COAUTH_HILOGW(MODULE_SERVICE, "There are one or more failures in execution.");
+        callback->OnFinish(executeRet, scheduleToken);
+        coAuthResMgrPtr_->DeleteScheduleCallback(scheduleId);
+        CallMonitor::GetInstance().MonitorRemoveCall(scheduleId);
+    }
+}
+
+void CoAuthManager::BeginExecute(ScheduleInfo &scheduleInfo, std::size_t executorNum, uint64_t scheduleId,
+                                 AuthInfo &authInfo, int32_t &executeRet)
+{
     for (std::size_t i = 0; i < executorNum; i++) {
         uint32_t authType = scheduleInfo.executors[i].authType;
         COAUTH_HILOGD(MODULE_SERVICE, "get authType = %{public}u", authType);
@@ -67,11 +84,6 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
         auto commandAttrs = std::make_shared<ResAuthAttributes>();
         SetAuthAttributes(commandAttrs, scheduleInfo, authInfo);
         executeRet |= executorCallback->OnBeginExecute(scheduleId, publicKey, commandAttrs);
-    }
-    // set timeout
-    if (executeRet != SUCCESS) {
-        COAUTH_HILOGW(MODULE_SERVICE, "There are one or more failures in execution.");
-        return callback->OnFinish(executeRet, scheduleToken);
     }
 }
 
@@ -210,6 +222,21 @@ void CoAuthManager::ResICoAuthCallbackDeathRecipient::OnRemoteDied(const wptr<IR
         parent_->coAuthResMgrPtr_->DeleteScheduleCallback(scheduleId);
     }
     COAUTH_HILOGE(MODULE_INNERKIT, "ResICoAuthCallbackDeathRecipient::Recv death notice.");
+}
+
+void CoAuthManager::TimeOut(uint64_t scheduleId)
+{
+    sptr<UserIAM::CoAuth::ICoAuthCallback> callback;
+    int32_t findRet = coAuthResMgrPtr_->FindScheduleCallback(scheduleId, callback);
+    if (findRet == SUCCESS && callback != nullptr) {
+        std::vector<uint8_t> scheduleToken;
+        callback->OnFinish(TIMEOUT, scheduleToken);
+        Cancel(scheduleId); // cancel schedule
+        COAUTH_HILOGW(MODULE_SERVICE, "Schedule timeout");
+        coAuthResMgrPtr_->DeleteScheduleCallback(scheduleId);
+    } else {
+        COAUTH_HILOGD(MODULE_SERVICE, "Schedule has ended");
+    }
 }
 } // namespace CoAuth
 } // namespace UserIAM

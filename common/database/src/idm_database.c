@@ -661,7 +661,7 @@ ResultCode QueryCredentialInfo(int32_t userId, uint32_t authType, CredentialInfo
 {
     UserInfo *user = QueryUserInfo(userId);
     if (user == NULL) {
-        LOG_ERROR("Can't find this user");
+        LOG_ERROR("Can't find this user, userId is %{public}d", userId);
         return RESULT_NOT_FOUND;
     }
     LinkedList *credentialList = user->credentialInfoList;

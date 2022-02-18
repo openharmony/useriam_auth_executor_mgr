@@ -15,6 +15,7 @@
 
 #include "securec.h"
 #include "coauth_interface.h"
+#include "call_monitor.h"
 #include "executor_messenger.h"
 
 namespace OHOS {
@@ -72,6 +73,7 @@ int32_t ExecutorMessenger::Finish(uint64_t scheduleId, int32_t srcType, int32_t 
         ScheResPool_->ScheduleCountMinus(scheduleId);
         return SUCCESS;
     }
+    UserIAM::CoAuth::CallMonitor::GetInstance().MonitorRemoveCall(scheduleId);
     sptr<UserIAM::CoAuth::ICoAuthCallback> callback;
     int32_t findRet = ScheResPool_->FindScheduleCallback(scheduleId, callback);
     if (findRet != SUCCESS || callback == nullptr) {
