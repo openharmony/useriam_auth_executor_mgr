@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 #include <cinttypes>
-#include "auth_res_pool.h"
 #include "coauth_info_define.h"
+#include "auth_res_pool.h"
 
 namespace OHOS {
 namespace UserIAM {
