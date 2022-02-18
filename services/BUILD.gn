@@ -30,12 +30,12 @@ ohos_shared_library("coauthservice") {
   sources = [
     "src/auth_res_manager.cpp",
     "src/auth_res_pool.cpp",
+    "src/call_monitor.cpp",
     "src/coauth_manager.cpp",
     "src/coauth_service.cpp",
     "src/coauth_stub.cpp",
     "src/coauth_thread_pool.cpp",
     "src/executor_messenger.cpp",
-    "src/call_monitor.cpp",
   ]
 
   configs = [
