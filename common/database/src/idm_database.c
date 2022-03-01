@@ -22,6 +22,9 @@
 #include "idm_file_manager.h"
 
 #define MAX_DULPLICATE_CHECK 100
+#define PRE_APPLY_NUM 5
+#define MEM_GROWTH_FACTOR 2
+#define MAX_CREDENTIAL_RETURN 5000
 
 // Caches IDM user information.
 LinkedList *g_userInfoList = NULL;
@@ -677,6 +680,57 @@ ResultCode QueryCredentialInfo(int32_t userId, uint32_t authType, CredentialInfo
     if (memcpy_s(credentialInfo, sizeof(CredentialInfoHal), credentialQuery, sizeof(CredentialInfoHal)) != EOK) {
         LOG_ERROR("credentialInfo copy failed");
         return RESULT_BAD_COPY;
+    }
+    return RESULT_SUCCESS;
+}
+
+ResultCode QueryCredentialFromExecutor(uint32_t authType, CredentialInfoHal **credentialInfos, uint32_t *num)
+{
+    if (credentialInfos == NULL || num == NULL) {
+        LOG_ERROR("param is invalid");
+        return RESULT_BAD_PARAM;
+    }
+    if (g_userInfoList == NULL) {
+        return RESULT_NEED_INIT;
+    }
+    uint32_t preApplyNum = PRE_APPLY_NUM;
+    *credentialInfos = Malloc(preApplyNum * sizeof(CredentialInfoHal));
+    if (*credentialInfos == NULL) {
+        LOG_ERROR("no memory");
+        return RESULT_NO_MEMORY;
+    }
+    LinkedListNode *temp = g_userInfoList->head;
+    while (temp != NULL) {
+        UserInfo *user = (UserInfo *)temp->data;
+        CredentialInfoHal *credentialQuery = QueryCredentialByAuthType(authType, user->credentialInfoList);
+        if (credentialQuery != NULL) {
+            (*num)++;
+            if (*num <= preApplyNum) {
+                *credentialInfos[*num - 1] = *credentialQuery;
+                temp = temp->next;
+                continue;
+            }
+            if (preApplyNum * MEM_GROWTH_FACTOR > MAX_CREDENTIAL_RETURN) {
+                LOG_ERROR("too large");
+                Free(*credentialInfos);
+                *credentialInfos = NULL;
+                return RESULT_NO_MEMORY;
+            }
+            preApplyNum *= MEM_GROWTH_FACTOR;
+            CredentialInfoHal *credentialsTemp = Malloc(sizeof(CredentialInfoHal) * preApplyNum);
+            if (memcpy_s(credentialsTemp, sizeof(CredentialInfoHal) * preApplyNum,
+                *credentialInfos, sizeof(CredentialInfoHal) * (*num - 1)) != EOK) {
+                LOG_ERROR("copy failed");
+                Free(credentialsTemp);
+                Free(*credentialInfos);
+                *credentialInfos = NULL;
+                return RESULT_BAD_COPY;
+            }
+            Free(*credentialInfos);
+            *credentialInfos = credentialsTemp;
+            *credentialInfos[*num - 1] = *credentialQuery;
+        }
+        temp = temp->next;
     }
     return RESULT_SUCCESS;
 }
