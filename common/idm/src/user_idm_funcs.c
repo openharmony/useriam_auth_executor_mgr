@@ -24,6 +24,8 @@
 #include "idm_database.h"
 #include "user_sign_centre.h"
 
+static const int ALL_INFO_GET_USER_ID = -1;
+
 static int32_t PinPermissionCheck(int32_t userId, UserAuthTokenHal *authToken)
 {
     CredentialInfoHal credentialInfo;
@@ -203,6 +205,9 @@ int32_t QueryCredentialFunc(int32_t userId, uint32_t authType,
     }
     if (authType == DEFAULT_AUTH_TYPE) {
         return QueryCredentialInfoAll(userId, credentialInfoArray, credentialNum);
+    }
+    if (userId == ALL_INFO_GET_USER_ID) {
+        return QueryCredentialFromExecutor(authType, credentialInfoArray, credentialNum);
     }
     CredentialInfoHal credentialInfo;
     int32_t ret = QueryCredentialInfo(userId, authType, &credentialInfo);

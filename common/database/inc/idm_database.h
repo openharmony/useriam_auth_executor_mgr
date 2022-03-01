@@ -35,5 +35,6 @@ ResultCode AddCredentialInfo(int32_t userId, CredentialInfoHal *credentialInfo);
 ResultCode QueryCredentialInfoAll(int32_t userId, CredentialInfoHal **credentialInfos, uint32_t *num);
 ResultCode QueryCredentialInfo(int32_t userId, uint32_t authType, CredentialInfoHal *credentialInfo);
 ResultCode DeleteCredentialInfo(int32_t userId, uint64_t credentialId, CredentialInfoHal *credentialInfo);
+ResultCode QueryCredentialFromExecutor(uint32_t authType, CredentialInfoHal **credentialInfos, uint32_t *num);
 
 #endif // IDM_DATABASE_H
