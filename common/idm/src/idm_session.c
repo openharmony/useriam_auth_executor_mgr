@@ -172,7 +172,7 @@ ResultCode GetScheduleId(uint64_t *scheduleId)
 bool IsSessionTimeout(void)
 {
     if (!IsSessionExist()) {
-        return RESULT_NEED_INIT;
+        return true;
     }
     uint64_t currentTime = GetSystemTime();
     if (currentTime < g_session->time || currentTime - g_session->time > SESSION_VALIDITY_PERIOD) {
