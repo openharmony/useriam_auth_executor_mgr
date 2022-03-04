@@ -35,7 +35,7 @@ static void DestroyExecutorInfo(void *data)
     Free(data);
 }
 
-static bool IsExecutorIdMatch(void *data, void *condition)
+static bool IsExecutorIdMatchById(void *data, void *condition)
 {
     if ((condition == NULL) || (data == NULL)) {
         LOG_ERROR("get null data");
@@ -44,6 +44,18 @@ static bool IsExecutorIdMatch(void *data, void *condition)
     uint64_t executorId = *(uint64_t *)condition;
     ExecutorInfoHal *executorInfo = (ExecutorInfoHal *)data;
     return (executorInfo->executorId == executorId);
+}
+
+static bool IsExecutorIdMatchByType(void *data, void *condition)
+{
+    if ((condition == NULL) || (data == NULL)) {
+        LOG_ERROR("get null data");
+        return false;
+    }
+    ExecutorInfoHal *executorIndex = (ExecutorInfoHal *)condition;
+    ExecutorInfoHal *executorInfo = (ExecutorInfoHal *)data;
+    return (executorInfo->executorType == executorIndex->executorType &&
+        executorInfo->authType == executorIndex->authType);
 }
 
 static bool IsInit()
@@ -125,6 +137,9 @@ ResultCode RegisterExecutorToPool(ExecutorInfoHal *executorInfo)
         LOG_ERROR("get invalid executorInfo");
         return RESULT_BAD_PARAM;
     }
+    if (g_poolList->remove(g_poolList, (void *)executorInfo, IsExecutorIdMatchByType) != RESULT_SUCCESS) {
+        LOG_INFO("current executor isn't registered");
+    }
     ResultCode result = GenerateValidExecutorId(&executorInfo->executorId);
     if (result != RESULT_SUCCESS) {
         LOG_ERROR("get executorId fail");
@@ -150,7 +165,7 @@ ResultCode UnregisterExecutorToPool(uint64_t executorId)
         LOG_ERROR("pool not init");
         return RESULT_NEED_INIT;
     }
-    return g_poolList->remove(g_poolList, (void *)&executorId, IsExecutorIdMatch);
+    return g_poolList->remove(g_poolList, (void *)&executorId, IsExecutorIdMatchById);
 }
 
 ExecutorInfoHal *CopyExecutorInfo(ExecutorInfoHal *src)

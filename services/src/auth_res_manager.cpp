@@ -145,6 +145,11 @@ void AuthResManager::ResIExecutorCallbackDeathRecipient::OnRemoteDied(const wptr
     if (parent_ != nullptr) {
         parent_->DeleteExecutorCallback(executorID_);
     }
+
+    int32_t ret = ExecutorUnRegister(executorID_);
+    if (ret != SUCCESS) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "executor unregister fail.");
+    }
     COAUTH_HILOGE(MODULE_INNERKIT, "ResIExecutorCallbackDeathRecipient::Recv death notice.");
 }
 } // namespace CoAuth
