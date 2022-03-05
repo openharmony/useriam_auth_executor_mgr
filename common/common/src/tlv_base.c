@@ -48,6 +48,7 @@ TlvListNode *CreateTlvList(void)
     if (node == NULL) {
         return NULL;
     }
+    node->data.value = NULL;
     node->next = NULL;
     return node;
 }

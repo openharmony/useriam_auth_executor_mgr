@@ -118,7 +118,7 @@ int32_t GetScheduleToken(std::vector<uint8_t> executorFinishMsg, ScheduleToken &
         GlobalUnLock();
         return RESULT_NO_MEMORY;
     }
-    ScheduleTokenHal scheduleTokenHal;
+    ScheduleTokenHal scheduleTokenHal = {};
     scheduleTokenHal.scheduleId = scheduleToken.scheduleId;
     int32_t ret = ScheduleFinish(executorMsg, &scheduleTokenHal);
     if (ret != RESULT_SUCCESS) {

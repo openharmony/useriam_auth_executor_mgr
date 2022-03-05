@@ -15,6 +15,7 @@
 
 #include "executor_message.h"
 
+#include "securec.h"
 #include "adaptor_log.h"
 #include "tlv_wrapper.h"
 #include "adaptor_memory.h"
@@ -183,6 +184,10 @@ ExecutorResultInfo *GetExecutorResultInfo(const Buffer *tlv)
     ExecutorResultInfo *result = Malloc(sizeof(ExecutorResultInfo));
     if (result == NULL) {
         LOG_ERROR("malloc failed");
+        goto EXIT;
+    }
+    if (memset_s(result, sizeof(ExecutorResultInfo), 0, sizeof(ExecutorResultInfo)) != EOK) {
+        LOG_ERROR("set result failed");
         goto EXIT;
     }
     ret = ParseRoot(result, parseBody->next);

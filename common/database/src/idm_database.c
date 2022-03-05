@@ -286,6 +286,7 @@ static ResultCode GetAllCredentialInfoFromUser(UserInfo *userInfo, CredentialInf
 
 EXIT:
     if (result != RESULT_SUCCESS) {
+        (void)memset_s(*credentialInfos, sizeof(CredentialInfoHal) * size, 0, sizeof(CredentialInfoHal) * size);
         Free(*credentialInfos);
         *credentialInfos = NULL;
         *num = 0;
@@ -336,7 +337,7 @@ static ResultCode DeleteUser(int32_t userId)
     if (g_userInfoList == NULL) {
         return RESULT_BAD_PARAM;
     }
-    return g_userInfoList->remove(g_userInfoList, &userId, MatchUserInfo);
+    return g_userInfoList->remove(g_userInfoList, &userId, MatchUserInfo, true);
 }
 
 static bool IsCredentialIdDuplicate(LinkedList *credentialList, uint64_t credentialId)
@@ -519,7 +520,7 @@ ResultCode AddCredentialInfo(int32_t userId, CredentialInfoHal *credentialInfo)
     if (user == NULL && credentialInfo->authType == PIN_AUTH) {
         ResultCode ret =  AddUser(userId, credentialInfo);
         if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("add user failed");
+            LOG_ERROR("add user failed");
         }
         ret = UpdateFileInfo(g_userInfoList);
         if (ret != RESULT_SUCCESS) {
@@ -600,7 +601,7 @@ ResultCode DeleteCredentialInfo(int32_t userId, uint64_t credentialId, Credentia
         LOG_ERROR("copy failed");
         return RESULT_BAD_COPY;
     }
-    ResultCode ret = credentialList->remove(credentialList, &credentialId, MatchCredentialById);
+    ResultCode ret = credentialList->remove(credentialList, &credentialId, MatchCredentialById, true);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("remove credential failed");
         return ret;
@@ -615,7 +616,7 @@ ResultCode DeleteCredentialInfo(int32_t userId, uint64_t credentialId, Credentia
         LOG_ERROR("enrolledInfoList is null");
         return RESULT_UNKNOWN;
     }
-    ret = enrolledInfoList->remove(enrolledInfoList, &credentialInfo->authType, MatchEnrolledInfoByType);
+    ret = enrolledInfoList->remove(enrolledInfoList, &credentialInfo->authType, MatchEnrolledInfoByType, true);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("remove enrolledInfo failed");
         return ret;

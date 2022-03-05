@@ -15,6 +15,7 @@
 
 #include "idm_session.h"
 
+#include "securec.h"
 #include "adaptor_algorithm.h"
 #include "adaptor_log.h"
 #include "adaptor_memory.h"
@@ -73,6 +74,12 @@ ResultCode OpenEditSession(int32_t userId, uint64_t *challenge)
     if (g_session == NULL) {
         LOG_ERROR("g_session malloc failed");
         return RESULT_NO_MEMORY;
+    }
+    if (memset_s(g_session, sizeof(struct SessionInfo), 0, sizeof(struct SessionInfo)) != EOK) {
+        LOG_ERROR("g_session set failed");
+        Free(g_session);
+        g_session = NULL;
+        return RESULT_GENERAL_ERROR;
     }
     g_session->userId = userId;
     g_session->challenge = GenerateChallenge();
