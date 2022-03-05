@@ -109,7 +109,7 @@ ResultCode RemoveCoAuthSchedule(uint64_t scheduleId)
         LOG_ERROR("pool not init");
         return RESULT_NEED_INIT;
     }
-    return g_scheduleList->remove(g_scheduleList, (void *)&scheduleId, IsScheduleMatch);
+    return g_scheduleList->remove(g_scheduleList, (void *)&scheduleId, IsScheduleMatch, true);
 }
 
 ResultCode GetCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
@@ -212,6 +212,7 @@ static ResultCode MountExecutor(uint32_t authType, CoAuthSchedule *coAuthSchedul
             ret = RESULT_UNKNOWN;
             goto EXIT;
         }
+        tempNode = tempNode->next;
     }
 
 EXIT:
@@ -226,6 +227,10 @@ CoAuthSchedule *GenerateAuthSchedule(uint64_t contextId, uint32_t authType, uint
     if (coAuthSchedule == NULL) {
         LOG_ERROR("coAuthSchedule is null");
         return NULL;
+    }
+    if (memset_s(coAuthSchedule, sizeof(CoAuthSchedule), 0, sizeof(CoAuthSchedule)) != EOK) {
+        LOG_ERROR("reset coAuthSchedule fail");
+        goto EXIT;
     }
     ResultCode ret = GenerateValidScheduleId(&coAuthSchedule->scheduleId);
     if (ret != RESULT_SUCCESS) {
@@ -257,6 +262,10 @@ CoAuthSchedule *GenerateIdmSchedule(uint64_t challenge, uint32_t authType, uint6
     if (coAuthSchedule == NULL) {
         LOG_ERROR("coAuthSchedule is null");
         return NULL;
+    }
+    if (memset_s(coAuthSchedule, sizeof(CoAuthSchedule), 0, sizeof(CoAuthSchedule)) != EOK) {
+        LOG_ERROR("reset coAuthSchedule fail");
+        goto EXIT;
     }
     ResultCode ret = GenerateValidScheduleId(&coAuthSchedule->scheduleId);
     if (ret != RESULT_SUCCESS) {

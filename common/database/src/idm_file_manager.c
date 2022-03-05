@@ -39,13 +39,20 @@ static uint8_t *GetStreamAddress(const Buffer *object)
     return object->buf + object->contentSize;
 }
 
-static ResultCode CapacityExpansion(Buffer *object)
+static ResultCode CapacityExpansion(Buffer *object, uint32_t targetCapacity)
 {
     if (!IsBufferValid(object) || object->maxSize > MAX_BUFFER_LEN / DEFAULT_EXPANSION_RATIO) {
         LOG_ERROR("Params are invalid");
         return RESULT_BAD_PARAM;
     }
-    uint32_t targetSize = DEFAULT_EXPANSION_RATIO * object->maxSize;
+    uint32_t targetSize = object->maxSize;
+    while (targetSize < targetCapacity && targetSize <= MAX_BUFFER_LEN / DEFAULT_EXPANSION_RATIO) {
+        targetSize = targetSize * DEFAULT_EXPANSION_RATIO;
+    }
+    if (targetSize < targetCapacity) {
+        LOG_ERROR("Target capacity can not reach");
+        return RESULT_BAD_PARAM;
+    }
     uint8_t *buf = Malloc(targetSize);
     if (buf == NULL) {
         LOG_ERROR("Malloc failed");
@@ -69,7 +76,7 @@ static ResultCode StreamWrite(Buffer *parcel, void *from, uint32_t size)
         return RESULT_BAD_PARAM;
     }
     if (GetRemainSpace(parcel) < size) {
-        ResultCode result = CapacityExpansion(parcel);
+        ResultCode result = CapacityExpansion(parcel, size);
         if (result != RESULT_SUCCESS) {
             LOG_ERROR("CapacityExpansion failed");
             return result;
@@ -248,6 +255,10 @@ static ResultCode StreamReadCredentialList(Buffer *parcel, uint32_t *index, Link
         LOG_ERROR("stream read failed");
         return RESULT_BAD_READ;
     }
+    if (credentialNum > MAX_CREDENTIAL) {
+        LOG_ERROR("Bad credential num");
+        return RESULT_BAD_READ;
+    }
     for (uint32_t i = 0; i < credentialNum; i++) {
         CredentialInfoHal *credentialInfo = Malloc(sizeof(CredentialInfoHal));
         if (credentialInfo == NULL) {
@@ -275,6 +286,10 @@ static ResultCode StreamReadEnrolledList(Buffer *parcel, uint32_t *index, Linked
     ResultCode result = StreamRead(parcel, index, &enrolledNum, sizeof(uint32_t));
     if (result != RESULT_SUCCESS) {
         LOG_ERROR("stream read failed");
+        return RESULT_BAD_READ;
+    }
+    if (enrolledNum > MAX_CREDENTIAL) {
+        LOG_ERROR("Bad enrolled num");
         return RESULT_BAD_READ;
     }
     for (uint32_t i = 0; i < enrolledNum; i++) {
@@ -359,6 +374,10 @@ static bool StreamReadFileInfo(Buffer *parcel, LinkedList *userInfoList)
     result = StreamRead(parcel, &index, &userNum, sizeof(uint32_t));
     if (result != RESULT_SUCCESS) {
         LOG_ERROR("read userNum failed");
+        return false;
+    }
+    if (userNum > MAX_USER) {
+        LOG_ERROR("bad user num");
         return false;
     }
     for (uint32_t i = 0; i < userNum; i++) {

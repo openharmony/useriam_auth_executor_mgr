@@ -82,6 +82,7 @@ int32_t RequestAuthResult(uint64_t contextId, std::vector<uint8_t> &scheduleToke
     }
     if (memcpy_s(&authToken, sizeof(UserAuthToken), &authTokenHal, sizeof(UserAuthTokenHal)) != EOK) {
         LOG_ERROR("copy authToken failed");
+        DestoryBuffer(scheduleTokenBuffer);
         GlobalUnLock();
         return RESULT_BAD_COPY;
     }

@@ -137,7 +137,7 @@ ResultCode RegisterExecutorToPool(ExecutorInfoHal *executorInfo)
         LOG_ERROR("get invalid executorInfo");
         return RESULT_BAD_PARAM;
     }
-    if (g_poolList->remove(g_poolList, (void *)executorInfo, IsExecutorIdMatchByType) != RESULT_SUCCESS) {
+    if (g_poolList->remove(g_poolList, (void *)executorInfo, IsExecutorIdMatchByType, true) != RESULT_SUCCESS) {
         LOG_INFO("current executor isn't registered");
     }
     ResultCode result = GenerateValidExecutorId(&executorInfo->executorId);
@@ -165,7 +165,7 @@ ResultCode UnregisterExecutorToPool(uint64_t executorId)
         LOG_ERROR("pool not init");
         return RESULT_NEED_INIT;
     }
-    return g_poolList->remove(g_poolList, (void *)&executorId, IsExecutorIdMatchById);
+    return g_poolList->remove(g_poolList, (void *)&executorId, IsExecutorIdMatchById, true);
 }
 
 ExecutorInfoHal *CopyExecutorInfo(ExecutorInfoHal *src)

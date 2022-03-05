@@ -33,12 +33,16 @@ int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfoHal *scheduleInfo)
         LOG_ERROR("scheduleInfo is null");
         return RESULT_BAD_PARAM;
     }
-    CoAuthSchedule coAuthSchedule;
+    CoAuthSchedule coAuthSchedule = {};
     coAuthSchedule.scheduleId = scheduleId;
     int32_t ret = GetCoAuthSchedule(&coAuthSchedule);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("get coAuth schedule failed");
         return ret;
+    }
+    if (coAuthSchedule.executorSize > MAX_EXECUTOR_SIZE) {
+        LOG_ERROR("bad coAuth schedule executor size");
+        return RESULT_UNKNOWN;
     }
     scheduleInfo->templateId = coAuthSchedule.templateId;
     scheduleInfo->authSubType = coAuthSchedule.authSubType;
@@ -81,7 +85,7 @@ int32_t ScheduleFinish(const Buffer *executorMsg, ScheduleTokenHal *scheduleToke
         goto EXIT;
     }
 
-    CoAuthSchedule coAuthSchedule;
+    CoAuthSchedule coAuthSchedule = {};
     coAuthSchedule.scheduleId = resultInfo->scheduleId;
     ret = GetCoAuthSchedule(&coAuthSchedule);
     if (ret != RESULT_SUCCESS) {
