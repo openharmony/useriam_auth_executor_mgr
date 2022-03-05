@@ -161,7 +161,6 @@ enum ResultCode {
 };
 
 const uint64_t INVALID_EXECUTOR_ID = 0;
-const std::string REGISTER_NOTIFICATION = "EXECUTOR_REGISTER_NOTIFICATION";
 } // namespace UserIAM
 } // namespace OHOS
 #endif // COAUTH_INFO_DEFINE_H
