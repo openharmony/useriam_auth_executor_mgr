@@ -203,6 +203,66 @@ void AuthAttributes::UnpackTag(AuthAttributeType &tag, std::vector<uint8_t> &buf
     authDataLength += sizeof(uint32_t);
 }
 
+bool AuthAttributes::CheckLengthPass(ValueType type, uint32_t currIndex, uint32_t dataLength, uint32_t bufferLength)
+{
+    if (currIndex + dataLength > bufferLength) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "buffer read exceed buffer size");
+        return false;
+    }
+
+    switch (type) {
+        case BOOLTYPE:
+            if (dataLength != sizeof(bool)) {
+                COAUTH_HILOGE(MODULE_INNERKIT, "data length mismatch(bool)");
+                return false;
+            }
+            break;
+        case UINT32TYPE:
+            if (dataLength != sizeof(uint32_t)) {
+                COAUTH_HILOGE(MODULE_INNERKIT, "data length mismatch(uint32_t)");
+                return false;
+            }
+            break;
+        case UINT64TYPE:
+            if (dataLength != sizeof(uint64_t)) {
+                COAUTH_HILOGE(MODULE_INNERKIT, "data length mismatch(uint64_t)");
+                return false;
+            }
+            break;
+        default:
+            break;
+    }
+    return true;
+}
+
+void AuthAttributes::UnpackUint32ArrayType(std::vector<uint8_t> &buffer, AuthAttributeType tag,
+    uint32_t &authDataLength, uint32_t &dataLength)
+{
+    std::vector<uint32_t> uint32ArraylValue = GetUint32ArrayFromUint8(buffer, authDataLength, dataLength);
+    SetUint32ArrayValue(tag, uint32ArraylValue);
+    authDataLength += dataLength;
+}
+
+void AuthAttributes::UnpackUint64ArrayType(std::vector<uint8_t> &buffer, AuthAttributeType tag,
+    uint32_t &authDataLength, uint32_t &dataLength)
+{
+    std::vector<uint64_t> uint64ArraylValue = GetUint64ArrayFromUint8(buffer, authDataLength, dataLength);
+    SetUint64ArrayValue(tag, uint64ArraylValue);
+    authDataLength += dataLength;
+}
+
+void AuthAttributes::UnpackUint8ArrayType(std::vector<uint8_t> &buffer, AuthAttributeType tag, uint32_t &authDataLength,
+    uint32_t &dataLength)
+{
+    if (dataLength == 0) {
+        return;
+    }
+    std::vector<uint8_t> uint8ArrayValue(buffer.begin() + authDataLength,
+        buffer.begin() + authDataLength + dataLength);
+    SetUint8ArrayValue(tag, uint8ArrayValue);
+    authDataLength += dataLength;
+}
+
 AuthAttributes* AuthAttributes::Unpack(std::vector<uint8_t> &buffer)
 {
     if (buffer.size() == 0) {
@@ -211,14 +271,16 @@ AuthAttributes* AuthAttributes::Unpack(std::vector<uint8_t> &buffer)
     uint32_t dataLength;
     uint32_t authDataLength = 0;
     AuthAttributeType tag;
-    std::vector<uint32_t> uint32ArraylValue;
-    std::vector<uint64_t> uint64ArraylValue;
-    std::vector<uint8_t> uint8ArrayValue;
+    // skip unused tag
     UnpackTag(tag, buffer, authDataLength, dataLength);
     UnpackTag(tag, buffer, authDataLength, dataLength);
     while (authDataLength < buffer.size()) {
         UnpackTag(tag, buffer, authDataLength, dataLength);
         std::map<AuthAttributeType, ValueType>::iterator iter = authAttributesPosition_.find(tag);
+        if (!CheckLengthPass(iter->second, authDataLength, dataLength, buffer.size())) {
+            return nullptr;
+        }
+        COAUTH_HILOGE(MODULE_INNERKIT, "buffer read %{public}d", tag);
         switch (iter->second) {
             case BOOLTYPE:
                 SetBoolValue(tag, GetBoolFromUint8(buffer, authDataLength));
@@ -233,22 +295,13 @@ AuthAttributes* AuthAttributes::Unpack(std::vector<uint8_t> &buffer)
                 authDataLength += sizeof(uint64_t);
                 break;
             case UINT32ARRAYTYPE:
-                uint32ArraylValue = GetUint32ArrayFromUint8(buffer, authDataLength, dataLength);
-                SetUint32ArrayValue(tag, uint32ArraylValue);
-                authDataLength += dataLength;
+                UnpackUint32ArrayType(buffer, tag, authDataLength, dataLength);
                 break;
             case UINT64ARRAYTYPE:
-                uint64ArraylValue = GetUint64ArrayFromUint8(buffer, authDataLength, dataLength);
-                SetUint64ArrayValue(tag, uint64ArraylValue);
-                authDataLength += dataLength;
+                UnpackUint64ArrayType(buffer, tag, authDataLength, dataLength);
                 break;
             case UINT8ARRAYTYPE:
-                if (dataLength != 0) {
-                    uint8ArrayValue.insert(uint8ArrayValue.begin(), buffer.begin() + authDataLength,
-                                           buffer.begin() + authDataLength + dataLength);
-                    SetUint8ArrayValue(tag, uint8ArrayValue);
-                    authDataLength += dataLength;
-                }
+                UnpackUint8ArrayType(buffer, tag, authDataLength, dataLength);
                 break;
             default:
                 break;
@@ -314,7 +367,7 @@ int32_t AuthAttributes::Pack(std::vector<uint8_t> &buffer)
     uint32_t authDataLength = 0;
     buffer.clear();
     sort(existAttributes_.begin(), existAttributes_.end());
-    for (int32_t i = 0; i != existAttributes_.size(); i++) {
+    for (uint32_t i = 0; i != existAttributes_.size(); i++) {
         if (existAttributes_[i] == AUTH_ROOT ||
             existAttributes_[i] == AUTH_DATA ||
             existAttributes_[i] == AUTH_SIGNATURE) {

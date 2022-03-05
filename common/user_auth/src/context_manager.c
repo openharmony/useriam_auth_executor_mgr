@@ -209,10 +209,12 @@ ResultCode GetScheduleIds(UserAuthContext *context, uint64_t **scheduleIds, uint
     }
     LinkedList *schedules = context->scheduleList;
     *scheduleNum = schedules->getSize(schedules);
-    *scheduleIds = Malloc(*scheduleNum * sizeof(uint64_t));
     if (*scheduleNum == 0) {
+        LOG_INFO("scheduleNum is 0");
         return RESULT_SUCCESS;
     }
+
+    *scheduleIds = Malloc(*scheduleNum * sizeof(uint64_t));
     if (*scheduleIds == NULL) {
         LOG_ERROR("scheduleIds malloc failed");
         return RESULT_NO_MEMORY;
@@ -222,19 +224,19 @@ ResultCode GetScheduleIds(UserAuthContext *context, uint64_t **scheduleIds, uint
     for (uint32_t index = 0; index < *scheduleNum; index++) {
         if (temp == NULL) {
             LOG_ERROR("something is wrong, please check");
-            goto EXIT;
+            goto ERROR;
         }
         CoAuthSchedule *schedule = temp->data;
         if (schedule == NULL) {
             LOG_ERROR("data is null");
-            goto EXIT;
+            goto ERROR;
         }
         (*scheduleIds)[index] = schedule->scheduleId;
         temp = temp->next;
     }
     return RESULT_SUCCESS;
 
-EXIT:
+ERROR:
     Free(scheduleIds);
     *scheduleIds = NULL;
     return RESULT_GENERAL_ERROR;

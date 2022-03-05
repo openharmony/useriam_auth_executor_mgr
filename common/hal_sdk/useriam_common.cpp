@@ -44,8 +44,9 @@ int32_t Init()
         LOG_ERROR("init user auth failed");
         goto FAIL;
     }
-    if (InitResorcePool() != RESULT_SUCCESS) {
-        LOG_ERROR("init resorce pool failed");
+
+    if (InitResourcePool() != RESULT_SUCCESS) {
+        LOG_ERROR("init resource pool failed");
         goto FAIL;
     }
     if (InitUserInfoList() != RESULT_SUCCESS) {
@@ -72,7 +73,7 @@ int32_t Close()
     DestoryUserAuthContextList();
     DestoryCoAuth();
     DestroyUserInfoList();
-    DestroyResorcePool();
+    DestroyResourcePool();
     g_isInitUserIAM = false;
     GlobalUnLock();
     return RESULT_SUCCESS;

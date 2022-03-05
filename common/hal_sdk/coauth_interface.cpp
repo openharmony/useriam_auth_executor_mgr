@@ -34,7 +34,9 @@ static ExecutorInfo CopyExecutorInfoOut(const ExecutorInfoHal &executorInfoHal)
     executorInfo.authAbility = executorInfoHal.authAbility;
     executorInfo.esl = executorInfoHal.esl;
     executorInfo.executorType = executorInfoHal.executorType;
-    (void)memcpy_s(executorInfo.publicKey, PUBLIC_KEY_LEN, executorInfoHal.pubKey, PUBLIC_KEY_LEN);
+    if (memcpy_s(executorInfo.publicKey, PUBLIC_KEY_LEN, executorInfoHal.pubKey, PUBLIC_KEY_LEN) != EOK) {
+        LOG_ERROR("memcpy fail");
+    }
     return executorInfo;
 }
 
@@ -45,7 +47,9 @@ static ExecutorInfoHal CopyExecutorInfoIn(const ExecutorInfo &executorInfo)
     executorInfoHal.authAbility = executorInfo.authAbility;
     executorInfoHal.esl = executorInfo.esl;
     executorInfoHal.executorType = executorInfo.executorType;
-    (void)memcpy_s(executorInfoHal.pubKey, PUBLIC_KEY_LEN, executorInfo.publicKey, PUBLIC_KEY_LEN);
+    if (memcpy_s(executorInfoHal.pubKey, PUBLIC_KEY_LEN, executorInfo.publicKey, PUBLIC_KEY_LEN) != EOK) {
+        LOG_ERROR("memcpy fail");
+    }
     return executorInfoHal;
 }
 

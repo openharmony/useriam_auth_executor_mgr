@@ -21,7 +21,7 @@
 #include "adaptor_log.h"
 #include "adaptor_memory.h"
 
-#define MAX_DULPLICATE_CHECK 100
+#define MAX_DUPLICATE_CHECK 100
 
 // Resource pool list, which caches registered executor information.
 static LinkedList *g_poolList = NULL;
@@ -29,7 +29,7 @@ static LinkedList *g_poolList = NULL;
 static void DestroyExecutorInfo(void *data)
 {
     if (data  == NULL) {
-        LOG_ERROR("get null data");
+        LOG_ERROR("data is null");
         return;
     }
     Free(data);
@@ -38,7 +38,7 @@ static void DestroyExecutorInfo(void *data)
 static bool IsExecutorIdMatchById(void *data, void *condition)
 {
     if ((condition == NULL) || (data == NULL)) {
-        LOG_ERROR("get null data");
+        LOG_ERROR("input para is null");
         return false;
     }
     uint64_t executorId = *(uint64_t *)condition;
@@ -63,7 +63,7 @@ static bool IsInit()
     return g_poolList != NULL;
 }
 
-ResultCode InitResorcePool(void)
+ResultCode InitResourcePool(void)
 {
     if (!IsInit()) {
         g_poolList = CreateLinkedList(DestroyExecutorInfo);
@@ -74,7 +74,7 @@ ResultCode InitResorcePool(void)
     return RESULT_SUCCESS;
 }
 
-void DestroyResorcePool(void)
+void DestroyResourcePool(void)
 {
     DestroyLinkedList(g_poolList);
     g_poolList = NULL;
@@ -111,7 +111,7 @@ static ResultCode GenerateValidExecutorId(uint64_t *executorId)
         return RESULT_BAD_PARAM;
     }
 
-    for (uint32_t i = 0; i < MAX_DULPLICATE_CHECK; i++) {
+    for (uint32_t i = 0; i < MAX_DUPLICATE_CHECK; i++) {
         uint64_t tempRandom;
         if (SecureRandom((uint8_t *)&tempRandom, sizeof(uint64_t)) != RESULT_SUCCESS) {
             LOG_ERROR("get random failed");

@@ -52,6 +52,6 @@ typedef enum AuthSubType {
     DEFAULT_TYPE = 0,
 } AuthSubType;
 
-#define MAX_DULPLICATE_CHECK 100
+#define MAX_DUPLICATE_CHECK 100
 
 #endif

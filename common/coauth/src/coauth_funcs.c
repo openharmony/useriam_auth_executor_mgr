@@ -112,6 +112,7 @@ int32_t ScheduleFinish(const Buffer *executorMsg, ScheduleTokenHal *scheduleToke
         DestoryBuffer(publicKey);
         goto EXIT;
     }
+
     ret = TokenDataGetAndSign(coAuthSchedule.executors[0].authType, resultInfo, scheduleToken);
     DestoryBuffer(publicKey);
 
@@ -152,10 +153,12 @@ bool IsExecutorExistFunc(uint32_t authType)
     LinkedList *executorsQuery = NULL;
     int32_t ret = QueryExecutor(authType, &executorsQuery);
     if (ret != RESULT_SUCCESS || executorsQuery == NULL) {
+        LOG_ERROR("query executor fail");
         return false;
     }
 
     if (executorsQuery->getSize(executorsQuery) == 0) {
+        LOG_ERROR("get size fail");
         DestroyLinkedList(executorsQuery);
         return false;
     }

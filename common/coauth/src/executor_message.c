@@ -138,6 +138,7 @@ static ResultCode ParseRoot(ExecutorResultInfo *result, TlvListNode *body)
     TlvListNode *parseBody = CreateTlvList();
     if (parseBody == NULL) {
         LOG_ERROR("parseBody is null");
+        DestoryBuffer(data);
         return false;
     }
     int ret = ParseTlvWrapper(data->buf, data->contentSize, parseBody);
