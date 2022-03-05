@@ -125,7 +125,7 @@ int32_t CancelContextFunc(uint64_t contextId, uint64_t **scheduleIdArray, uint32
     }
     int32_t ret = GetScheduleIds(authContext, scheduleIdArray, scheduleNum);
     if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("get schedule faield");
+        LOG_ERROR("get schedule failed");
     }
     DestoryContext(authContext);
     return ret;

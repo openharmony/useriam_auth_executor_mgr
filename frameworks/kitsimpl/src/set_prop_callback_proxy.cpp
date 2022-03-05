@@ -30,7 +30,7 @@ void SetPropCallbackProxy::OnResult(uint32_t result, std::vector<uint8_t> &extra
     }
 
     if (!data.WriteUInt8Vector(extraInfo)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "fail to wirte WriteUInt8Vector extraInfo");
+        COAUTH_HILOGE(MODULE_INNERKIT, "fail to write WriteUInt8Vector extraInfo");
     }
 
     bool ret = SendRequest(static_cast<int32_t>(ISetPropCallback::ONRESULT), data, reply);

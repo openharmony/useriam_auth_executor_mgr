@@ -22,7 +22,7 @@
 namespace OHOS {
 namespace UserIAM {
 #define FILENAME           (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
-#define FORMATED(fmt, ...)    "[%{public}s] %{public}s# " fmt, FILENAME, __FUNCTION__, ##__VA_ARGS__
+#define FORMATTED(fmt, ...)    "[%{public}s] %{public}s# " fmt, FILENAME, __FUNCTION__, ##__VA_ARGS__
 
 #ifdef COAUTH_HILOGF
 #undef COAUTH_HILOGF
@@ -73,11 +73,11 @@ static constexpr OHOS::HiviewDFX::HiLogLabel COAUTH_LABEL[COAUTH_MODULE_BUTT] = 
 
 // In order to improve performance, do not check the module range.
 // Besides, make sure module is less than COAUTH_MODULE_BUTT.
-#define COAUTH_HILOGF(module, ...) (void)OHOS::HiviewDFX::HiLog::Fatal(COAUTH_LABEL[module], FORMATED(__VA_ARGS__))
-#define COAUTH_HILOGE(module, ...) (void)OHOS::HiviewDFX::HiLog::Error(COAUTH_LABEL[module], FORMATED(__VA_ARGS__))
-#define COAUTH_HILOGW(module, ...) (void)OHOS::HiviewDFX::HiLog::Warn(COAUTH_LABEL[module], FORMATED(__VA_ARGS__))
-#define COAUTH_HILOGI(module, ...) (void)OHOS::HiviewDFX::HiLog::Info(COAUTH_LABEL[module], FORMATED(__VA_ARGS__))
-#define COAUTH_HILOGD(module, ...) (void)OHOS::HiviewDFX::HiLog::Debug(COAUTH_LABEL[module], FORMATED(__VA_ARGS__))
+#define COAUTH_HILOGF(module, ...) (void)OHOS::HiviewDFX::HiLog::Fatal(COAUTH_LABEL[module], FORMATTED(__VA_ARGS__))
+#define COAUTH_HILOGE(module, ...) (void)OHOS::HiviewDFX::HiLog::Error(COAUTH_LABEL[module], FORMATTED(__VA_ARGS__))
+#define COAUTH_HILOGW(module, ...) (void)OHOS::HiviewDFX::HiLog::Warn(COAUTH_LABEL[module], FORMATTED(__VA_ARGS__))
+#define COAUTH_HILOGI(module, ...) (void)OHOS::HiviewDFX::HiLog::Info(COAUTH_LABEL[module], FORMATTED(__VA_ARGS__))
+#define COAUTH_HILOGD(module, ...) (void)OHOS::HiviewDFX::HiLog::Debug(COAUTH_LABEL[module], FORMATTED(__VA_ARGS__))
 } // namespace UserIAM
 } // namespace OHOS
 

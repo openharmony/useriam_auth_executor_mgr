@@ -66,8 +66,8 @@ UserInfo *InitUserInfoNode(void)
     userInfo->enrolledInfoList = CreateLinkedList(DestroyEnrolledNode);
     if (userInfo->enrolledInfoList == NULL) {
         LOG_ERROR("create enrolledInfoList failed");
-        Free(userInfo);
         DestroyLinkedList(userInfo->enrolledInfoList);
+        Free(userInfo);
         return NULL;
     }
     return userInfo;
