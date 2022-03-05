@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "coauth_service.h"
 
 #include <cinttypes>
 #include <file_ex.h>
@@ -23,7 +24,6 @@
 #include <unistd.h>
 #include <thread>
 #include "useriam_common.h"
-#include "coauth_service.h"
 #include "parameter.h"
 
 namespace OHOS {
