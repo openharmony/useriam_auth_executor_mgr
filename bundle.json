@@ -35,7 +35,7 @@
         "sub_component": [
             "//base/user_iam/auth_executor_mgr/sa_profile:coauth_sa_profile",
             "//base/user_iam/auth_executor_mgr/services:coauthservice",
-            "//base/user_iam/auth_executor_mgr/sa_profile:useriam.init"		  
+            "//base/user_iam/auth_executor_mgr/sa_profile:useriam.init"
         ],
         "inner_kits": [
           {

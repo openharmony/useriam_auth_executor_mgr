@@ -112,7 +112,7 @@ static ResultCode ParseExecutorResultData(ExecutorResultInfo *result, TlvListNod
         LOG_ERROR("ParseExecutorResultScheduleId failed");
         goto EXIT;
     }
-    
+
 EXIT:
     DestroyTlvList(parseBody);
     return ret;
@@ -174,7 +174,7 @@ ExecutorResultInfo *GetExecutorResultInfo(const Buffer *tlv)
         LOG_ERROR("parseBody is null");
         return NULL;
     }
-    
+
     int ret = ParseTlvWrapper(tlv->buf, tlv->contentSize, parseBody);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseTlvWrapper failed");
