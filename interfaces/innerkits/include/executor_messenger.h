@@ -33,8 +33,8 @@ public:
                            std::shared_ptr<AuthAttributes> finalResult) override;
 private:
     void DeleteScheduleInfoById(uint64_t scheduleId);
-    int32_t ExecutorMessenger::DoSignToken(uint64_t scheduleId, std::vector<uint8_t>& scheduleToken,
-    std::shared_ptr<AuthAttributes> finalResult, sptr<UserIAM::CoAuth::ICoAuthCallback> callback);
+    int32_t DoSignToken(uint64_t scheduleId, std::vector<uint8_t>& scheduleToken,
+        std::shared_ptr<AuthAttributes> finalResult, sptr<UserIAM::CoAuth::ICoAuthCallback> callback);
     UserIAM::CoAuth::AuthResPool* ScheResPool_;
 };
 } // namespace AuthResPool
