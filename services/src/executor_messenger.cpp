@@ -58,7 +58,7 @@ int32_t ExecutorMessenger::SendData(uint64_t scheduleId, uint64_t transNum, int3
     return SUCCESS;
 }
 
-int32_t ExecutorMessenger:: DoSignToken(uint64_t scheduleId, std::vector<uint8_t>& scheduleToken,
+int32_t ExecutorMessenger::DoSignToken(uint64_t scheduleId, std::vector<uint8_t>& scheduleToken,
     std::shared_ptr<AuthAttributes> finalResult, sptr<UserIAM::CoAuth::ICoAuthCallback> callback)
 {
     if (ScheResPool_ == nullptr || callback == nullptr) {
