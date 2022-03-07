@@ -109,8 +109,8 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
     int32_t executeRet = SUCCESS;
     ScheduleInfo scheduleInfo;
     sptr<ResIExecutorCallback> callback = nullptr;
-    int32_t cancelRet = DeleteScheduleInfo(scheduleId, scheduleInfo); // call TA
-    if (cancelRet != SUCCESS) {
+    int32_t getRet = GetScheduleInfo(scheduleId, scheduleInfo); // call TA
+    if (getRet != SUCCESS) {
         COAUTH_HILOGE(MODULE_SERVICE, "cancel is failure");
         return FAIL;
     }
@@ -137,6 +137,11 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
     }
     if (executeRet != SUCCESS) {
         COAUTH_HILOGW(MODULE_SERVICE, "There are one or more failures when canceling.");
+        return executeRet;
+    }
+    int32_t deleteRet = DeleteScheduleInfo(scheduleId, scheduleInfo); // call TA
+    if (deleteRet != SUCCESS) {
+        COAUTH_HILOGW(MODULE_SERVICE, "Delete schedule info failed. ret = %{public}d", deleteRet);
     }
     return executeRet;
 }
