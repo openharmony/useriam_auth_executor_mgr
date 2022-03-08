@@ -26,6 +26,10 @@ void CoAuthCallbackProxy::OnFinish(uint32_t resultCode, std::vector<uint8_t> &sc
     MessageParcel data;
     MessageParcel reply;
 
+    if (!data.WriteInterfaceToken(CoAuthCallbackProxy::GetDescriptor())) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        return;
+    }
     if (!data.WriteUint32(resultCode)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint32(resultCode).");
     }
@@ -43,6 +47,10 @@ void CoAuthCallbackProxy::OnFinish(uint32_t resultCode, std::vector<uint8_t> &sc
 void CoAuthCallbackProxy::OnAcquireInfo(uint32_t acquire)
 {
     MessageParcel data;
+    if (!data.WriteInterfaceToken(CoAuthCallbackProxy::GetDescriptor())) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        return;
+    }
     if (!data.WriteUint32(acquire)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint32(acquire).");
     }
