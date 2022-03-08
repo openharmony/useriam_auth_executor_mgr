@@ -22,6 +22,10 @@ namespace AuthResPool {
 int32_t ExecutorMessengerProxy::SendData(uint64_t scheduleId, uint64_t transNum,
                                          int32_t srcType, int32_t dstType, std::shared_ptr<AuthMessage> msg)
 {
+    if (msg == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "AuthMessage is null!");
+        return INVALID_PARAMETERS;
+    }
     MessageParcel data;
     MessageParcel reply;
     int32_t result = 0;
@@ -59,14 +63,16 @@ int32_t ExecutorMessengerProxy::SendData(uint64_t scheduleId, uint64_t transNum,
 int32_t ExecutorMessengerProxy::Finish(uint64_t scheduleId, int32_t srcType, int32_t resultCode,
                                        std::shared_ptr<AuthAttributes> finalResult)
 {
+    if (finalResult == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "finalResult is null!");
+        return INVALID_PARAMETERS;
+    }
     MessageParcel data;
     MessageParcel reply;
-    int32_t result = 0;
     if (!data.WriteInterfaceToken(ExecutorMessengerProxy::GetDescriptor())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
-        return result;
+        return FAIL;
     }
-
     if (!data.WriteUint64(scheduleId)) {
         return FAIL;
     }
@@ -83,6 +89,7 @@ int32_t ExecutorMessengerProxy::Finish(uint64_t scheduleId, int32_t srcType, int
     if (!data.WriteUInt8Vector(buffer)) {
         return FAIL;
     }
+    int32_t result = SUCCESS;
     bool ret = SendRequest(static_cast<int32_t>(IExecutorMessenger::COAUTH_FINISH), data, reply);
     if (ret) {
         result = reply.ReadInt32();
