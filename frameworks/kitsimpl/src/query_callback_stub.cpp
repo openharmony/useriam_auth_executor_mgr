@@ -28,6 +28,12 @@ QueryCallbackStub::QueryCallbackStub(const std::shared_ptr<QueryCallback>& impl)
 int32_t QueryCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
                                            MessageParcel &reply, MessageOption &option)
 {
+    std::u16string descripter = QueryCallbackStub::GetDescriptor();
+    std::u16string remoteDescripter = data.ReadInterfaceToken();
+    if (descripter != remoteDescripter) {
+        COAUTH_HILOGD(MODULE_INNERKIT, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        return FAIL;
+    }
     switch (code) {
         case static_cast<int32_t>(IQueryCallback::COAUTH_QUERY_RESULT):
             return OnResultStub(data, reply); // call Stub
