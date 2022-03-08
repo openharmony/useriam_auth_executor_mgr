@@ -21,7 +21,7 @@
 #include "adaptor_log.h"
 #include "idm_file_manager.h"
 
-#define MAX_DULPLICATE_CHECK 100
+#define MAX_DUPLICATE_CHECK 100
 #define PRE_APPLY_NUM 5
 #define MEM_GROWTH_FACTOR 2
 #define MAX_CREDENTIAL_RETURN 5000
@@ -122,7 +122,7 @@ ResultCode GetEnrolledInfoAuthType(int32_t userId, uint32_t authType, EnrolledIn
         return RESULT_NOT_FOUND;
     }
     if (user->enrolledInfoList == NULL) {
-        LOG_ERROR("something bad");
+        LOG_ERROR("enrolledInfoList is null");
         return RESULT_UNKNOWN;
     }
 
@@ -286,6 +286,7 @@ static ResultCode GetAllCredentialInfoFromUser(UserInfo *userInfo, CredentialInf
 
 EXIT:
     if (result != RESULT_SUCCESS) {
+        (void)memset_s(*credentialInfos, sizeof(CredentialInfoHal) * size, 0, sizeof(CredentialInfoHal) * size);
         Free(*credentialInfos);
         *credentialInfos = NULL;
         *num = 0;
@@ -336,7 +337,7 @@ static ResultCode DeleteUser(int32_t userId)
     if (g_userInfoList == NULL) {
         return RESULT_BAD_PARAM;
     }
-    return g_userInfoList->remove(g_userInfoList, &userId, MatchUserInfo);
+    return g_userInfoList->remove(g_userInfoList, &userId, MatchUserInfo, true);
 }
 
 static bool IsCredentialIdDuplicate(LinkedList *credentialList, uint64_t credentialId)
@@ -376,7 +377,7 @@ static ResultCode GenerateDeduplicateUint64(LinkedList *collection, uint64_t *de
         return RESULT_BAD_PARAM;
     }
 
-    for (uint32_t i = 0; i < MAX_DULPLICATE_CHECK; i++) {
+    for (uint32_t i = 0; i < MAX_DUPLICATE_CHECK; i++) {
         uint64_t tempRandom;
         if (SecureRandom((uint8_t *)&tempRandom, sizeof(uint64_t)) != RESULT_SUCCESS) {
             LOG_ERROR("get random failed");
@@ -388,7 +389,7 @@ static ResultCode GenerateDeduplicateUint64(LinkedList *collection, uint64_t *de
         }
     }
 
-    LOG_ERROR("a rare failure");
+    LOG_ERROR("generate random fail");
     return RESULT_GENERAL_ERROR;
 }
 
@@ -398,7 +399,7 @@ static ResultCode UpdateEnrolledId(LinkedList *enrolledList, uint32_t authType)
     EnrolledInfoHal *enrolledInfo = NULL;
     while (temp != NULL) {
         EnrolledInfoHal *nodeData = (EnrolledInfoHal *)temp->data;
-        if (enrolledInfo != NULL && enrolledInfo->authType == authType) {
+        if (nodeData != NULL && nodeData->authType == authType) {
             enrolledInfo = nodeData;
             break;
         }
@@ -519,7 +520,7 @@ ResultCode AddCredentialInfo(int32_t userId, CredentialInfoHal *credentialInfo)
     if (user == NULL && credentialInfo->authType == PIN_AUTH) {
         ResultCode ret =  AddUser(userId, credentialInfo);
         if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("add user failed");
+            LOG_ERROR("add user failed");
         }
         ret = UpdateFileInfo(g_userInfoList);
         if (ret != RESULT_SUCCESS) {
@@ -600,7 +601,7 @@ ResultCode DeleteCredentialInfo(int32_t userId, uint64_t credentialId, Credentia
         LOG_ERROR("copy failed");
         return RESULT_BAD_COPY;
     }
-    ResultCode ret = credentialList->remove(credentialList, &credentialId, MatchCredentialById);
+    ResultCode ret = credentialList->remove(credentialList, &credentialId, MatchCredentialById, true);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("remove credential failed");
         return ret;
@@ -615,7 +616,7 @@ ResultCode DeleteCredentialInfo(int32_t userId, uint64_t credentialId, Credentia
         LOG_ERROR("enrolledInfoList is null");
         return RESULT_UNKNOWN;
     }
-    ret = enrolledInfoList->remove(enrolledInfoList, &credentialInfo->authType, MatchEnrolledInfoByType);
+    ret = enrolledInfoList->remove(enrolledInfoList, &credentialInfo->authType, MatchEnrolledInfoByType, true);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("remove enrolledInfo failed");
         return ret;

@@ -37,7 +37,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
     std::vector<uint8_t> scheduleToken;
     int32_t ret = GetScheduleInfo(scheduleId, scheduleInfo);
     if (ret != SUCCESS) {
-        COAUTH_HILOGI(MODULE_SERVICE, "Schedule faild.");
+        COAUTH_HILOGI(MODULE_SERVICE, "Schedule failed.");
         return callback->OnFinish(ret, scheduleToken);
     }
     std::size_t executorNum = scheduleInfo.executors.size();
@@ -109,12 +109,12 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
     int32_t executeRet = SUCCESS;
     ScheduleInfo scheduleInfo;
     sptr<ResIExecutorCallback> callback = nullptr;
-    int32_t cancelRet = DeleteScheduleInfo(scheduleId, scheduleInfo); // call TA
-    if (cancelRet != SUCCESS) {
+    int32_t getRet = GetScheduleInfo(scheduleId, scheduleInfo); // call TA
+    if (getRet != SUCCESS) {
         COAUTH_HILOGE(MODULE_SERVICE, "cancel is failure");
         return FAIL;
     }
-    COAUTH_HILOGI(MODULE_SERVICE, "cancel is sucessfull");
+    COAUTH_HILOGI(MODULE_SERVICE, "cancel is successfull");
     std::size_t executorNum = scheduleInfo.executors.size();
     if (executorNum == 0) {
         COAUTH_HILOGE(MODULE_SERVICE, "executorId does not exist.");
@@ -137,6 +137,11 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
     }
     if (executeRet != SUCCESS) {
         COAUTH_HILOGW(MODULE_SERVICE, "There are one or more failures when canceling.");
+        return executeRet;
+    }
+    int32_t deleteRet = DeleteScheduleInfo(scheduleId, scheduleInfo); // call TA
+    if (deleteRet != SUCCESS) {
+        COAUTH_HILOGW(MODULE_SERVICE, "Delete schedule info failed. ret = %{public}d", deleteRet);
     }
     return executeRet;
 }
@@ -173,7 +178,7 @@ void CoAuthManager::SetExecutorProp(ResAuthAttributes &conditions, sptr<ISetProp
     if (result != SUCCESS) {
         COAUTH_HILOGE(MODULE_SERVICE, "set properties failure");
     }
-    COAUTH_HILOGI(MODULE_SERVICE, "set properties sucessfull");
+    COAUTH_HILOGI(MODULE_SERVICE, "set properties successfull");
     callback->OnResult(result, extraInfo);
 }
 

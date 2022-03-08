@@ -18,7 +18,7 @@
 
 #include "pool.h"
 
-#define INAVLID_SESSION_ID 0
+#define INVALID_SESSION_ID 0
 #define MAX_EXECUTOR_SIZE 2
 
 typedef enum ScheduleMode {

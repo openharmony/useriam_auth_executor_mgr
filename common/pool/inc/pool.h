@@ -36,8 +36,8 @@ typedef struct ExecutorInfoHal {
     uint8_t pubKey[PUBLIC_KEY_LEN];
 } ExecutorInfoHal;
 
-ResultCode InitResorcePool(void);
-void DestroyResorcePool(void);
+ResultCode InitResourcePool(void);
+void DestroyResourcePool(void);
 ResultCode RegisterExecutorToPool(ExecutorInfoHal *executorInfo);
 ResultCode UnregisterExecutorToPool(uint64_t executorId);
 ResultCode QueryExecutor(uint32_t authType, LinkedList **result);

@@ -107,6 +107,7 @@ int32_t RequestAuthResultFunc(uint64_t contextId, const Buffer *scheduleToken, U
             Free(*scheduleIdArray);
             *scheduleIdArray = NULL;
             *scheduleNum = 0;
+            (void)memset_s(authToken, sizeof(UserAuthTokenHal), 0, sizeof(UserAuthTokenHal));
         }
     } else {
         authToken->authResult = scheduleTokenStruct.scheduleResult;
@@ -124,9 +125,7 @@ int32_t CancelContextFunc(uint64_t contextId, uint64_t **scheduleIdArray, uint32
     }
     int32_t ret = GetScheduleIds(authContext, scheduleIdArray, scheduleNum);
     if (ret != RESULT_SUCCESS) {
-        DestoryContext(authContext);
-        LOG_ERROR("get schedule faield");
-        return ret;
+        LOG_ERROR("get schedule failed");
     }
     DestoryContext(authContext);
     return ret;

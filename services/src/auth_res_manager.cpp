@@ -43,7 +43,7 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     info.esl = esl;
     info.executorType = exeType;
     if (publicKey.size() > PUBLIC_KEY_LEN) {
-        COAUTH_HILOGE(MODULE_SERVICE, "publicKey is wrong!");
+        COAUTH_HILOGE(MODULE_SERVICE, "publicKey length too long");
         return executorId;
     } else {
         for (std::size_t i = 0; i < publicKey.size(); i++) {
@@ -58,12 +58,12 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
             return INVALID_EXECUTOR_ID;
         }
         coAuthResPool_.Insert(executorId, executorInfo, callback); // Cache executorId
-        COAUTH_HILOGI(MODULE_SERVICE, "register is sucessfull!");
+        COAUTH_HILOGI(MODULE_SERVICE, "register is successfull!");
         // Assign messenger
         sptr<UserIAM::AuthResPool::IExecutorMessenger> messenger =
         new UserIAM::AuthResPool::ExecutorMessenger(&coAuthResPool_);
         callback->OnMessengerReady(messenger);
-        COAUTH_HILOGD(MODULE_SERVICE, "register is sucessfull,exeID is XXXX%{public}04" PRIx64, executorId);
+        COAUTH_HILOGD(MODULE_SERVICE, "register is successfull,exeID is XXXX%{public}04" PRIx64, executorId);
         return executorId; // executorId returned after successful registration
     }
     if (result == FAIL) {
@@ -85,15 +85,15 @@ void AuthResManager::QueryStatus(ResAuthExecutor &executorInfo, sptr<ResIQueryCa
     }
     result = executorInfo.GetAuthType(authType);
     if (result == SUCCESS) {
-        COAUTH_HILOGI(MODULE_SERVICE, "GetAuthType is SUCESS");
+        COAUTH_HILOGI(MODULE_SERVICE, "GetAuthType is success");
         isExist = IsExecutorExist(authType); // call TA
     } else {
         COAUTH_HILOGE(MODULE_SERVICE, "GetAuthType is failure");
     }
     if (isExist == false) {
-        COAUTH_HILOGE(MODULE_SERVICE, "queryustatus executor register is not exist!");
+        COAUTH_HILOGE(MODULE_SERVICE, "query status executor register is not exist!");
     } else {
-        COAUTH_HILOGI(MODULE_SERVICE, "queryustatus executor register is exist!");
+        COAUTH_HILOGI(MODULE_SERVICE, "query status executor register is exist!");
     }
     callback->OnResult(isExist ? SUCCESS : FAIL);
 }
@@ -144,6 +144,11 @@ void AuthResManager::ResIExecutorCallbackDeathRecipient::OnRemoteDied(const wptr
 
     if (parent_ != nullptr) {
         parent_->DeleteExecutorCallback(executorID_);
+    }
+
+    int32_t ret = ExecutorUnRegister(executorID_);
+    if (ret != SUCCESS) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "executor unregister fail.");
     }
     COAUTH_HILOGE(MODULE_INNERKIT, "ResIExecutorCallbackDeathRecipient::Recv death notice.");
 }

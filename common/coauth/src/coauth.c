@@ -81,6 +81,7 @@ ResultCode AddCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
     }
     if (memcpy_s(schedule, sizeof(CoAuthSchedule), coAuthSchedule, sizeof(CoAuthSchedule)) != EOK) {
         LOG_ERROR("copy fail");
+        Free(schedule);
         return RESULT_BAD_COPY;
     }
     ResultCode result = g_scheduleList->insert(g_scheduleList, schedule);
@@ -109,7 +110,7 @@ ResultCode RemoveCoAuthSchedule(uint64_t scheduleId)
         LOG_ERROR("pool not init");
         return RESULT_NEED_INIT;
     }
-    return g_scheduleList->remove(g_scheduleList, (void *)&scheduleId, IsScheduleMatch);
+    return g_scheduleList->remove(g_scheduleList, (void *)&scheduleId, IsScheduleMatch, true);
 }
 
 ResultCode GetCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
@@ -127,14 +128,14 @@ ResultCode GetCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
         LOG_ERROR("create iterator fail");
         return RESULT_NO_MEMORY;
     }
-    int32_t result = RESULT_NO_MEMORY;
+    int32_t result = RESULT_BAD_MATCH;
     while (iterator->hasNext(iterator)) {
         CoAuthSchedule *schedule = (CoAuthSchedule *)iterator->next(iterator);
         if (schedule->scheduleId != coAuthSchedule->scheduleId) {
             continue;
         }
         if (memcpy_s(coAuthSchedule, sizeof(CoAuthSchedule), schedule, sizeof(CoAuthSchedule)) != EOK) {
-            LOG_ERROR("create iterator fail");
+            LOG_ERROR("memcpy fail");
             result = RESULT_BAD_COPY;
             break;
         }
@@ -168,7 +169,7 @@ static ResultCode GenerateValidScheduleId(uint64_t *scheduleId)
         return RESULT_BAD_PARAM;
     }
 
-    for (uint32_t i = 0; i < MAX_DULPLICATE_CHECK; i++) {
+    for (uint32_t i = 0; i < MAX_DUPLICATE_CHECK; i++) {
         uint64_t tempRandom;
         if (SecureRandom((uint8_t *)&tempRandom, sizeof(uint64_t)) != RESULT_SUCCESS) {
             LOG_ERROR("get random failed");
@@ -202,7 +203,7 @@ static ResultCode MountExecutor(uint32_t authType, CoAuthSchedule *coAuthSchedul
     LinkedListNode *tempNode = executors->head;
     for (uint32_t i = 0; i < coAuthSchedule->executorSize; i++) {
         if (tempNode == NULL || tempNode->data == NULL) {
-            LOG_ERROR("something bad");
+            LOG_ERROR("tempNode or data is null");
             ret = RESULT_UNKNOWN;
             goto EXIT;
         }
@@ -212,6 +213,7 @@ static ResultCode MountExecutor(uint32_t authType, CoAuthSchedule *coAuthSchedul
             ret = RESULT_UNKNOWN;
             goto EXIT;
         }
+        tempNode = tempNode->next;
     }
 
 EXIT:
@@ -226,6 +228,10 @@ CoAuthSchedule *GenerateAuthSchedule(uint64_t contextId, uint32_t authType, uint
     if (coAuthSchedule == NULL) {
         LOG_ERROR("coAuthSchedule is null");
         return NULL;
+    }
+    if (memset_s(coAuthSchedule, sizeof(CoAuthSchedule), 0, sizeof(CoAuthSchedule)) != EOK) {
+        LOG_ERROR("reset coAuthSchedule fail");
+        goto EXIT;
     }
     ResultCode ret = GenerateValidScheduleId(&coAuthSchedule->scheduleId);
     if (ret != RESULT_SUCCESS) {
@@ -257,6 +263,10 @@ CoAuthSchedule *GenerateIdmSchedule(uint64_t challenge, uint32_t authType, uint6
     if (coAuthSchedule == NULL) {
         LOG_ERROR("coAuthSchedule is null");
         return NULL;
+    }
+    if (memset_s(coAuthSchedule, sizeof(CoAuthSchedule), 0, sizeof(CoAuthSchedule)) != EOK) {
+        LOG_ERROR("reset coAuthSchedule fail");
+        goto EXIT;
     }
     ResultCode ret = GenerateValidScheduleId(&coAuthSchedule->scheduleId);
     if (ret != RESULT_SUCCESS) {

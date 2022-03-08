@@ -58,8 +58,8 @@ static int32_t PutTlvObject(TlvListNode *head, int32_t type, uint32_t length, co
     int32_t ret = AddTlvNode(head, &object);
     if (ret != OPERA_SUCC) {
         if (object.value != NULL) {
-            Free(tlv->value);
-            tlv->value = NULL;
+            Free(object.value->value);
+            object.value->value = NULL;
             Free(object.value);
             object.value = NULL;
         }
@@ -135,7 +135,7 @@ int32_t ParseTlvWrapper(const uint8_t *buffer, uint32_t bufferSize, TlvListNode 
             return OPERA_FAIL;
         }
         int32_t ret = PutTlvObject(head, type, length, buffer + offset);
-        if (ret != 0) {
+        if (ret != OPERA_SUCC) {
             return ret;
         }
         offset += length;
@@ -187,14 +187,13 @@ int32_t TlvAppendObject(TlvListNode *head, int32_t type, const uint8_t *buffer, 
     return PutTlvObject(head, type, length, buffer);
 }
 
-static uint8_t *GetTlvValue(TlvListNode *head, int32_t msgType, uint32_t *len)
+static uint8_t *GetTlvValue(TlvListNode *node, int32_t msgType, uint32_t *len)
 {
-    if ((head == NULL) || (len == NULL)) {
+    if ((node == NULL) || (len == NULL)) {
         LOG_ERROR("GetTlvValue input invalid");
         return NULL;
     }
-    TlvObject node = head->data;
-    TlvType *tlv = node.value;
+    TlvType *tlv = node->data.value;
     if (tlv == NULL) {
         LOG_ERROR("GetTlvValue tlv is NULL");
         return NULL;

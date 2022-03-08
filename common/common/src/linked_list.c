@@ -42,7 +42,7 @@ static ResultCode InsertNode(LinkedList *list, void *data)
     return RESULT_SUCCESS;
 }
 
-static ResultCode RemoveNode(LinkedList *list, void *condition, MATCH_FUNC matchFunc)
+static ResultCode RemoveNode(LinkedList *list, void *condition, MATCH_FUNC matchFunc, bool destroyNode)
 {
     if (list == NULL) {
         LOG_ERROR("get null list");
@@ -71,6 +71,12 @@ static ResultCode RemoveNode(LinkedList *list, void *condition, MATCH_FUNC match
     }
     list->size--;
     node->next = NULL;
+    if (destroyNode) {
+        if (list->destroyDataFunc != NULL) {
+            list->destroyDataFunc(node->data);
+        }
+        Free(node);
+    }
     return RESULT_SUCCESS;
 }
 

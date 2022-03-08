@@ -29,7 +29,7 @@
       },
       "build": {
         "sub_component": [
-            "//base/user_iam/auth_executor_mgr/common:useriam_common_lib"	  
+            "//base/user_iam/auth_executor_mgr/common:useriam_common_lib"
         ],
         "inner_kits": [
         ],

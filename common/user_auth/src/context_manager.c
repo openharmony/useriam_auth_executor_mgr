@@ -70,6 +70,7 @@ UserAuthContext *GenerateContext(AuthSolutionHal params)
     ResultCode ret = SingleAuthTrustLevel(params.userId, params.authType, &authTypeAtl);
     if (ret != RESULT_SUCCESS || authTypeAtl < params.authTrustLevel) {
         LOG_ERROR("authTrustLevel is satisfied");
+        return NULL;
     }
 
     UserAuthContext *context = Malloc(sizeof(UserAuthContext));
@@ -81,13 +82,13 @@ UserAuthContext *GenerateContext(AuthSolutionHal params)
     ret = CreateSchedules(context);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("create schedule failed");
-        DestoryContext(context);
+        DestroyContextNode(context);
         return NULL;
     }
     ret = g_contextList->insert(g_contextList, context);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("create schedule failed");
-        DestoryContext(context);
+        DestroyContextNode(context);
         return NULL;
     }
     return context;
@@ -208,10 +209,12 @@ ResultCode GetScheduleIds(UserAuthContext *context, uint64_t **scheduleIds, uint
     }
     LinkedList *schedules = context->scheduleList;
     *scheduleNum = schedules->getSize(schedules);
-    *scheduleIds = Malloc(*scheduleNum * sizeof(uint64_t));
     if (*scheduleNum == 0) {
+        LOG_INFO("scheduleNum is 0");
         return RESULT_SUCCESS;
     }
+
+    *scheduleIds = Malloc(*scheduleNum * sizeof(uint64_t));
     if (*scheduleIds == NULL) {
         LOG_ERROR("scheduleIds malloc failed");
         return RESULT_NO_MEMORY;
@@ -221,19 +224,19 @@ ResultCode GetScheduleIds(UserAuthContext *context, uint64_t **scheduleIds, uint
     for (uint32_t index = 0; index < *scheduleNum; index++) {
         if (temp == NULL) {
             LOG_ERROR("something is wrong, please check");
-            goto EXIT;
+            goto ERROR;
         }
         CoAuthSchedule *schedule = temp->data;
         if (schedule == NULL) {
             LOG_ERROR("data is null");
-            goto EXIT;
+            goto ERROR;
         }
         (*scheduleIds)[index] = schedule->scheduleId;
         temp = temp->next;
     }
     return RESULT_SUCCESS;
 
-EXIT:
+ERROR:
     Free(scheduleIds);
     *scheduleIds = NULL;
     return RESULT_GENERAL_ERROR;
@@ -258,7 +261,7 @@ ResultCode ScheduleOnceFinish(UserAuthContext *context, uint64_t scheduleId)
         LOG_ERROR("param is null");
         return RESULT_BAD_PARAM;
     }
-    return context->scheduleList->remove(context->scheduleList, &scheduleId, MatchSchedule);
+    return context->scheduleList->remove(context->scheduleList, &scheduleId, MatchSchedule, true);
 }
 
 static bool MatchContextSelf(void *data, void *condition)
@@ -272,8 +275,11 @@ void DestoryContext(UserAuthContext *context)
         LOG_ERROR("context is null");
         return;
     }
-
-    g_contextList->remove(g_contextList, context, MatchContextSelf);
+    if (g_contextList == NULL) {
+        LOG_ERROR("context list is null");
+        return;
+    }
+    g_contextList->remove(g_contextList, context, MatchContextSelf, true);
 }
 
 static void DestroyContextNode(void *data)

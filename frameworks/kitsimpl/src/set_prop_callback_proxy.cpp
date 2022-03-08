@@ -24,13 +24,18 @@ void SetPropCallbackProxy::OnResult(uint32_t result, std::vector<uint8_t> &extra
 {
     MessageParcel data;
     MessageParcel reply;
-
+    if (!data.WriteInterfaceToken(SetPropCallbackProxy::GetDescriptor())) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        return;
+    }
     if (!data.WriteUint32(result)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint32(result).");
+        return;
     }
 
     if (!data.WriteUInt8Vector(extraInfo)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "fail to wirte WriteUInt8Vector extraInfo");
+        COAUTH_HILOGE(MODULE_INNERKIT, "fail to write WriteUInt8Vector extraInfo");
+        return;
     }
 
     bool ret = SendRequest(static_cast<int32_t>(ISetPropCallback::ONRESULT), data, reply);

@@ -27,6 +27,12 @@ SetPropCallbackStub::SetPropCallbackStub(const std::shared_ptr<SetPropCallback>&
 int32_t SetPropCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
                                              MessageParcel &reply, MessageOption &option)
 {
+    std::u16string descripter = SetPropCallbackStub::GetDescriptor();
+    std::u16string remoteDescripter = data.ReadInterfaceToken();
+    if (descripter != remoteDescripter) {
+        COAUTH_HILOGD(MODULE_INNERKIT, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        return FAIL;
+    }
     switch (code) {
         case static_cast<int32_t>(ISetPropCallback::ONRESULT):
             return OnResultStub(data, reply);

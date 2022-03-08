@@ -15,6 +15,7 @@
 
 #include "file_operator.h"
 #include <stdio.h>
+#include "securec.h"
 #include "adaptor_log.h"
 #include "defines.h"
 
@@ -47,6 +48,7 @@ static int32_t ReadFile(const char *fileName, uint8_t *buf, uint32_t len)
     if (readLen != len) {
         LOG_ERROR("read file fail");
         (void)fclose(fileOperator);
+        (void)memset_s(buf, len, 0, len);
         return RESULT_BAD_READ;
     }
     (void)fclose(fileOperator);
@@ -80,6 +82,7 @@ static int32_t GetFileLen(const char *fileName, uint32_t *len)
         LOG_ERROR("get bad params");
         return RESULT_BAD_PARAM;
     }
+    *len = 0;
     FILE *fileOperator = fopen(fileName, "rb");
     if (fileOperator == NULL) {
         LOG_ERROR("fopen file fail");

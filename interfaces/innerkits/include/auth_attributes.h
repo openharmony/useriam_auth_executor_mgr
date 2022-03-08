@@ -85,6 +85,13 @@ private:
                       std::vector<uint8_t> &buffer);
     void Write64Array(std::vector<uint64_t> &uint64ArraylValue, uint8_t *writePointer,
                       std::vector<uint8_t> &buffer);
+    bool CheckLengthPass(ValueType type, uint32_t currIndex, uint32_t dataLength, uint32_t bufferLength);
+    void UnpackUint32ArrayType(std::vector<uint8_t> &buffer, AuthAttributeType tag, uint32_t &authDataLength,
+        uint32_t &dataLength);
+    void UnpackUint64ArrayType(std::vector<uint8_t> &buffer, AuthAttributeType tag, uint32_t &authDataLength,
+        uint32_t &dataLength);
+    void UnpackUint8ArrayType(std::vector<uint8_t> &buffer, AuthAttributeType tag, uint32_t &authDataLength,
+        uint32_t &dataLength);
 };
 } // namespace AuthResPool
 } // namespace UserIAM

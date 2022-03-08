@@ -58,6 +58,38 @@ int32_t ExecutorMessenger::SendData(uint64_t scheduleId, uint64_t transNum, int3
     return SUCCESS;
 }
 
+int32_t ExecutorMessenger::DoSignToken(uint64_t scheduleId, std::vector<uint8_t>& scheduleToken,
+    std::shared_ptr<AuthAttributes> finalResult, sptr<UserIAM::CoAuth::ICoAuthCallback> callback)
+{
+    if (ScheResPool_ == nullptr || callback == nullptr) {
+        DeleteScheduleInfoById(scheduleId);
+        COAUTH_HILOGE(MODULE_SERVICE, "ScheResPool_ or callback is nullptr");
+        return FAIL;
+    }
+    COAUTH_HILOGD(MODULE_SERVICE, "ExecutorMessenger::DoSignToken");
+    UserIAM::CoAuth::ScheduleToken signScheduleToken;
+    std::vector<uint8_t> executorFinishMsg;
+    signScheduleToken.scheduleId = scheduleId;
+    finalResult->GetUint8ArrayValue(AUTH_RESULT, executorFinishMsg);
+    int32_t signRet = UserIAM::CoAuth::GetScheduleToken(executorFinishMsg, signScheduleToken);
+    if (signRet != SUCCESS) {
+        COAUTH_HILOGE(MODULE_SERVICE, "sign token failed, ret is %{public}d", signRet);
+        callback->OnFinish(signRet, scheduleToken);
+        ScheResPool_->DeleteScheduleCallback(scheduleId);
+        return signRet;
+    }
+    scheduleToken.resize(sizeof(UserIAM::CoAuth::ScheduleToken));
+    if (memcpy_s(&scheduleToken[0], scheduleToken.size(), &signScheduleToken,
+        sizeof(UserIAM::CoAuth::ScheduleToken)) != EOK) {
+        callback->OnFinish(FAIL, scheduleToken);
+        ScheResPool_->DeleteScheduleCallback(scheduleId);
+        COAUTH_HILOGE(MODULE_SERVICE, "copy scheduleToken failed");
+        return FAIL;
+    }
+
+    return SUCCESS;
+}
+
 int32_t ExecutorMessenger::Finish(uint64_t scheduleId, int32_t srcType, int32_t resultCode,
                                   std::shared_ptr<AuthAttributes> finalResult)
 {
@@ -89,23 +121,12 @@ int32_t ExecutorMessenger::Finish(uint64_t scheduleId, int32_t srcType, int32_t 
         COAUTH_HILOGE(MODULE_SERVICE, "finalResult is nullptr");
         return FAIL;
     }
-    UserIAM::CoAuth::ScheduleToken signScheduleToken;
-    std::vector<uint8_t> executorFinishMsg;
-    signScheduleToken.scheduleId = scheduleId;
-    finalResult->GetUint8ArrayValue(AUTH_RESULT, executorFinishMsg);
-    int32_t signRet = UserIAM::CoAuth::GetScheduleToken(executorFinishMsg, signScheduleToken);
-    if (signRet != SUCCESS) {
-        callback->OnFinish(signRet, scheduleToken);
-        ScheResPool_->DeleteScheduleCallback(scheduleId);
-        return signRet;
-    }
-    scheduleToken.resize(sizeof(UserIAM::CoAuth::ScheduleToken));
-    if (memcpy_s(&scheduleToken[0], scheduleToken.size(), &signScheduleToken,
-        sizeof(UserIAM::CoAuth::ScheduleToken)) != EOK) {
-        callback->OnFinish(FAIL, scheduleToken);
-        ScheResPool_->DeleteScheduleCallback(scheduleId);
-        COAUTH_HILOGE(MODULE_SERVICE, "copy scheduleToken failed");
-        return FAIL;
+
+    if (resultCode == SUCCESS) {
+        int32_t signRet = DoSignToken(scheduleId, scheduleToken, finalResult, callback);
+        if (signRet != SUCCESS) {
+            return signRet;
+        }
     }
     callback->OnFinish(resultCode, scheduleToken);
     COAUTH_HILOGD(MODULE_SERVICE, "feedback finish info");

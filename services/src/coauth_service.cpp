@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include <cinttypes>
 #include <file_ex.h>
 #include <string_ex.h>
@@ -23,33 +22,16 @@
 #include <unistd.h>
 #include <thread>
 #include "useriam_common.h"
-#include "common_event_manager.h"
+#include "parameter.h"
 #include "coauth_service.h"
 
 namespace OHOS {
 namespace UserIAM {
 namespace CoAuth {
-void CheckSystemAbility()
+void SendBootEvent()
 {
-    sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (sam == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get system ability manager");
-        return;
-    }
-    for (int i = 0; i < CHECK_TIMES; i++) {
-        bool isExist = false;
-        sam->CheckSystemAbility(SUBSYS_USERIAM_SYS_ABILITY_PINAUTH, isExist);
-        if (!isExist) {
-            COAUTH_HILOGI(MODULE_INNERKIT, "PIN_AUTH_SERVICE is not exist, start pin auth ability failed, to do next");
-        } else {
-            COAUTH_HILOGI(MODULE_INNERKIT, "PIN_AUTH_SERVICE is exist, start pin auth ability success");
-            return;
-        }
-        if (i < CHECK_TIMES - 1) {
-            sleep(SLEEP_TIME);
-        }
-    }
-    COAUTH_HILOGI(MODULE_INNERKIT, "start pin auth ability all failed");
+    COAUTH_HILOGI(MODULE_INNERKIT, "SendBootEvent start");
+    SetParameter("bootevent.useriam.fwkready", "true");
 }
 
 REGISTER_SYSTEM_ABILITY_BY_ID(CoAuthService, SUBSYS_USERIAM_SYS_ABILITY_AUTHEXECUTORMGR, true);
@@ -84,12 +66,8 @@ void CoAuthService::OnStart()
     } else {
         COAUTH_HILOGI(MODULE_SERVICE, " IAM CA is inited");
     }
-
-    // Send registration broadcast
-    SendRegisterBroadcast();
-
     // Start other sevice
-    std::thread checkThread(OHOS::UserIAM::CoAuth::CheckSystemAbility);
+    std::thread checkThread(OHOS::UserIAM::CoAuth::SendBootEvent);
     checkThread.join();
 }
 
@@ -175,16 +153,6 @@ int32_t CoAuthService::GetExecutorProp(ResAuthAttributes &conditions, std::share
         return FAIL;
     }
     return coAuthMgr_.GetExecutorProp(conditions, values);
-}
-
-void CoAuthService::SendRegisterBroadcast()
-{
-    EventFwk::Want want;
-    want.SetAction(REGISTER_NOTIFICATION);
-    EventFwk::CommonEventData data;
-    data.SetWant(want);
-    bool ret = EventFwk::CommonEventManager::PublishCommonEvent(data);
-    COAUTH_HILOGI(MODULE_SERVICE, "send broadcast result = %{public}d", ret);
 }
 } // namespace CoAu
 } // namespace UserIAM

@@ -15,6 +15,7 @@
 
 #include "executor_message.h"
 
+#include "securec.h"
 #include "adaptor_log.h"
 #include "tlv_wrapper.h"
 #include "adaptor_memory.h"
@@ -111,7 +112,7 @@ static ResultCode ParseExecutorResultData(ExecutorResultInfo *result, TlvListNod
         LOG_ERROR("ParseExecutorResultScheduleId failed");
         goto EXIT;
     }
-    
+
 EXIT:
     DestroyTlvList(parseBody);
     return ret;
@@ -137,6 +138,7 @@ static ResultCode ParseRoot(ExecutorResultInfo *result, TlvListNode *body)
     TlvListNode *parseBody = CreateTlvList();
     if (parseBody == NULL) {
         LOG_ERROR("parseBody is null");
+        DestoryBuffer(data);
         return false;
     }
     int ret = ParseTlvWrapper(data->buf, data->contentSize, parseBody);
@@ -172,7 +174,7 @@ ExecutorResultInfo *GetExecutorResultInfo(const Buffer *tlv)
         LOG_ERROR("parseBody is null");
         return NULL;
     }
-    
+
     int ret = ParseTlvWrapper(tlv->buf, tlv->contentSize, parseBody);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("ParseTlvWrapper failed");
@@ -183,6 +185,10 @@ ExecutorResultInfo *GetExecutorResultInfo(const Buffer *tlv)
     ExecutorResultInfo *result = Malloc(sizeof(ExecutorResultInfo));
     if (result == NULL) {
         LOG_ERROR("malloc failed");
+        goto EXIT;
+    }
+    if (memset_s(result, sizeof(ExecutorResultInfo), 0, sizeof(ExecutorResultInfo)) != EOK) {
+        LOG_ERROR("set result failed");
         goto EXIT;
     }
     ret = ParseRoot(result, parseBody->next);

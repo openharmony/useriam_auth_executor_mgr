@@ -104,7 +104,7 @@ int32_t ExecutorCallbackStub::OnGetPropertyStub(MessageParcel& data, MessageParc
     std::shared_ptr<AuthAttributes> conditions = std::make_shared<AuthAttributes>();
     data.ReadUInt8Vector(&buffer);
     conditions->Unpack(buffer);
-    
+
     std::shared_ptr<AuthAttributes> values = std::make_shared<AuthAttributes>();
     int32_t ret = OnGetProperty(conditions, values);
     if (!reply.WriteInt32(ret)) {

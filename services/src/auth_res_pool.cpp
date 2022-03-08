@@ -72,15 +72,15 @@ int32_t AuthResPool::FindExecutorCallback(uint64_t executorID, sptr<ResIExecutor
     return resultCode;
 }
 
-int32_t AuthResPool::FindExecutorCallback(uint32_t authType, sptr<ResIExecutorCallback> &callback)
+int32_t AuthResPool::FindExecutorCallback(uint32_t authType2Find, sptr<ResIExecutorCallback> &callback)
 {
     int32_t resultCode = SUCCESS;
-    AuthType getAuthType;
+    AuthType authType;
     std::lock_guard<std::mutex> lock(authMutex_);
     std::map<uint64_t, std::shared_ptr<ExecutorRegister>>::iterator iter;
     for (iter = authResPool_.begin(); iter != authResPool_.end(); ++iter) {
-        iter->second->executorInfo->GetAuthType(getAuthType);
-        if (getAuthType == (int32_t)authType) {
+        iter->second->executorInfo->GetAuthType(authType);
+        if ((AuthType)authType2Find == authType) {
             callback = iter->second->callback;
             COAUTH_HILOGI(MODULE_SERVICE, "Executor callback is found");
             return resultCode;

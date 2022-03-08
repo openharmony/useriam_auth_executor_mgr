@@ -49,8 +49,6 @@ public:
     virtual void SetExecutorProp(ResAuthAttributes &conditions, const sptr<ISetPropCallback> &callback) override;
 
 private:
-    void SendRegisterBroadcast();
-
     CoAuthRunningState state_ = CoAuthRunningState::STATE_STOPPED;
     AuthResManager authResMgr_;
     CoAuthManager  coAuthMgr_;

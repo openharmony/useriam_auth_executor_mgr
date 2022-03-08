@@ -41,7 +41,7 @@ typedef struct LinkedList {
     DESTROY_DATA_FUNC destroyDataFunc;
     uint32_t (*getSize)(struct LinkedList *list);
     ResultCode (*insert)(struct LinkedList *list, void *data);
-    ResultCode (*remove)(struct LinkedList *list, void *condition, MATCH_FUNC matchFunc);
+    ResultCode (*remove)(struct LinkedList *list, void *condition, MATCH_FUNC matchFunc, bool destroyNode);
     LinkedListIterator *(*createIterator)(struct LinkedList *list);
     void (*destroyIterator)(LinkedListIterator *iterator);
 } LinkedList;

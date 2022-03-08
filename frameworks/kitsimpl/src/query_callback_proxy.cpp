@@ -23,8 +23,13 @@ namespace AuthResPool {
 void QueryCallbackProxy::OnResult(uint32_t resultCode)
 {
     MessageParcel data;
+    if (!data.WriteInterfaceToken(QueryCallbackProxy::GetDescriptor())) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        return;
+    }
     if (!data.WriteUint32(resultCode)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint64(scheduleId).");
+        return;
     }
     MessageParcel reply;
     bool ret = SendRequest(static_cast<int32_t>(IQueryCallback::COAUTH_QUERY_RESULT), data, reply);
