@@ -28,6 +28,12 @@ CoAuthCallbackStub::CoAuthCallbackStub(const std::shared_ptr<CoAuthCallback>& im
 int32_t CoAuthCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
                                             MessageParcel &reply, MessageOption &option)
 {
+    std::u16string descripter = CoAuthCallbackStub::GetDescriptor();
+    std::u16string remoteDescripter = data.ReadInterfaceToken();
+    if (descripter != remoteDescripter) {
+        COAUTH_HILOGD(MODULE_INNERKIT, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        return FAIL;
+    }
     switch (code) {
         case static_cast<int32_t>(ICoAuthCallback::ONFINISH):
             return OnFinishStub(data, reply);
