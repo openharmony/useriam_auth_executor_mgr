@@ -76,13 +76,10 @@ uint64_t CoAuthProxy::Register(std::shared_ptr<AuthResPool::AuthExecutor> execut
     }
     MessageParcel data;
     MessageParcel reply;
-    uint64_t result = 0;
-
     if (!data.WriteInterfaceToken(CoAuthProxy::GetDescriptor())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
         return FAIL;
     }
-
     if (WriteAuthExecutor(*executorInfo, data) == FAIL) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write executorInfo failed!");
         return FAIL;
@@ -91,7 +88,7 @@ uint64_t CoAuthProxy::Register(std::shared_ptr<AuthResPool::AuthExecutor> execut
         COAUTH_HILOGD(MODULE_INNERKIT, "failed to WriteRemoteObject(callback).");
         return FAIL;
     }
-
+    uint64_t result = SUCCESS;
     bool ret = SendRequest(static_cast<int32_t>(ICoAuth::COAUTH_EXECUTOR_REGIST), data, reply);
     if (ret) {
         result = reply.ReadUint64();
