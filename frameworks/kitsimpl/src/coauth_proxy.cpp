@@ -72,27 +72,31 @@ uint64_t CoAuthProxy::Register(std::shared_ptr<AuthResPool::AuthExecutor> execut
     COAUTH_HILOGD(MODULE_INNERKIT, "Register enter");
     if (executorInfo == nullptr || callback == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "Register failed,executorInfo or callback is nullptr");
-        return FAIL;
+        return 0;
     }
     MessageParcel data;
     MessageParcel reply;
     if (!data.WriteInterfaceToken(CoAuthProxy::GetDescriptor())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
-        return FAIL;
+        return 0;
     }
     if (WriteAuthExecutor(*executorInfo, data) == FAIL) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write executorInfo failed!");
-        return FAIL;
+        return 0;
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        COAUTH_HILOGD(MODULE_INNERKIT, "failed to WriteRemoteObject(callback).");
-        return FAIL;
+        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteRemoteObject(callback).");
+        return 0;
     }
-    uint64_t result = SUCCESS;
+    uint64_t result = 0;
     bool ret = SendRequest(static_cast<int32_t>(ICoAuth::COAUTH_EXECUTOR_REGIST), data, reply);
-    if (ret) {
-        result = reply.ReadUint64();
-        COAUTH_HILOGD(MODULE_INNERKIT, "result = %{public}" PRIu64, result);
+    if (!ret) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "failed to SendRequest.");
+        return 0;
+    }
+    if (!reply.ReadUint64(result)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "failed to ReadUint64.");
+        return 0;
     }
     return result;
 }
@@ -118,10 +122,7 @@ void CoAuthProxy::QueryStatus(AuthResPool::AuthExecutor &executorInfo,
     }
 
     bool ret = SendRequest(static_cast<int32_t>(ICoAuth::COAUTH_QUERY_STATUS), data, reply, false);
-    if (ret) {
-        COAUTH_HILOGD(MODULE_INNERKIT, "ret = %{public}d", ret);
-    }
-    return;
+    COAUTH_HILOGD(MODULE_INNERKIT, "ret = %{public}d", ret);
 }
 
 void CoAuthProxy::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback)
@@ -131,12 +132,14 @@ void CoAuthProxy::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const s
 
     if (!data.WriteInterfaceToken(CoAuthProxy::GetDescriptor())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        return;
     }
 
     std::string GetPkgName;
     authInfo.GetPkgName(GetPkgName);
     if (!data.WriteString(GetPkgName)) {
         COAUTH_HILOGD(MODULE_INNERKIT, "WriteString,GetPkgName failed");
+        return;
     }
     uint64_t GetCallerUid;
     authInfo.GetCallerUid(GetCallerUid);
@@ -145,12 +148,13 @@ void CoAuthProxy::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const s
 
     if (!data.WriteUint64(scheduleId)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint64(scheduleId).");
-    } else {
-        COAUTH_HILOGD(MODULE_INNERKIT, "WriteUint64,scheduleId:%{public}" PRIu64, scheduleId);
+        return;
     }
+    COAUTH_HILOGD(MODULE_INNERKIT, "WriteUint64,scheduleId:%{public}" PRIu64, scheduleId);
 
     if (!data.WriteRemoteObject(callback->AsObject())) {
         COAUTH_HILOGD(MODULE_INNERKIT, "failed to WriteRemoteObject(callback).");
+        return;
     }
 
     bool ret = SendRequest(static_cast<int32_t>(ICoAuth::COAUTH_SCHEDULE_REQUEST), data, reply, false);
@@ -176,11 +180,17 @@ int32_t CoAuthProxy::Cancel(uint64_t scheduleId)
 
     MessageParcel reply;
     bool ret = SendRequest(static_cast<int32_t>(ICoAuth::COAUTH_SCHEDULE_CANCEL), data, reply);
-    if (ret) {
-        int32_t result = reply.ReadInt32();
-        COAUTH_HILOGD(MODULE_INNERKIT, "result = %{public}d", result);
+    if (!ret) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest is failed, error code: %{public}d", ret);
+        return FAIL;
     }
-    return SUCCESS;
+    int32_t result = FAIL;
+    if (!reply.ReadInt32(result)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "Read result fail!");
+        return FAIL;
+    }
+    COAUTH_HILOGD(MODULE_INNERKIT, "result = %{public}d", result);
+    return result;
 }
 
 int32_t CoAuthProxy::GetExecutorProp(AuthResPool::AuthAttributes &conditions,
@@ -251,6 +261,7 @@ void CoAuthProxy::SetExecutorProp(AuthResPool::AuthAttributes &conditions,
     }
     if (!data.WriteRemoteObject(callback->AsObject())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteRemoteObject(callback).");
+        return;
     }
     bool ret = SendRequest(static_cast<int32_t>(ICoAuth::COAUTH_SET_PROPERTY), data, reply, false);
     if (ret) {

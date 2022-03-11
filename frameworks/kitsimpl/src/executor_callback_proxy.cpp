@@ -34,10 +34,9 @@ void ExecutorCallbackProxy::OnMessengerReady(const sptr<IExecutorMessenger> &mes
         return;
     }
     bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_MESSENGER_READY), data, reply);
-    if (ret) {
-        COAUTH_HILOGI(MODULE_INNERKIT, "ret = %{public}d", ret);
+    if (!ret) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "ret = %{public}d", ret);
     }
-    return;
 }
 
 int32_t ExecutorCallbackProxy::OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey,
@@ -51,26 +50,37 @@ int32_t ExecutorCallbackProxy::OnBeginExecute(uint64_t scheduleId, std::vector<u
     }
 
     if (!data.WriteUint64(scheduleId)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write scheduleId failed!");
         return FAIL;
     }
     if (!data.WriteUInt8Vector(publicKey)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write publicKey failed!");
         return FAIL;
     }
     std::vector<uint8_t> buffer;
-    if (commandAttrs->Pack(buffer)) {
+    if (commandAttrs->Pack(buffer) != SUCCESS) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "pack commandAttrs failed!");
         return FAIL;
     }
     if (!data.WriteUInt8Vector(buffer)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write buffer failed!");
         return FAIL;
     }
 
     bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_BEGIN_EXECUTE), data, reply);
-    if (ret) {
-        int32_t result = reply.ReadInt32();
-        COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
+    if (!ret) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest failed!");
+        return FAIL;
     }
+    int32_t result = FAIL;
+    if (!reply.ReadInt32(result)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "read result failed!");
+        return FAIL;
+    }
+    COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
     return SUCCESS;
 }
+
 int32_t ExecutorCallbackProxy::OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr)
 {
     MessageParcel data;
@@ -81,23 +91,32 @@ int32_t ExecutorCallbackProxy::OnEndExecute(uint64_t scheduleId, std::shared_ptr
     }
 
     if (!data.WriteUint64(scheduleId)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write scheduleId failed!");
         return FAIL;
     }
 
     std::vector<uint8_t> buffer;
-    if (consumerAttr->Pack(buffer)) {
+    if (consumerAttr->Pack(buffer) != SUCCESS) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "pack consumerAttr failed!");
         return FAIL;
     }
     if (!data.WriteUInt8Vector(buffer)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write buffer failed!");
         return FAIL;
     }
 
     bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_END_EXECUTE), data, reply);
-    if (ret) {
-        int32_t result = reply.ReadInt32();
-        COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
+    if (!ret) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest fail");
+        return FAIL;
     }
-    return SUCCESS;
+    int32_t result = FAIL;
+    if (!reply.ReadInt32(result)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "read result fail");
+        return FAIL;
+    }
+    COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
+    return result;
 }
 
 int32_t ExecutorCallbackProxy::OnSetProperty(std::shared_ptr<AuthAttributes> properties)
@@ -110,17 +129,25 @@ int32_t ExecutorCallbackProxy::OnSetProperty(std::shared_ptr<AuthAttributes> pro
     }
     std::vector<uint8_t> buffer;
     if (properties->Pack(buffer)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "pack properties failed!");
         return FAIL;
     }
     if (!data.WriteUInt8Vector(buffer)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write buffer failed!");
         return FAIL;
     }
     bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_SET_PROPERTY), data, reply);
-    if (ret) {
-        int32_t result = reply.ReadInt32();
-        COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
+    if (!ret) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest failed!");
+        return FAIL;
     }
-    return SUCCESS;
+    int32_t result = FAIL;
+    if (!reply.ReadInt32(result)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "read result fail");
+        return FAIL;
+    }
+    COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
+    return result;
 }
 
 int32_t ExecutorCallbackProxy::OnGetProperty(std::shared_ptr<AuthAttributes> conditions,
@@ -128,7 +155,6 @@ int32_t ExecutorCallbackProxy::OnGetProperty(std::shared_ptr<AuthAttributes> con
 {
     MessageParcel data;
     MessageParcel reply;
-    int32_t result = 0;
     if (values == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "ExecutorCallbackProxy values is null.");
         return FAIL;
@@ -141,24 +167,32 @@ int32_t ExecutorCallbackProxy::OnGetProperty(std::shared_ptr<AuthAttributes> con
 
     std::vector<uint8_t> buffer;
     if (conditions->Pack(buffer)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "pack conditions failed!");
         return FAIL;
     }
     if (!data.WriteUInt8Vector(buffer)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "write buffer failed!");
         return FAIL;
     }
 
     std::vector<uint8_t> valuesReply;
     bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_GET_PROPERTY), data, reply); // must sync
-    if (ret) {
-        result = reply.ReadInt32();
-        if (!reply.ReadUInt8Vector(&valuesReply)) {
-            COAUTH_HILOGE(MODULE_INNERKIT, "Readback fail!");
-            return FAIL;
-        } else {
-            values->Unpack(valuesReply);
-        }
-        COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
+    if (!ret) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest failed!");
+        return FAIL;
     }
+    int32_t result = FAIL;
+    if (!reply.ReadInt32(result)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "read result fail");
+        return FAIL;
+    }
+    if (!reply.ReadUInt8Vector(&valuesReply)) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "Readback fail!");
+        return FAIL;
+    } else {
+        values->Unpack(valuesReply);
+    }
+    COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
     return result;
 }
 
