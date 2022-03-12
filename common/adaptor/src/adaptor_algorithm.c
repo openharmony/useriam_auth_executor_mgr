@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -220,7 +220,7 @@ static int32_t IamHmac(const EVP_MD *alg,
         LOG_ERROR("bad param");
         return RESULT_BAD_PARAM;
     }
-    unsigned int hmacSize = hmac->maxSize;
+    uint32_t hmacSize = hmac->maxSize;
     uint8_t *hmacData = HMAC(alg, hmacKey->buf, (int)hmacKey->contentSize, data->buf, data->contentSize,
         hmac->buf, &hmacSize);
     if (hmacData == NULL) {
@@ -233,6 +233,10 @@ static int32_t IamHmac(const EVP_MD *alg,
 
 int32_t HmacSha256(const Buffer *hmacKey, const Buffer *data, Buffer **hmac)
 {
+    if (hmac == NULL) {
+        LOG_ERROR("hmac is null");
+        return RESULT_BAD_PARAM;
+    }
     const EVP_MD *alg = EVP_sha256();
     if (alg == NULL) {
         LOG_ERROR("no algo");
@@ -254,6 +258,10 @@ int32_t HmacSha256(const Buffer *hmacKey, const Buffer *data, Buffer **hmac)
 
 int32_t HmacSha512(const Buffer *hmacKey, const Buffer *data, Buffer **hmac)
 {
+    if (hmac == NULL) {
+        LOG_ERROR("hmac is null");
+        return RESULT_BAD_PARAM;
+    }
     const EVP_MD *alg = EVP_sha512();
     if (alg == NULL) {
         LOG_ERROR("no algo");

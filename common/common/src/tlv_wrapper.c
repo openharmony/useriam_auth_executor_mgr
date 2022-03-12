@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -275,7 +275,7 @@ int32_t ParseInt32Para(TlvListNode *node, int32_t msgType, int32_t *retVal)
 int32_t ParseShortPara(TlvListNode *node, int32_t msgType, short *retVal)
 {
     if ((node == NULL) || (retVal == NULL)) {
-        LOG_ERROR("ParseInt32Para parameter check failed");
+        LOG_ERROR("ParseShortPara parameter check failed");
         return PARAM_ERR;
     }
     uint32_t len = 0;

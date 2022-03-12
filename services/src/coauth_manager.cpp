@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,7 +37,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
     std::vector<uint8_t> scheduleToken;
     int32_t ret = GetScheduleInfo(scheduleId, scheduleInfo);
     if (ret != SUCCESS) {
-        COAUTH_HILOGI(MODULE_SERVICE, "Schedule failed.");
+        COAUTH_HILOGE(MODULE_SERVICE, "Schedule failed.");
         return callback->OnFinish(ret, scheduleToken);
     }
     std::size_t executorNum = scheduleInfo.executors.size();
@@ -47,7 +47,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
     }
     sptr<IRemoteObject::DeathRecipient> dr = new ResICoAuthCallbackDeathRecipient(scheduleId, this);
     if ((!callback->AsObject()->AddDeathRecipient(dr))) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to add death recipient ResICoAuthCallbackDeathRecipient");
+        COAUTH_HILOGE(MODULE_SERVICE, "Failed to add death recipient ResICoAuthCallbackDeathRecipient");
     }
     int32_t saveRet = coAuthResMgrPtr_->SaveScheduleCallback(scheduleId, executorNum, callback);
     if (saveRet != SUCCESS) {
@@ -55,7 +55,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
         return callback->OnFinish(saveRet, scheduleToken);
     }
     OHOS::AppExecFwk::InnerEvent::Callback task = std::bind(&CoAuthManager::TimeOut, this, scheduleId);
-    COAUTH_HILOGW(MODULE_SERVICE, "CoAuthManager::Excute MonitorCall");
+    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthManager::Excute MonitorCall");
     CallMonitor::GetInstance().MonitorCall(delay_time, scheduleId, task);
     BeginExecute(scheduleInfo, executorNum, scheduleId, authInfo, executeRet);
 
@@ -90,6 +90,10 @@ void CoAuthManager::BeginExecute(ScheduleInfo &scheduleInfo, std::size_t executo
 void CoAuthManager::SetAuthAttributes(std::shared_ptr<ResAuthAttributes> commandAttrs,
                                       ScheduleInfo &scheduleInfo, AuthInfo &authInfo)
 {
+    if (commandAttrs == nullptr) {
+        COAUTH_HILOGE(MODULE_SERVICE, "commandAttrs is nullptr");
+        return;
+    }
     std::string callerNameString;
     authInfo.GetPkgName(callerNameString);
     std::vector<uint8_t> callerName;
@@ -196,6 +200,10 @@ int32_t CoAuthManager::GetExecutorProp(ResAuthAttributes &conditions, std::share
     }
     std::vector<uint8_t> buffer;
     std::shared_ptr<ResAuthAttributes> properties = std::make_shared<ResAuthAttributes>();
+    if (properties == nullptr) {
+        COAUTH_HILOGE(MODULE_SERVICE, "properties is null.");
+        return FAIL;
+    }
     conditions.Pack(buffer);
     properties->Unpack(buffer);
     retCode = execallback->OnGetProperty(properties, values);
@@ -219,14 +227,14 @@ CoAuthManager::ResICoAuthCallbackDeathRecipient::ResICoAuthCallbackDeathRecipien
 void CoAuthManager::ResICoAuthCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
     if (remote == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "CoAuthCallback OnRemoteDied failed, remote is nullptr");
+        COAUTH_HILOGE(MODULE_SERVICE, "CoAuthCallback OnRemoteDied failed, remote is nullptr");
         return;
     }
 
     if (parent_ != nullptr) {
         parent_->coAuthResMgrPtr_->DeleteScheduleCallback(scheduleId);
     }
-    COAUTH_HILOGE(MODULE_INNERKIT, "ResICoAuthCallbackDeathRecipient::Recv death notice.");
+    COAUTH_HILOGW(MODULE_SERVICE, "ResICoAuthCallbackDeathRecipient::Recv death notice.");
 }
 
 void CoAuthManager::TimeOut(uint64_t scheduleId)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "executor_callback_stub.h"
+
 #include "message_parcel.h"
 
 namespace OHOS {
@@ -34,7 +35,7 @@ int32_t ExecutorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data
     std::u16string descripter = ExecutorCallbackStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();
     if (descripter != remoteDescripter) {
-        COAUTH_HILOGD(MODULE_INNERKIT, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
         return FAIL;
     }
 
@@ -54,12 +55,12 @@ int32_t ExecutorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data
     }
 }
 
-int32_t ExecutorCallbackStub::OnMessengerReadyStub(MessageParcel& data, MessageParcel& reply)
+int32_t ExecutorCallbackStub::OnMessengerReadyStub(MessageParcel &data, MessageParcel &reply)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "ExecutorCallbackStub::OnMessengerReadyStub");
     sptr<IExecutorMessenger> messenger = iface_cast<IExecutorMessenger>(data.ReadRemoteObject());
     if (messenger == nullptr) {
-        COAUTH_HILOGD(MODULE_INNERKIT, "messenger is nullptr");
+        COAUTH_HILOGE(MODULE_INNERKIT, "messenger is nullptr");
         return FAIL;
     }
     COAUTH_HILOGD(MODULE_INNERKIT, "iface_cast right");
@@ -67,7 +68,8 @@ int32_t ExecutorCallbackStub::OnMessengerReadyStub(MessageParcel& data, MessageP
     COAUTH_HILOGD(MODULE_INNERKIT, "OnMessengerReady GetRefPtr");
     return SUCCESS;
 }
-int32_t ExecutorCallbackStub::OnBeginExecuteStub(MessageParcel& data, MessageParcel& reply)
+
+int32_t ExecutorCallbackStub::OnBeginExecuteStub(MessageParcel &data, MessageParcel &reply)
 {
     uint64_t scheduleId = data.ReadUint64();
     std::vector<uint8_t> publicKey, buffer;
@@ -83,11 +85,15 @@ int32_t ExecutorCallbackStub::OnBeginExecuteStub(MessageParcel& data, MessagePar
     return SUCCESS;
 }
 
-int32_t ExecutorCallbackStub::OnEndExecuteStub(MessageParcel& data, MessageParcel& reply)
+int32_t ExecutorCallbackStub::OnEndExecuteStub(MessageParcel &data, MessageParcel &reply)
 {
     uint64_t scheduleId = data.ReadUint64();
     std::vector<uint8_t> buffer;
     std::shared_ptr<AuthAttributes> consumerAttr = std::make_shared<AuthAttributes>();
+    if (consumerAttr == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "consumerAttr is null");
+        return FAIL;
+    }
     data.ReadUInt8Vector(&buffer);
     consumerAttr->Unpack(buffer);
     int32_t ret = OnEndExecute(scheduleId, consumerAttr);
@@ -98,7 +104,7 @@ int32_t ExecutorCallbackStub::OnEndExecuteStub(MessageParcel& data, MessageParce
     return SUCCESS;
 }
 
-int32_t ExecutorCallbackStub::OnGetPropertyStub(MessageParcel& data, MessageParcel& reply)
+int32_t ExecutorCallbackStub::OnGetPropertyStub(MessageParcel &data, MessageParcel &reply)
 {
     std::vector<uint8_t> buffer;
     std::shared_ptr<AuthAttributes> conditions = std::make_shared<AuthAttributes>();
@@ -120,7 +126,8 @@ int32_t ExecutorCallbackStub::OnGetPropertyStub(MessageParcel& data, MessageParc
     }
     return SUCCESS;
 }
-int32_t ExecutorCallbackStub::OnSetPropertyStub(MessageParcel& data, MessageParcel& reply)
+
+int32_t ExecutorCallbackStub::OnSetPropertyStub(MessageParcel &data, MessageParcel &reply)
 {
     std::vector<uint8_t> buffer;
     std::shared_ptr<AuthAttributes> properties = std::make_shared<AuthAttributes>();
@@ -143,6 +150,7 @@ void ExecutorCallbackStub::OnMessengerReady(const sptr<IExecutorMessenger> &mess
         callback_->OnMessengerReady(messenger);
     }
 }
+
 int32_t ExecutorCallbackStub::OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey,
                                              std::shared_ptr<AuthAttributes> commandAttrs)
 {
@@ -154,6 +162,7 @@ int32_t ExecutorCallbackStub::OnBeginExecute(uint64_t scheduleId, std::vector<ui
     }
     return ret;
 }
+
 int32_t ExecutorCallbackStub::OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr)
 {
     int32_t ret = FAIL;
@@ -164,6 +173,7 @@ int32_t ExecutorCallbackStub::OnEndExecute(uint64_t scheduleId, std::shared_ptr<
     }
     return ret;
 }
+
 int32_t ExecutorCallbackStub::OnSetProperty(std::shared_ptr<AuthAttributes> properties)
 {
     int32_t ret = FAIL;
@@ -174,6 +184,7 @@ int32_t ExecutorCallbackStub::OnSetProperty(std::shared_ptr<AuthAttributes> prop
     }
     return ret;
 }
+
 int32_t ExecutorCallbackStub::OnGetProperty(std::shared_ptr<AuthAttributes> conditions,
                                             std::shared_ptr<AuthAttributes> values)
 {
