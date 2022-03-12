@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -312,6 +312,9 @@ AuthAttributes* AuthAttributes::Unpack(std::vector<uint8_t> &buffer)
 
 AuthAttributeType AuthAttributes::GetUint32FromUint8(std::vector<uint8_t> &data, uint32_t begin)
 {
+    if (begin >= data.size() || data.size() - begin < sizeof(uint32_t)) {
+        return ALGORITHM_INFO;
+    }
     uint8_t tmp[sizeof(uint32_t)];
     for (uint32_t i = 0; i < sizeof(uint32_t); i++) {
         tmp[i] = data[begin + i];
@@ -322,6 +325,9 @@ AuthAttributeType AuthAttributes::GetUint32FromUint8(std::vector<uint8_t> &data,
 
 bool AuthAttributes::GetBoolFromUint8(std::vector<uint8_t> &data, uint32_t begin)
 {
+    if (begin >= data.size() || data.size() - begin < sizeof(bool)) {
+        return 0;
+    }
     uint8_t tmp = data[begin];
     bool *re = static_cast<bool *>(static_cast<void *>(&tmp));
     return *re;
@@ -329,6 +335,9 @@ bool AuthAttributes::GetBoolFromUint8(std::vector<uint8_t> &data, uint32_t begin
 
 uint64_t AuthAttributes::GetUint64FromUint8(std::vector<uint8_t> &data, uint32_t begin)
 {
+    if (begin >= data.size() || data.size() - begin < sizeof(uint64_t)) {
+        return 0;
+    }
     uint8_t tmp[sizeof(uint64_t)];
     for (uint32_t i = 0; i < sizeof(uint64_t); i++) {
         tmp[i] = data[begin + i];
@@ -478,6 +487,6 @@ void AuthAttributes::WriteDataLength(std::vector<uint8_t> &buffer, uint8_t *writ
         writePointer = static_cast<uint8_t*>(static_cast<void *>(&dataLength));
         buffer.insert(buffer.end(), writePointer, writePointer + sizeof(uint32_t));
 }
-}
-}
-}
+} // AuthResPool
+} // UserIAM
+} // OHOS

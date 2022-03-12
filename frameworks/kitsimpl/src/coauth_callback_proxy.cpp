@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "coauth_callback_proxy.h"
+
 #include <message_parcel.h>
 #include <string_ex.h>
 #include "coauth_hilog_wrapper.h"
 #include "icoauth_callback.h"
-#include "coauth_callback_proxy.h"
 
 namespace OHOS {
 namespace UserIAM {
@@ -32,10 +33,12 @@ void CoAuthCallbackProxy::OnFinish(uint32_t resultCode, std::vector<uint8_t> &sc
     }
     if (!data.WriteUint32(resultCode)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint32(resultCode).");
+        return;
     }
 
     if (!data.WriteUInt8Vector(scheduleToken)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUInt8Vector(scheduleToken).");
+        return;
     }
 
     bool ret = SendRequest(static_cast<int32_t>(ICoAuthCallback::ONFINISH), data, reply);
@@ -53,6 +56,7 @@ void CoAuthCallbackProxy::OnAcquireInfo(uint32_t acquire)
     }
     if (!data.WriteUint32(acquire)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint32(acquire).");
+        return;
     }
 
     MessageParcel reply;

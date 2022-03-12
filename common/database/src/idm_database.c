@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,10 +27,10 @@
 #define MAX_CREDENTIAL_RETURN 5000
 
 // Caches IDM user information.
-LinkedList *g_userInfoList = NULL;
+static LinkedList *g_userInfoList = NULL;
 
 // Caches the current user to reduce the number of user list traversal times.
-UserInfo *g_currentUser = NULL;
+static UserInfo *g_currentUser = NULL;
 
 typedef bool (*DuplicateCheckFunc)(LinkedList *collection, uint64_t value);
 

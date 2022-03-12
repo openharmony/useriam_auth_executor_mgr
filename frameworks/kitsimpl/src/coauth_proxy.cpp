@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -71,7 +71,7 @@ uint64_t CoAuthProxy::Register(std::shared_ptr<AuthResPool::AuthExecutor> execut
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "Register enter");
     if (executorInfo == nullptr || callback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Register failed,executorInfo or callback is nullptr");
+        COAUTH_HILOGE(MODULE_INNERKIT, "Register failed, executorInfo or callback is nullptr");
         return 0;
     }
     MessageParcel data;
@@ -138,7 +138,7 @@ void CoAuthProxy::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const s
     std::string GetPkgName;
     authInfo.GetPkgName(GetPkgName);
     if (!data.WriteString(GetPkgName)) {
-        COAUTH_HILOGD(MODULE_INNERKIT, "WriteString,GetPkgName failed");
+        COAUTH_HILOGE(MODULE_INNERKIT, "WriteString,GetPkgName failed");
         return;
     }
     uint64_t GetCallerUid;
@@ -153,7 +153,7 @@ void CoAuthProxy::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const s
     COAUTH_HILOGD(MODULE_INNERKIT, "WriteUint64,scheduleId:%{public}" PRIu64, scheduleId);
 
     if (!data.WriteRemoteObject(callback->AsObject())) {
-        COAUTH_HILOGD(MODULE_INNERKIT, "failed to WriteRemoteObject(callback).");
+        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteRemoteObject(callback).");
         return;
     }
 

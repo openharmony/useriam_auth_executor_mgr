@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -126,14 +126,17 @@ int32_t GetScheduleToken(std::vector<uint8_t> executorFinishMsg, ScheduleToken &
     scheduleTokenHal.scheduleId = scheduleToken.scheduleId;
     int32_t ret = ScheduleFinish(executorMsg, &scheduleTokenHal);
     if (ret != RESULT_SUCCESS) {
+        DestoryBuffer(executorMsg);
         GlobalUnLock();
         return ret;
     }
     if (memcpy_s(&scheduleToken, sizeof(ScheduleToken), &scheduleTokenHal, sizeof(ScheduleTokenHal)) != EOK) {
         LOG_ERROR("copy scheduleToken failed");
+        DestoryBuffer(executorMsg);
         GlobalUnLock();
         return RESULT_BAD_COPY;
     }
+    DestoryBuffer(executorMsg);
     GlobalUnLock();
     return RESULT_SUCCESS;
 }

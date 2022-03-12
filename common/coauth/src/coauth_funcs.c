@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,13 +19,12 @@
 
 #include "adaptor_algorithm.h"
 #include "adaptor_log.h"
+#include "adaptor_memory.h"
 #include "adaptor_time.h"
 #include "coauth_sign_centre.h"
 #include "defines.h"
 #include "executor_message.h"
 #include "pool.h"
-
-#include "adaptor_memory.h"
 
 int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfoHal *scheduleInfo)
 {
@@ -56,7 +55,7 @@ int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfoHal *scheduleInfo)
     return ret;
 }
 
-static int32_t TokenDataGetAndSign(uint32_t authType, ExecutorResultInfo *resultInfo,
+static int32_t TokenDataGetAndSign(uint32_t authType, const ExecutorResultInfo *resultInfo,
     ScheduleTokenHal *scheduleToken)
 {
     scheduleToken->scheduleResult = RESULT_SUCCESS;

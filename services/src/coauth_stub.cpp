@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,19 +55,19 @@ void CoAuthStub::ReadAuthExecutor(AuthResPool::AuthExecutor &executorInfo, Messa
 {
     int32_t authType = data.ReadInt32();
     executorInfo.SetAuthType(static_cast<AuthType>(authType));
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadInt32,authType:%{public}d", authType);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadInt32,authType:%{public}d", authType);
 
     uint64_t authAbility = data.ReadUint64();
     executorInfo.SetAuthAbility(authAbility);
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadInt64,authAbility:%{public}" PRIu64, authAbility);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadInt64,authAbility:%{public}" PRIu64, authAbility);
 
     int32_t executorSecLevel = data.ReadInt32();
     executorInfo.SetExecutorSecLevel(static_cast<ExecutorSecureLevel>(executorSecLevel));
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadInt32,executorSecLevel:%{public}d", executorSecLevel);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadInt32,executorSecLevel:%{public}d", executorSecLevel);
 
     int32_t executorType = data.ReadInt32();
     executorInfo.SetExecutorType(static_cast<ExecutorType>(executorType));
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadInt32,executorSecLevel:%{public}d", executorSecLevel);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadInt32,executorSecLevel:%{public}d", executorSecLevel);
 
     std::vector<uint8_t> publicKey;
     data.ReadUInt8Vector(&publicKey);
@@ -84,12 +84,12 @@ int32_t CoAuthStub::RegisterStub(MessageParcel& data, MessageParcel& reply)
     ReadAuthExecutor(*executorInfo, data);
     sptr<AuthResPool::IExecutorCallback> callback = iface_cast<AuthResPool::IExecutorCallback>(data.ReadRemoteObject());
     if (callback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "read IExecutorCallback is nullptr");
+        COAUTH_HILOGE(MODULE_SERVICE, "read IExecutorCallback is nullptr");
         return FAIL;
     }
     uint64_t ret = Register(executorInfo, callback);
     if (!reply.WriteUint64(ret)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteInt32(ret)");
+        COAUTH_HILOGE(MODULE_SERVICE, "failed to WriteInt32(ret)");
         return FAIL;
     }
     return SUCCESS;
@@ -101,7 +101,7 @@ int32_t CoAuthStub::QueryStatusStub(MessageParcel& data, MessageParcel& reply)
     ReadAuthExecutor(executorInfo, data);
     sptr<AuthResPool::IQueryCallback> callback = iface_cast<AuthResPool::IQueryCallback>(data.ReadRemoteObject());
     if (callback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "read IQueryCallback is nullptr");
+        COAUTH_HILOGE(MODULE_SERVICE, "read IQueryCallback is nullptr");
         return FAIL;
     }
 
@@ -117,14 +117,14 @@ int32_t CoAuthStub::BeginScheduleStub(MessageParcel& data, MessageParcel& reply)
     authInfo.SetPkgName(GetPkgName);
     uint64_t GetCallerUid = data.ReadUint64();
     authInfo.SetCallerUid(GetCallerUid);
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64,GetCallerUid:%{public}" PRIu64, GetCallerUid);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64,GetCallerUid:%{public}" PRIu64, GetCallerUid);
 
     uint64_t scheduleId = data.ReadUint64();
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64,scheduleId:%{public}" PRIu64, scheduleId);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64,scheduleId:%{public}" PRIu64, scheduleId);
 
     sptr<ICoAuthCallback> callback = iface_cast<ICoAuthCallback>(data.ReadRemoteObject());
     if (callback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "read ICoAuthCallback is nullptr");
+        COAUTH_HILOGE(MODULE_SERVICE, "read ICoAuthCallback is nullptr");
         return FAIL;
     }
 
@@ -138,7 +138,7 @@ int32_t CoAuthStub::CancelStub(MessageParcel& data, MessageParcel& reply)
     COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub: CancelStub enter");
 
     uint64_t scheduleId = data.ReadUint64();
-    COAUTH_HILOGD(MODULE_INNERKIT, "ReadUint64 scheduleId:%{public}" PRIu64, scheduleId);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64 scheduleId:%{public}" PRIu64, scheduleId);
 
     int ret = Cancel(scheduleId);
     if (!reply.WriteInt32(ret)) {

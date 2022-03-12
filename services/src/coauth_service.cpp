@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,25 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "coauth_service.h"
+
 #include <cinttypes>
 #include <file_ex.h>
 #include <string_ex.h>
-#include <system_ability.h>
-#include <system_ability_definition.h>
 #include <if_system_ability_manager.h>
 #include <iservice_registry.h>
 #include <unistd.h>
 #include <thread>
 #include "useriam_common.h"
 #include "parameter.h"
-#include "coauth_service.h"
 
 namespace OHOS {
 namespace UserIAM {
 namespace CoAuth {
 void SendBootEvent()
 {
-    COAUTH_HILOGI(MODULE_INNERKIT, "SendBootEvent start");
+    COAUTH_HILOGI(MODULE_SERVICE, "SendBootEvent start");
     SetParameter("bootevent.useriam.fwkready", "true");
 }
 
@@ -60,13 +59,14 @@ void CoAuthService::OnStart()
 
     if (!Common::IsIAMInited()) {
         if (Common::Init() != SUCCESS) {
-            COAUTH_HILOGI(MODULE_SERVICE, " IAM CA init failed");
+            COAUTH_HILOGE(MODULE_SERVICE, " IAM CA init failed");
+            return;
         }
         COAUTH_HILOGI(MODULE_SERVICE, " IAM CA init success");
     } else {
         COAUTH_HILOGI(MODULE_SERVICE, " IAM CA is inited");
     }
-    // Start other sevice
+    // Start other service
     std::thread checkThread(OHOS::UserIAM::CoAuth::SendBootEvent);
     checkThread.join();
 }
@@ -81,7 +81,8 @@ void CoAuthService::OnStop()
 
     if (Common::IsIAMInited()) {
         if (Common::Close() != SUCCESS) {
-            COAUTH_HILOGI(MODULE_SERVICE, " IAM CA Close failed");
+            COAUTH_HILOGE(MODULE_SERVICE, " IAM CA Close failed");
+            return;
         }
         COAUTH_HILOGI(MODULE_SERVICE, " IAM CA close success");
     } else {
@@ -105,7 +106,7 @@ uint64_t CoAuthService::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     }
 
     uint64_t exeID = authResMgr_.Register(executorInfo, callback);
-    COAUTH_HILOGE(MODULE_SERVICE, "exeID is XXXX%{public}" PRIx64, exeID);
+    COAUTH_HILOGD(MODULE_SERVICE, "exeID is XXXX%{public}4" PRIx64, exeID);
     return exeID;
 }
 

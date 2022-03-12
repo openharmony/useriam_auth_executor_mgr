@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,9 +20,8 @@
 #include "stdint.h"
 #include "defines.h"
 
-typedef void (*DESTROY_DATA_FUNC)(void *data);
-typedef bool (*MATCH_FUNC)(void *data, void *condition);
-typedef bool (*HANDLE_DATA_FUNC)(void *data, void *arg);
+typedef void (*DestroyDataFunc)(void *data);
+typedef bool (*MatchFunc)(void *data, void *condition);
 
 typedef struct LinkedListNode {
     void *data;
@@ -38,15 +37,15 @@ typedef struct LinkedListIterator {
 typedef struct LinkedList {
     uint32_t size;
     LinkedListNode *head;
-    DESTROY_DATA_FUNC destroyDataFunc;
+    DestroyDataFunc destroyDataFunc;
     uint32_t (*getSize)(struct LinkedList *list);
     ResultCode (*insert)(struct LinkedList *list, void *data);
-    ResultCode (*remove)(struct LinkedList *list, void *condition, MATCH_FUNC matchFunc, bool destroyNode);
+    ResultCode (*remove)(struct LinkedList *list, void *condition, MatchFunc matchFunc, bool destroyNode);
     LinkedListIterator *(*createIterator)(struct LinkedList *list);
     void (*destroyIterator)(LinkedListIterator *iterator);
 } LinkedList;
 
-LinkedList *CreateLinkedList(DESTROY_DATA_FUNC destroyDataFunc);
+LinkedList *CreateLinkedList(DestroyDataFunc destroyDataFunc);
 void DestroyLinkedList(LinkedList *list);
 
 #endif

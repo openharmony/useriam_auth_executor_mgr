@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,6 +23,10 @@ namespace CoAuth {
 CallMonitor::CallMonitor()
 {
     std::shared_ptr<AppExecFwk::EventRunner> runner = AppExecFwk::EventRunner::Create(true);
+    if (runner == nullptr) {
+        COAUTH_HILOGE(MODULE_SERVICE, "runner is nullptr");
+        return;
+    }
     runner->Run();
     eventHandler_ = std::make_shared<AppExecFwk::EventHandler>(runner);
 }

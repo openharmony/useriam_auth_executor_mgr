@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -50,25 +50,25 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
             info.publicKey[i] = publicKey[i];
         }
     }
-    result = ExecutorRegister(info, executorId); // call TA
+    result = ExecutorRegister(info, executorId);
     if (result == SUCCESS) {
         sptr<IRemoteObject::DeathRecipient> dr = new ResIExecutorCallbackDeathRecipient(executorId, this);
         if (!callback->AsObject()->AddDeathRecipient(dr)) {
-            COAUTH_HILOGE(MODULE_INNERKIT, "Failed to add death recipient ResIExecutorCallbackDeathRecipient");
+            COAUTH_HILOGE(MODULE_SERVICE, "Failed to add death recipient ResIExecutorCallbackDeathRecipient");
             return INVALID_EXECUTOR_ID;
         }
-        coAuthResPool_.Insert(executorId, executorInfo, callback); // Cache executorId
+        coAuthResPool_.Insert(executorId, executorInfo, callback);
         COAUTH_HILOGI(MODULE_SERVICE, "register is successfull!");
         // Assign messenger
         sptr<UserIAM::AuthResPool::IExecutorMessenger> messenger =
         new UserIAM::AuthResPool::ExecutorMessenger(&coAuthResPool_);
         callback->OnMessengerReady(messenger);
         COAUTH_HILOGD(MODULE_SERVICE, "register is successfull,exeID is XXXX%{public}04" PRIx64, executorId);
-        return executorId; // executorId returned after successful registration
+        return executorId;
     }
     if (result == FAIL) {
         COAUTH_HILOGE(MODULE_SERVICE, "register is failure!");
-        return INVALID_EXECUTOR_ID; // If the registration fails, an invalid id0 is returned
+        return INVALID_EXECUTOR_ID;
     }
     return executorId;
 }
@@ -138,7 +138,7 @@ AuthResManager::ResIExecutorCallbackDeathRecipient::ResIExecutorCallbackDeathRec
 void AuthResManager::ResIExecutorCallbackDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
     if (remote == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "ExecutorCallback OnRemoteDied failed, remote is nullptr");
+        COAUTH_HILOGE(MODULE_SERVICE, "ExecutorCallback OnRemoteDied failed, remote is nullptr");
         return;
     }
 
@@ -148,9 +148,9 @@ void AuthResManager::ResIExecutorCallbackDeathRecipient::OnRemoteDied(const wptr
 
     int32_t ret = ExecutorUnRegister(executorID_);
     if (ret != SUCCESS) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "executor unregister fail.");
+        COAUTH_HILOGE(MODULE_SERVICE, "executor unregister fail.");
     }
-    COAUTH_HILOGE(MODULE_INNERKIT, "ResIExecutorCallbackDeathRecipient::Recv death notice.");
+    COAUTH_HILOGW(MODULE_SERVICE, "ResIExecutorCallbackDeathRecipient::Recv death notice.");
 }
 } // namespace CoAuth
 } // namespace UserIAM
