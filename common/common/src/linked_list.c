@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,7 +42,7 @@ static ResultCode InsertNode(LinkedList *list, void *data)
     return RESULT_SUCCESS;
 }
 
-static ResultCode RemoveNode(LinkedList *list, void *condition, MATCH_FUNC matchFunc, bool destroyNode)
+static ResultCode RemoveNode(LinkedList *list, void *condition, MatchFunc matchFunc, bool destroyNode)
 {
     if (list == NULL) {
         LOG_ERROR("get null list");
@@ -135,7 +135,7 @@ static void DestroyIterator(LinkedListIterator *iterator)
     Free(iterator);
 }
 
-LinkedList *CreateLinkedList(DESTROY_DATA_FUNC destroyDataFunc)
+LinkedList *CreateLinkedList(DestroyDataFunc destroyDataFunc)
 {
     if (destroyDataFunc == NULL) {
         LOG_ERROR("get null func");

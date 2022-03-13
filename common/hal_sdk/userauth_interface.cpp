@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -82,6 +82,7 @@ int32_t RequestAuthResult(uint64_t contextId, std::vector<uint8_t> &scheduleToke
     }
     if (memcpy_s(&authToken, sizeof(UserAuthToken), &authTokenHal, sizeof(UserAuthTokenHal)) != EOK) {
         LOG_ERROR("copy authToken failed");
+        free(scheduleIdsGet);
         DestoryBuffer(scheduleTokenBuffer);
         GlobalUnLock();
         return RESULT_BAD_COPY;

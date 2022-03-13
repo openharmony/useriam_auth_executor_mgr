@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "auth_executor_registry.h"
 
 #include <if_system_ability_manager.h>
 #include <iservice_registry.h>
 #include <system_ability_definition.h>
 #include "query_callback_stub.h"
 #include "executor_callback_stub.h"
-#include "auth_executor_registry.h"
 
 namespace OHOS {
 namespace UserIAM {
@@ -28,6 +28,7 @@ AuthExecutorRegistry::~AuthExecutorRegistry() = default;
 
 sptr<CoAuth::ICoAuth> AuthExecutorRegistry::GetProxy()
 {
+    std::lock_guard<std::mutex> lock(mutex_);
     if (proxy_ != nullptr) {
         return proxy_;
     }

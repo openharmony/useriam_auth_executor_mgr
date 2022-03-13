@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,7 @@
 void DestroyUserInfoNode(void *userInfo)
 {
     if (userInfo == NULL) {
-        LOG_ERROR("UserInfoNode is null");
+        LOG_ERROR("userInfo is null");
         return;
     }
     UserInfo *node = (UserInfo*)userInfo;
@@ -33,7 +33,7 @@ void DestroyUserInfoNode(void *userInfo)
 void DestroyCredentialNode(void *credential)
 {
     if (credential == NULL) {
-        LOG_ERROR("UserInfoNode is null");
+        LOG_ERROR("credential is null");
         return;
     }
     Free(credential);
@@ -42,7 +42,7 @@ void DestroyCredentialNode(void *credential)
 void DestroyEnrolledNode(void *enrolled)
 {
     if (enrolled == NULL) {
-        LOG_ERROR("UserInfoNode is null");
+        LOG_ERROR("enrolled is null");
         return;
     }
     Free(enrolled);

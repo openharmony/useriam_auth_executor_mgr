@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "co_auth.h"
 
 #include <if_system_ability_manager.h>
 #include <iservice_registry.h>
@@ -19,7 +20,6 @@
 #include "coauth_hilog_wrapper.h"
 #include "coauth_callback_stub.h"
 #include "set_prop_callback_stub.h"
-#include "co_auth.h"
 
 namespace OHOS {
 namespace UserIAM {
@@ -29,6 +29,7 @@ CoAuth::~CoAuth() = default;
 
 sptr<ICoAuth> CoAuth::GetProxy()
 {
+    std::lock_guard<std::mutex> lock(mutex_);
     if (proxy_ != nullptr) {
         return proxy_;
     }
@@ -51,7 +52,7 @@ sptr<ICoAuth> CoAuth::GetProxy()
 
     proxy_ = iface_cast<ICoAuth>(obj);
     deathRecipient_ = dr;
-    COAUTH_HILOGE(MODULE_INNERKIT, "Succeed to connect coauth manager service");
+    COAUTH_HILOGD(MODULE_INNERKIT, "Succeed to connect coauth manager service");
     return proxy_;
 }
 
@@ -137,7 +138,7 @@ void CoAuth::CoAuthDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remot
     }
 
     CoAuth::GetInstance().ResetProxy(remote);
-    COAUTH_HILOGE(MODULE_INNERKIT, "CoAuthDeathRecipient::Recv death notice.");
+    COAUTH_HILOGD(MODULE_INNERKIT, "CoAuthDeathRecipient::Recv death notice.");
 }
 } // namespace CoAuth
 } // namespace UserIAM

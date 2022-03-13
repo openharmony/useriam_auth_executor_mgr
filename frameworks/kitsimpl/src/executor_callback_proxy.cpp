@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 #include "executor_callback_proxy.h"
+
 #include "coauth_hilog_wrapper.h"
 #include "message_parcel.h"
 
@@ -34,14 +35,16 @@ void ExecutorCallbackProxy::OnMessengerReady(const sptr<IExecutorMessenger> &mes
         return;
     }
     bool ret = SendRequest(static_cast<int32_t>(IExecutorCallback::ON_MESSENGER_READY), data, reply);
-    if (!ret) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "ret = %{public}d", ret);
-    }
+    COAUTH_HILOGD(MODULE_INNERKIT, "ret = %{public}d", ret);
 }
 
 int32_t ExecutorCallbackProxy::OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey,
                                               std::shared_ptr<AuthAttributes> commandAttrs)
 {
+    if (commandAttrs == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "commandAttrs is null!");
+        return INVALID_PARAMETERS;
+    }
     MessageParcel data;
     MessageParcel reply;
     if (!data.WriteInterfaceToken(ExecutorCallbackProxy::GetDescriptor())) {
@@ -83,6 +86,10 @@ int32_t ExecutorCallbackProxy::OnBeginExecute(uint64_t scheduleId, std::vector<u
 
 int32_t ExecutorCallbackProxy::OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr)
 {
+    if (consumerAttr == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "consumerAttr is null");
+        return INVALID_PARAMETERS;
+    }
     MessageParcel data;
     MessageParcel reply;
     if (!data.WriteInterfaceToken(ExecutorCallbackProxy::GetDescriptor())) {
@@ -121,6 +128,10 @@ int32_t ExecutorCallbackProxy::OnEndExecute(uint64_t scheduleId, std::shared_ptr
 
 int32_t ExecutorCallbackProxy::OnSetProperty(std::shared_ptr<AuthAttributes> properties)
 {
+    if (properties == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "properties is null");
+        return INVALID_PARAMETERS;
+    }
     MessageParcel data;
     MessageParcel reply;
     if (!data.WriteInterfaceToken(ExecutorCallbackProxy::GetDescriptor())) {
@@ -153,6 +164,10 @@ int32_t ExecutorCallbackProxy::OnSetProperty(std::shared_ptr<AuthAttributes> pro
 int32_t ExecutorCallbackProxy::OnGetProperty(std::shared_ptr<AuthAttributes> conditions,
                                              std::shared_ptr<AuthAttributes> values)
 {
+    if (conditions == nullptr || values == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "param is null");
+        return INVALID_PARAMETERS;
+    }
     MessageParcel data;
     MessageParcel reply;
     if (values == nullptr) {
