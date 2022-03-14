@@ -21,7 +21,6 @@
 #include <iostream>
 #include <map>
 #include <algorithm>
-
 #include "coauth_info_define.h"
 #include "iremote_object.h"
 #include "parcel.h"

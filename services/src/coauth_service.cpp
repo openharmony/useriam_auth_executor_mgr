@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "coauth_service.h"
 
+#include "coauth_service.h"
 #include <cinttypes>
 #include <file_ex.h>
 #include <string_ex.h>

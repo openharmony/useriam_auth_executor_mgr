@@ -15,8 +15,6 @@ import("//base/user_iam/auth_executor_mgr/auth_executor_mgr.gni")
 
 config("coauth_private_config") {
   include_dirs = [
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//base/user_iam/auth_executor_mgr/frameworks/innerkitsimpl/distributeddatafwk/include",
     "${coauth_frameworks_path}/kitsimpl/include",
     "//base/user_iam/auth_executor_mgr/common/interface",
   ]
@@ -47,15 +45,12 @@ ohos_shared_library("coauthservice") {
 
   deps = [
     "${coauth_innerkits_path}:coauth_framework",
-    "//base/startup/syspara_lite/interfaces/innerkits/native/syspara:syspara",
     "//base/user_iam/auth_executor_mgr/common:useriam_common_lib",
-    "//drivers/peripheral/display/hal:hdi_display_device",
     "//foundation/appexecfwk/standard/interfaces/innerkits/libeventhandler:libeventhandler",
     "//utils/native/base:utils",
   ]
 
   external_deps = [
-    "ces_standard:cesfwk_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",

@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
+#include "auth_res_manager.h"
 #include <cinttypes>
 #include "executor_messenger.h"
-#include "auth_res_manager.h"
 
 namespace OHOS {
 namespace UserIAM {

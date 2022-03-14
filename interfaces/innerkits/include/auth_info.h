@@ -15,6 +15,7 @@
 
 #ifndef AUTH_INFO_H
 #define AUTH_INFO_H
+
 #include <iostream>
 
 namespace OHOS {
