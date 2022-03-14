@@ -18,7 +18,6 @@
 
 #include <stdint.h>
 #include <singleton.h>
-
 #include "coauth_hilog_wrapper.h"
 #include "event_handler.h"
 

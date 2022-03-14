@@ -14,7 +14,6 @@
  */
 
 #include "auth_info.h"
-
 #include "coauth_info_define.h"
 
 namespace OHOS {

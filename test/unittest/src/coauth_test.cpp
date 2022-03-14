@@ -13,9 +13,8 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
 #include "coauth_test.h"
-
+#include <gtest/gtest.h>
 
 using namespace testing::ext;
 namespace OHOS {

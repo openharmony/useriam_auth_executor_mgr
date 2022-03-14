@@ -14,7 +14,6 @@
  */
 
 #include "executor_callback_stub.h"
-
 #include "message_parcel.h"
 
 namespace OHOS {

@@ -12,10 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "query_callback_stub.h"
 #include <message_parcel.h>
 #include "coauth_hilog_wrapper.h"
 #include "coauth_info_define.h"
-#include "query_callback_stub.h"
 
 namespace OHOS {
 namespace UserIAM {

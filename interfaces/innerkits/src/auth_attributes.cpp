@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include <cinttypes>
 #include "auth_attributes.h"
+#include <cinttypes>
 
 namespace OHOS {
 namespace UserIAM {

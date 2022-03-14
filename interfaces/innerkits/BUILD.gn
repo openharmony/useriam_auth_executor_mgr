@@ -16,9 +16,7 @@ import("//base/user_iam/auth_executor_mgr/auth_executor_mgr.gni")
 config("coauth_private_config") {
   include_dirs = [
     "${coauth_service_path}/include",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
     "${coauth_frameworks_path}/kitsimpl/include",
-    "//foundation/distributeddatamgr/distributeddatamgr/frameworks/innerkitsimpl/distributeddatafwk/include",
   ]
 }
 
@@ -60,16 +58,11 @@ ohos_shared_library("coauth_framework") {
     "${coauth_utils_path}:utils_config",
   ]
 
-  deps = [
-    "//foundation/distributeddatamgr/distributeddatamgr/interfaces/innerkits/distributeddata:distributeddata_inner",
-    "//foundation/distributeddatamgr/distributeddatamgr/services/distributeddataservice/adapter:distributeddata_adapter",
-    "//utils/native/base:utils",
-  ]
+  deps = [ "//utils/native/base:utils" ]
 
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
   ]
 

@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "co_auth.h"
 
+#include "co_auth.h"
 #include <if_system_ability_manager.h>
 #include <iservice_registry.h>
 #include <system_ability_definition.h>
