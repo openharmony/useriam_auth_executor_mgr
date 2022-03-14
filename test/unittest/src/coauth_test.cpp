@@ -409,10 +409,10 @@ HWTEST_F(CoAuthTest, UseriamUtTest013, TestSize.Level0)
 {
     COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest013 enter.");
     uint64_t scheduleId = 0;
-    EXPECT_EQ(0, CoAuth::GetInstance().Cancel(scheduleId));
+    EXPECT_NE(0, CoAuth::GetInstance().Cancel(scheduleId));
 
     scheduleId = 1;
-    EXPECT_EQ(0, CoAuth::GetInstance().Cancel(scheduleId));
+    EXPECT_NE(0, CoAuth::GetInstance().Cancel(scheduleId));
 }
 
 HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
