@@ -37,5 +37,6 @@ ohos_unittest("coauth_UT_test") {
 
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core"
   ]
 }
