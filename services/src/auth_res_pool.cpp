@@ -23,154 +23,132 @@ namespace CoAuth {
 int32_t AuthResPool::Insert(uint64_t executorID, std::shared_ptr<ResAuthExecutor> executorInfo,
                             sptr<ResIExecutorCallback> callback)
 {
-    int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(authMutex_);
     auto executorRegister = std::make_shared<ExecutorRegister>();
     executorRegister->executorInfo = executorInfo;
     executorRegister->callback = callback;
     authResPool_.insert(std::make_pair(executorID, executorRegister));
-    if (authResPool_.begin() != authResPool_.end()) {
-        resultCode = SUCCESS;
-        COAUTH_HILOGI(MODULE_SERVICE, "authResPool_ insert success");
-    } else {
-        resultCode = FAIL;
+    if (authResPool_.begin() == authResPool_.end()) {
         COAUTH_HILOGE(MODULE_SERVICE, "authResPool_ is null");
+        return FAIL;
     }
-    return resultCode;
+    COAUTH_HILOGI(MODULE_SERVICE, "authResPool_ insert success");
+    return SUCCESS;
+
 }
 
 int32_t AuthResPool::Insert(uint64_t scheduleId, uint64_t executorNum, sptr<ICoAuthCallback> callback)
 {
-    int32_t resultCode = 0;
     std::lock_guard<std::mutex> lock(scheMutex_);
     auto scheduleRegister = std::make_shared<ScheduleRegister>();
     scheduleRegister->executorNum = executorNum;
     scheduleRegister->callback = callback;
     scheResPool_.insert(std::make_pair(scheduleId, scheduleRegister));
-    if (scheResPool_.begin() != scheResPool_.end()) {
-        resultCode = SUCCESS;
-        COAUTH_HILOGI(MODULE_SERVICE, "scheResPool_ is not null");
-    } else {
-        resultCode = FAIL;
+    if (scheResPool_.begin() == scheResPool_.end()) {
         COAUTH_HILOGE(MODULE_SERVICE, "scheResPool_ is null");
+        return FAIL;
     }
-    return resultCode;
+    COAUTH_HILOGI(MODULE_SERVICE, "scheResPool_ insert success");
+    return SUCCESS;
 }
 
 int32_t AuthResPool::FindExecutorCallback(uint64_t executorID, sptr<ResIExecutorCallback> &callback)
 {
-    int32_t resultCode = 0;
     std::lock_guard<std::mutex> lock(authMutex_);
     std::map<uint64_t, std::shared_ptr<ExecutorRegister>>::iterator iter = authResPool_.find(executorID);
     if (iter != authResPool_.end()) {
-        resultCode = SUCCESS;
-        callback = iter->second->callback;
-        COAUTH_HILOGI(MODULE_SERVICE, "callback is found");
-    } else {
-        resultCode = FAIL;
-        COAUTH_HILOGE(MODULE_SERVICE, "callback is not found, size is %{public}u", authResPool_.size());
+        COAUTH_HILOGE(MODULE_SERVICE, "executorID is not found, size is %{public}u", authResPool_.size());
+        return FAIL;
     }
-    return resultCode;
+    callback = iter->second->callback;
+    COAUTH_HILOGI(MODULE_SERVICE, "find callback by executorID success");
+    return SUCCESS;
 }
 
 int32_t AuthResPool::FindExecutorCallback(uint32_t authType2Find, sptr<ResIExecutorCallback> &callback)
 {
-    int32_t resultCode = SUCCESS;
     AuthType authType;
     std::lock_guard<std::mutex> lock(authMutex_);
     std::map<uint64_t, std::shared_ptr<ExecutorRegister>>::iterator iter;
     for (iter = authResPool_.begin(); iter != authResPool_.end(); ++iter) {
+        if (iter->second->executorInfo == nullptr) {
+            continue;
+        }
         iter->second->executorInfo->GetAuthType(authType);
         if ((AuthType)authType2Find == authType) {
             callback = iter->second->callback;
-            COAUTH_HILOGI(MODULE_SERVICE, "Executor callback is found");
-            return resultCode;
+            COAUTH_HILOGI(MODULE_SERVICE, "find callback by authType success");
+            return SUCCESS;
         }
     }
-    COAUTH_HILOGE(MODULE_SERVICE, "Executor callback is not found, size is %{public}u", authResPool_.size());
+    COAUTH_HILOGE(MODULE_SERVICE, "authType is not found, size is %{public}u", authResPool_.size());
     callback = nullptr;
-    resultCode = FAIL;
-    return resultCode;
+    return FAIL;
 }
 
 int32_t AuthResPool::DeleteExecutorCallback(uint64_t executorID)
 {
-    int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(authMutex_);
     std::map<uint64_t, std::shared_ptr<ExecutorRegister>>::iterator iter = authResPool_.find(executorID);
-    if (iter != authResPool_.end()) {
-        authResPool_.erase(iter);
-        resultCode = SUCCESS;
-        COAUTH_HILOGI(MODULE_SERVICE, "executor callback XXXX%{public}" PRIx64 " is deleted", executorID);
-    } else {
-        resultCode = FAIL;
-        COAUTH_HILOGE(MODULE_SERVICE, "executorID is not found and do not delete callback");
+    if (iter == authResPool_.end()) {
+        COAUTH_HILOGE(MODULE_SERVICE, "executorID is not found and delete callback failed");
+        return FAIL;
     }
-    return resultCode;
+    authResPool_.erase(iter);
+    COAUTH_HILOGI(MODULE_SERVICE, "delete executor callback XXXX%{public}" PRIx64 " success", executorID);
+    return SUCCESS;
 }
 
 int32_t AuthResPool::FindScheduleCallback(uint64_t scheduleId, sptr<ICoAuthCallback> &callback)
 {
-    int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(scheMutex_);
     std::map<uint64_t, std::shared_ptr<ScheduleRegister>>::iterator iter = scheResPool_.find(scheduleId);
-    if (iter != scheResPool_.end()) {
-        resultCode = SUCCESS;
-        callback = iter->second->callback;
-        COAUTH_HILOGI(MODULE_SERVICE, "Schedule callback is found");
-    } else {
-        resultCode = FAIL;
-        COAUTH_HILOGE(MODULE_SERVICE, "Schedule callback is not found");
+    if (iter == scheResPool_.end()) {
+        COAUTH_HILOGE(MODULE_SERVICE, "scheduleId is not found and find callback failed");
+        return FAIL;
     }
-    return resultCode;
+    callback = iter->second->callback;
+    COAUTH_HILOGI(MODULE_SERVICE, "find shedule callback success");
+    return SUCCESS;
 }
 
 int32_t AuthResPool::ScheduleCountMinus(uint64_t scheduleId)
 {
-    int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(scheMutex_);
     std::map<uint64_t, std::shared_ptr<ScheduleRegister>>::iterator iter = scheResPool_.find(scheduleId);
-    if (iter != scheResPool_.end()) {
-        iter->second->executorNum--;
-        resultCode = SUCCESS;
-        COAUTH_HILOGD(MODULE_SERVICE, "Schedule callback is found");
-    } else {
-        resultCode = FAIL;
-        COAUTH_HILOGE(MODULE_SERVICE, "Schedule callback is not found");
+    if (iter == scheResPool_.end()) {
+        COAUTH_HILOGE(MODULE_SERVICE, "scheduleId is not found and count minus one failed");
+        return FAIL;
     }
-    return resultCode;
+    iter->second->executorNum--;
+    COAUTH_HILOGD(MODULE_SERVICE, "schedule count minus one success");
+    return SUCCESS;
 }
 
 int32_t AuthResPool::GetScheduleCount(uint64_t scheduleId, uint64_t &scheduleCount)
 {
-    int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(scheMutex_);
     std::map<uint64_t, std::shared_ptr<ScheduleRegister>>::iterator iter = scheResPool_.find(scheduleId);
-    if (iter != scheResPool_.end()) {
-        scheduleCount = iter->second->executorNum;
-        resultCode = SUCCESS;
-        COAUTH_HILOGD(MODULE_SERVICE, "Schedule callback is found");
-    } else {
-        resultCode = FAIL;
-        COAUTH_HILOGE(MODULE_SERVICE, "Schedule callback is not found");
+    if (iter == scheResPool_.end()) {
+        COAUTH_HILOGE(MODULE_SERVICE, "scheduleId is not found and get executorNum failed");
+        return FAIL;
     }
-    return resultCode;
+    scheduleCount = iter->second->executorNum;
+    COAUTH_HILOGD(MODULE_SERVICE, "get schedule count success");
+    resultCode = SUCCESS;
 }
 
 int32_t AuthResPool::DeleteScheduleCallback(uint64_t scheduleId)
 {
-    int32_t resultCode = SUCCESS;
     std::lock_guard<std::mutex> lock(scheMutex_);
     std::map<uint64_t, std::shared_ptr<ScheduleRegister>>::iterator iter = scheResPool_.find(scheduleId);
-    if (iter != scheResPool_.end()) {
-        scheResPool_.erase(iter);
-        resultCode = SUCCESS;
-        COAUTH_HILOGD(MODULE_SERVICE, "Schedule callback is found");
-    } else {
-        resultCode = FAIL;
-        COAUTH_HILOGE(MODULE_SERVICE, "scheduleId is not found and do not delete callback");
+    if (iter == scheResPool_.end()) {
+        COAUTH_HILOGE(MODULE_SERVICE, "scheduleId is not found and delete callback failed");
+        return FAIL;
     }
-    return resultCode;
+    scheResPool_.erase(iter);
+    COAUTH_HILOGD(MODULE_SERVICE, "delete schedule callback success");
+    return SUCCESS;
 }
 } // namespace CoAuth
 } // namespace UserIAM

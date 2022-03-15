@@ -406,7 +406,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest012, TestSize.Level0)
 
 HWTEST_F(CoAuthTest, UseriamUtTest013, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest013 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest013 start.");
     uint64_t scheduleId = 0;
     EXPECT_NE(0, CoAuth::GetInstance().Cancel(scheduleId));
 
@@ -416,7 +416,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest013, TestSize.Level0)
 
 HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest014 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest014 start.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
@@ -450,7 +450,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
 
 HWTEST_F(CoAuthTest, UseriamUtTest015, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest015 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest015 start.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
@@ -472,7 +472,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest015, TestSize.Level0)
 
 HWTEST_F(CoAuthTest, UseriamUtTest016, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest016 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest016 start.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
@@ -495,7 +495,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest016, TestSize.Level0)
 
 HWTEST_F(CoAuthTest, UseriamUtTest017, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest017 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest017 start.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
     conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
@@ -517,7 +517,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest017, TestSize.Level0)
 
 HWTEST_F(CoAuthTest, UseriamUtTest018, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest018 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest018 start.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetUint32Value(AUTH_TYPE, PIN);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);

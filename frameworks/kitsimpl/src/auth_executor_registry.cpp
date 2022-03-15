@@ -58,6 +58,9 @@ sptr<CoAuth::ICoAuth> AuthExecutorRegistry::GetProxy()
 void AuthExecutorRegistry::ResetProxy(const wptr<IRemoteObject>& remote)
 {
     std::lock_guard<std::mutex> lock(mutex_);
+    if (proxy_ == nullptr) {
+        return;
+    }
     auto serviceRemote = proxy_->AsObject();
     if ((serviceRemote != nullptr) && (serviceRemote == remote.promote())) {
         serviceRemote->RemoveDeathRecipient(deathRecipient_);
@@ -68,7 +71,7 @@ void AuthExecutorRegistry::ResetProxy(const wptr<IRemoteObject>& remote)
 uint64_t AuthExecutorRegistry::Register(std::shared_ptr<AuthExecutor> executorInfo,
                                         std::shared_ptr<ExecutorCallback> callback)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "Register enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "Register start");
     if (executorInfo == nullptr || callback == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "Register failed,executorInfo or callback is nullptr");
         return FAIL;
@@ -84,7 +87,7 @@ uint64_t AuthExecutorRegistry::Register(std::shared_ptr<AuthExecutor> executorIn
 
 void AuthExecutorRegistry::QueryStatus(AuthExecutor &executorInfo, std::shared_ptr<QueryCallback> callback)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "QueryStatus enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "QueryStatus start");
     if (callback == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "QueryStatus failed, callback is nullptr");
         return;

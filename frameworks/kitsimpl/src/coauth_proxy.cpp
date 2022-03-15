@@ -69,7 +69,7 @@ uint32_t CoAuthProxy::WriteAuthExecutor(AuthResPool::AuthExecutor &executorInfo,
 uint64_t CoAuthProxy::Register(std::shared_ptr<AuthResPool::AuthExecutor> executorInfo,
                                const sptr<AuthResPool::IExecutorCallback> &callback)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "Register enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "Register start");
     if (executorInfo == nullptr || callback == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "Register failed, executorInfo or callback is nullptr");
         return 0;
@@ -168,7 +168,7 @@ void CoAuthProxy::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const s
 int32_t CoAuthProxy::Cancel(uint64_t scheduleId)
 {
     MessageParcel data;
-    COAUTH_HILOGD(MODULE_INNERKIT, "CoauthProxy: Cancel enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "CoauthProxy: Cancel start");
     if (!data.WriteInterfaceToken(CoAuthProxy::GetDescriptor())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
         return FAIL;
@@ -196,7 +196,7 @@ int32_t CoAuthProxy::Cancel(uint64_t scheduleId)
 int32_t CoAuthProxy::GetExecutorProp(AuthResPool::AuthAttributes &conditions,
                                      std::shared_ptr<AuthResPool::AuthAttributes> values)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "CoauthProxy: GetExecutorProp enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "CoauthProxy: GetExecutorProp start");
     int32_t result = SUCCESS;
     MessageParcel data;
     MessageParcel reply;
@@ -242,7 +242,7 @@ int32_t CoAuthProxy::GetExecutorProp(AuthResPool::AuthAttributes &conditions,
 void CoAuthProxy::SetExecutorProp(AuthResPool::AuthAttributes &conditions,
                                   const sptr<ISetPropCallback> &callback)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "CoauthProxy: SetExecutorProp enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "CoauthProxy: SetExecutorProp start");
     MessageParcel data;
     MessageParcel reply;
 
@@ -273,7 +273,7 @@ void CoAuthProxy::SetExecutorProp(AuthResPool::AuthAttributes &conditions,
 
 bool CoAuthProxy::SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, bool isSync)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "CoauthProxy: SendRequest enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "CoauthProxy: SendRequest start");
     sptr<IRemoteObject> remote = Remote();
     if (remote == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "failed to get remote.");
