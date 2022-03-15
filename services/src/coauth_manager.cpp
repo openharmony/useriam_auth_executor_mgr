@@ -178,7 +178,7 @@ void CoAuthManager::SetExecutorProp(ResAuthAttributes &conditions, sptr<ISetProp
     std::shared_ptr<ResAuthAttributes> properties = std::make_shared<ResAuthAttributes>();
     conditions.Pack(buffer);
     properties->Unpack(buffer);
-    result = (uint32_t)execallback->OnSetProperty(properties);
+    result = static_cast<uint32_t>(execallback->OnSetProperty(properties));
     if (result != SUCCESS) {
         COAUTH_HILOGE(MODULE_SERVICE, "set properties failure");
     }
