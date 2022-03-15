@@ -29,7 +29,7 @@ AuthAttributes::AuthAttributes()
                                 {AUTH_TEMPLATE_ID_LIST, UINT64ARRAYTYPE},
                                 {AUTH_REMAIN_COUNT, UINT32TYPE},
                                 {AUTH_REMAIN_TIME, UINT32TYPE},
-                                {AUTH_SESSION_ID, UINT64TYPE},
+                                {AUTH_SCHEDULE_ID, UINT64TYPE},
                                 {AUTH_CALLER_NAME, UINT8ARRAYTYPE},
                                 {AUTH_SCHEDULE_VERSION, UINT32TYPE},
                                 {AUTH_LOCK_OUT_TEMPLATE, UINT64TYPE},

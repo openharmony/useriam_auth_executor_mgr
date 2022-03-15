@@ -39,7 +39,7 @@ enum AuthAttributeType {
     /* Remain time */
     AUTH_REMAIN_TIME = 100010,
     /* Session id, required when decode in C */
-    AUTH_SESSION_ID = 100014,
+    AUTH_SCHEDULE_ID = 100014,
     /* Package name */
     AUTH_CALLER_NAME = 100015,
     /* Schedule version */
@@ -66,6 +66,8 @@ enum AuthAttributeType {
     AUTH_CALLER_UID = 100027,
     /* result */
     AUTH_RESULT = 100028,
+    /* capability level */
+    AUTH_CAPABILITY_LEVEL = 100029,
     /* algorithm setinfo */
     ALGORITHM_INFO
 };
