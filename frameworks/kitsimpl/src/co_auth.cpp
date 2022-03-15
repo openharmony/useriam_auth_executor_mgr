@@ -44,7 +44,11 @@ sptr<ICoAuth> CoAuth::GetProxy()
         COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get coauth manager service");
         return nullptr;
     }
-    sptr<IRemoteObject::DeathRecipient> dr = new CoAuthDeathRecipient();
+    sptr<IRemoteObject::DeathRecipient> dr = new (std::nothrow) CoAuthDeathRecipient();
+    if (dr == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "dr is nullptr");
+        return nullptr;
+    }
     if ((obj->IsProxyObject()) && (!obj->AddDeathRecipient(dr))) {
         COAUTH_HILOGE(MODULE_INNERKIT, "Failed to add death recipient");
         return nullptr;
@@ -83,7 +87,7 @@ void CoAuth::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, std::shared_
         return;
     }
 
-    sptr<ICoAuthCallback> icoAuthCallback = new CoAuthCallbackStub(callback);
+    sptr<ICoAuthCallback> icoAuthCallback = new (std::nothrow) CoAuthCallbackStub(callback);
     if (icoAuthCallback == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "BeginSchedule failed, icoAuthCallback is nullptr");
         return;
@@ -125,7 +129,11 @@ void CoAuth::SetExecutorProp(AuthResPool::AuthAttributes &conditions, std::share
         return;
     }
 
-    sptr<ISetPropCallback> iSetExecutorCallback = new SetPropCallbackStub(callback);
+    sptr<ISetPropCallback> iSetExecutorCallback = new (std::nothrow) SetPropCallbackStub(callback);
+    if (iSetExecutorCallback == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "iSetExecutorCallback is nullptr");
+        return;
+    }    
     return proxy->SetExecutorProp(conditions, iSetExecutorCallback);
 }
 

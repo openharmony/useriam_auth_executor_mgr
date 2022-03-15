@@ -43,7 +43,11 @@ sptr<CoAuth::ICoAuth> AuthExecutorRegistry::GetProxy()
         COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get coauth service");
         return nullptr;
     }
-    sptr<IRemoteObject::DeathRecipient> dr = new AuthExecutorRegistryDeathRecipient();
+    sptr<IRemoteObject::DeathRecipient> dr = new (std::nothrow) AuthExecutorRegistryDeathRecipient();
+    if (dr == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "dr is nullptr");
+        return nullptr;        
+    }
     if ((obj->IsProxyObject()) && (!obj->AddDeathRecipient(dr))) {
         COAUTH_HILOGE(MODULE_INNERKIT, "Failed to add death recipient");
         return nullptr;
@@ -81,7 +85,11 @@ uint64_t AuthExecutorRegistry::Register(std::shared_ptr<AuthExecutor> executorIn
         COAUTH_HILOGE(MODULE_INNERKIT, "GetProxy is nullptr");
         return FAIL;
     }
-    sptr<IExecutorCallback> iExecutorCallback = new ExecutorCallbackStub(callback);
+    sptr<IExecutorCallback> iExecutorCallback = new (std::nothrow) ExecutorCallbackStub(callback);
+    if (iExecutorCallback == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "iExecutorCallback is nullptr");
+        return FAIL;       
+    }
     return proxy->Register(executorInfo, iExecutorCallback);
 }
 
@@ -97,7 +105,11 @@ void AuthExecutorRegistry::QueryStatus(AuthExecutor &executorInfo, std::shared_p
         COAUTH_HILOGE(MODULE_INNERKIT, "GetProxy is nullptr");
         return;
     }
-    sptr<IQueryCallback> iQueryCallback = new QueryCallbackStub(callback);
+    sptr<IQueryCallback> iQueryCallback = new (std::nothrow) QueryCallbackStub(callback);
+    if (iQueryCallback == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "iQueryCallback is nullptr");
+        return;       
+    }
     return proxy->QueryStatus(executorInfo, iQueryCallback);
 }
 
