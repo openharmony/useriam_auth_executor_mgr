@@ -83,7 +83,7 @@ void CoAuthManager::BeginExecute(ScheduleInfo &scheduleInfo, std::size_t executo
         }
         auto commandAttrs = std::make_shared<ResAuthAttributes>();
         SetAuthAttributes(commandAttrs, scheduleInfo, authInfo);
-        executeRet |= executorCallback->OnBeginExecute(scheduleId, publicKey, commandAttrs);
+        executeRet = executorCallback->OnBeginExecute(scheduleId, publicKey, commandAttrs);
     }
 }
 
@@ -137,7 +137,7 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
         commandAttrs->SetUint32Value(AUTH_SCHEDULE_MODE, scheduleInfo.scheduleMode);
         commandAttrs->SetUint64Value(AUTH_SUBTYPE, scheduleInfo.authSubType);
         commandAttrs->SetUint64Value(AUTH_TEMPLATE_ID, scheduleInfo.templateId);
-        executeRet |= executorCallback->OnEndExecute(scheduleId, commandAttrs);
+        executeRet = executorCallback->OnEndExecute(scheduleId, commandAttrs);
     }
     if (executeRet != SUCCESS) {
         COAUTH_HILOGW(MODULE_SERVICE, "There are one or more failures when canceling.");
@@ -178,11 +178,10 @@ void CoAuthManager::SetExecutorProp(ResAuthAttributes &conditions, sptr<ISetProp
     std::shared_ptr<ResAuthAttributes> properties = std::make_shared<ResAuthAttributes>();
     conditions.Pack(buffer);
     properties->Unpack(buffer);
-    result = execallback->OnSetProperty(properties);
+    result = (uint32_t)execallback->OnSetProperty(properties);
     if (result != SUCCESS) {
         COAUTH_HILOGE(MODULE_SERVICE, "set properties failure");
     }
-    COAUTH_HILOGI(MODULE_SERVICE, "set properties successfull");
     callback->OnResult(result, extraInfo);
 }
 
