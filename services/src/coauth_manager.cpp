@@ -70,6 +70,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
 void CoAuthManager::BeginExecute(ScheduleInfo &scheduleInfo, std::size_t executorNum, uint64_t scheduleId,
                                  AuthInfo &authInfo, int32_t &executeRet)
 {
+    executeRet = SUCCESS;
     for (std::size_t i = 0; i < executorNum; i++) {
         uint32_t authType = scheduleInfo.executors[i].authType;
         COAUTH_HILOGD(MODULE_SERVICE, "get authType = %{public}u", authType);
@@ -83,7 +84,11 @@ void CoAuthManager::BeginExecute(ScheduleInfo &scheduleInfo, std::size_t executo
         }
         auto commandAttrs = std::make_shared<ResAuthAttributes>();
         SetAuthAttributes(commandAttrs, scheduleInfo, authInfo);
-        executeRet = executorCallback->OnBeginExecute(scheduleId, publicKey, commandAttrs);
+        int32_t ret = executorCallback->OnBeginExecute(scheduleId, publicKey, commandAttrs);
+        if (ret != SUCCESS) {
+            COAUTH_HILOGE(MODULE_SERVICE, "executor i = %{public}zu failed", i);
+            executeRet = ret;
+        }
     }
 }
 
@@ -128,8 +133,8 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
         uint32_t authType = scheduleInfo.executors[i].authType;
         sptr<ResIExecutorCallback> executorCallback;
         COAUTH_HILOGD(MODULE_SERVICE, "get exeID = %{public}u", authType);
-        int32_t findRet = coAuthResMgrPtr_->FindExecutorCallback(authType, executorCallback);
-        if ((findRet != 0) || (executorCallback == nullptr)) {
+        int32_t onceRet = coAuthResMgrPtr_->FindExecutorCallback(authType, executorCallback);
+        if ((onceRet != 0) || (executorCallback == nullptr)) {
             COAUTH_HILOGE(MODULE_SERVICE, "executor callback not found.");
             continue;
         }
@@ -137,7 +142,11 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
         commandAttrs->SetUint32Value(AUTH_SCHEDULE_MODE, scheduleInfo.scheduleMode);
         commandAttrs->SetUint64Value(AUTH_SUBTYPE, scheduleInfo.authSubType);
         commandAttrs->SetUint64Value(AUTH_TEMPLATE_ID, scheduleInfo.templateId);
-        executeRet = executorCallback->OnEndExecute(scheduleId, commandAttrs);
+        onceRet = executorCallback->OnEndExecute(scheduleId, commandAttrs);
+        if (onceRet != SUCCESS) {
+            COAUTH_HILOGE(MODULE_SERVICE, "executor i = %{public}zu failed", i);
+            executeRet = onceRet;
+        }
     }
     if (executeRet != SUCCESS) {
         COAUTH_HILOGW(MODULE_SERVICE, "There are one or more failures when canceling.");
