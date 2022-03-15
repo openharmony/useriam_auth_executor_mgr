@@ -421,7 +421,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
     conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
-    conditions.SetUint64Value(AUTH_SESSION_ID, 1);
+    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
 
     std::vector<uint64_t> val1;
     val1.push_back(1);
@@ -455,7 +455,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest015, TestSize.Level0)
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
     conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
-    conditions.SetUint64Value(AUTH_SESSION_ID, 1);
+    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
 
     std::vector<uint64_t> val1;
     val1.push_back(1);
@@ -477,7 +477,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest016, TestSize.Level0)
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
     conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
-    conditions.SetUint64Value(AUTH_SESSION_ID, 1);
+    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
 
     std::vector<uint64_t> val1;
     val1.push_back(1);
@@ -499,7 +499,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest017, TestSize.Level0)
     AuthResPool::AuthAttributes conditions;
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
     conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
-    conditions.SetUint64Value(AUTH_SESSION_ID, 1);
+    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
 
     std::vector<uint64_t> val1;
     val1.push_back(1);
@@ -522,7 +522,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest018, TestSize.Level0)
     conditions.SetUint32Value(AUTH_TYPE, PIN);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
     conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
-    conditions.SetUint64Value(AUTH_SESSION_ID, 1);
+    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
     conditions.SetUint32Value(AUTH_PROPERTY_MODE, 1);
     conditions.SetUint64Value(AUTH_TEMPLATE_ID, 1);
 

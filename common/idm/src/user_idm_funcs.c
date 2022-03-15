@@ -34,6 +34,10 @@ static int32_t PinPermissionCheck(int32_t userId, UserAuthTokenHal *authToken)
         return RESULT_SUCCESS;
     } else if (ret == RESULT_SUCCESS) {
         LOG_INFO("pin already exists, legal token is required");
+        if (authToken->authType != PIN_AUTH) {
+            LOG_ERROR("need pin token");
+            return RESULT_VERIFY_TOKEN_FAIL;
+        }
         uint64_t challenge;
         ret = GetChallenge(&challenge);
         if (ret != RESULT_SUCCESS || challenge != authToken->challenge) {
@@ -53,6 +57,10 @@ static int32_t PinPermissionCheck(int32_t userId, UserAuthTokenHal *authToken)
 
 static int32_t FacePermissionCheck(int32_t userId, UserAuthTokenHal *authToken)
 {
+    if (authToken->authType != PIN_AUTH) {
+        LOG_ERROR("need pin token");
+        return RESULT_VERIFY_TOKEN_FAIL;
+    }
     CredentialInfoHal credentialInfo;
     int32_t ret = QueryCredentialInfo(userId, FACE_AUTH, &credentialInfo);
     if (ret != RESULT_NOT_FOUND) {

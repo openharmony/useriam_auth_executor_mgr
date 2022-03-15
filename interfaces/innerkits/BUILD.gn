@@ -58,7 +58,9 @@ ohos_shared_library("coauth_framework") {
     "${coauth_utils_path}:utils_config",
   ]
 
-  deps = [ "//utils/native/base:utils" ]
+  deps = [
+    "//utils/native/base:utils",
+  ]
 
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
