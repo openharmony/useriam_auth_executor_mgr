@@ -18,7 +18,6 @@
 
 #include <system_ability.h>
 #include <system_ability_definition.h>
-
 #include "coauth_stub.h"
 #include "iset_prop_callback.h"
 #include "auth_attributes.h"

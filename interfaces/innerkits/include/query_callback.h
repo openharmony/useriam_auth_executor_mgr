@@ -16,7 +16,6 @@
 #ifndef QUERY_CALLBACK_H
 #define QUERY_CALLBACK_H
 
-
 namespace OHOS {
 namespace UserIAM {
 namespace AuthResPool {

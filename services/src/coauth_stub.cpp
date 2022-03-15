@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "coauth_stub.h"
 #include <cinttypes>
 #include <message_parcel.h>
 #include "coauth_hilog_wrapper.h"
 #include "coauth_errors.h"
-#include "coauth_stub.h"
 
 namespace OHOS {
 namespace UserIAM {

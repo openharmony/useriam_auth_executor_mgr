@@ -17,7 +17,6 @@
 #define IEXECUTOR_MESSENGER_H
 
 #include <iremote_broker.h>
-
 #include "coauth_info_define.h"
 #include "auth_attributes.h"
 #include "auth_message.h"

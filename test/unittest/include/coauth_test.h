@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef COAUTH_TEST_H
 #define COAUTH_TEST_H
+
 #include "auth_executor.h"
 #include "iexecutor_callback.h"
 #include "executor_callback.h"

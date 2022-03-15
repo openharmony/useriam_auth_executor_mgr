@@ -12,10 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "set_prop_callback_proxy.h"
 #include <message_parcel.h>
 #include <string_ex.h>
 #include "coauth_hilog_wrapper.h"
-#include "set_prop_callback_proxy.h"
 
 namespace OHOS {
 namespace UserIAM {

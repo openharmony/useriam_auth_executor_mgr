@@ -15,6 +15,7 @@
 
 #ifndef COAUTH_SERVICES_INCLUDE_COAUTH_THREAD_POOL_H
 #define COAUTH_SERVICES_INCLUDE_COAUTH_THREAD_POOL_H
+
 #include <mutex>
 #include "nocopyable.h"
 #include "thread_pool.h"

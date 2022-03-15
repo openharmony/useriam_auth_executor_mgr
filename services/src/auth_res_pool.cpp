@@ -12,9 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "auth_res_pool.h"
 #include <cinttypes>
 #include "coauth_info_define.h"
-#include "auth_res_pool.h"
 
 namespace OHOS {
 namespace UserIAM {

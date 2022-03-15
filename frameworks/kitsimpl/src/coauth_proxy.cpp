@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
+#include "coauth_proxy.h"
 #include <cinttypes>
 #include <message_parcel.h>
 #include <string_ex.h>
 #include "coauth_hilog_wrapper.h"
-#include "coauth_proxy.h"
 
 namespace OHOS {
 namespace UserIAM {
