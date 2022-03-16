@@ -274,8 +274,8 @@ int32_t UpdateCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialI
         return RESULT_BAD_COPY;
     }
     CredentialInfoHal credentialInfoHal;
-    int32_t ret =
-        UpdateCredentialFunc(enrollTokenIn, static_cast<uint32_t>(sizeof(ScheduleTokenHal)), &credentialId, &credentialInfoHal);
+    int32_t ret = UpdateCredentialFunc(enrollTokenIn, static_cast<uint32_t>(sizeof(ScheduleTokenHal)),
+        &credentialId, &credentialInfoHal);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("update failed");
         GlobalUnLock();
