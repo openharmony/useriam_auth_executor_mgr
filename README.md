@@ -72,12 +72,12 @@ The OpenHarmony framework implements the auth_executor_mgr service and has encap
 
 ## Repositories Involved
 
-**[useriam_auth_executor_mgr](https://gitee.com/openharmony-sig/useriam_coauth)**
+**[useriam_auth_executor_mgr](https://gitee.com/openharmony/useriam_auth_executor_mgr/blob/master/README.md)**
 
-[useriam_user_idm](https://gitee.com/openharmony-sig/useriam_useridm)
+[useriam_user_idm](https://gitee.com/openharmony/useriam_user_idm/blob/master/README.md)
 
-[useriam_user_auth](https://gitee.com/openharmony-sig/useriam_userauth)
+[useriam_user_auth](https://gitee.com/openharmony/useriam_user_auth/blob/master/README.md)
 
-[useriam_pin_auth](https://gitee.com/openharmony-sig/useriam_pinauth)
+[useriam_pin_auth](https://gitee.com/openharmony/useriam_pin_auth/blob/master/README.md)
 
-[useriam_faceauth](https://gitee.com/openharmony/useriam_faceauth)
+useriam_faceauth
