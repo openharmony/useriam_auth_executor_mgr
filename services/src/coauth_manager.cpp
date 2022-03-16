@@ -46,7 +46,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
         return callback->OnFinish(FAIL, scheduleToken);
     }
     sptr<IRemoteObject::DeathRecipient> dr =
-        new (std::noboolalpha) ResICoAuthCallbackDeathRecipient(scheduleId, this);
+        new (std::nothrow) ResICoAuthCallbackDeathRecipient(scheduleId, this);
     if (dr == nullptr) {
         COAUTH_HILOGE(MODULE_SERVICE, "dr is nullptr.");
         return callback->OnFinish(FAIL, scheduleToken);

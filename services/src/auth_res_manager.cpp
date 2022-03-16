@@ -29,11 +29,17 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     }
     ExecutorInfo info;
     std::vector<uint8_t> publicKey;
-    executorInfo->GetAuthType(info.authType);
+    AuthType authType;
+    ExecutorSecureLevel esl;
+    ExecutorType exeType;
+    executorInfo->GetAuthType(authType);
     executorInfo->GetAuthAbility(info.authAbility);
-    executorInfo->GetExecutorSecLevel(info.esl);
-    executorInfo->GetExecutorType(info.executorType);
+    executorInfo->GetExecutorSecLevel(esl);
+    executorInfo->GetExecutorType(exeType);
     executorInfo->GetPublicKey(publicKey);
+    info.authType = authType;
+    info.esl = esl;
+    info.executorType = exeType;
     if (publicKey.size() > PUBLIC_KEY_LEN) {
         COAUTH_HILOGE(MODULE_SERVICE, "publicKey length too long");
         return INVALID_EXECUTOR_ID;

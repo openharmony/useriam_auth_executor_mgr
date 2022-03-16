@@ -135,7 +135,7 @@ int32_t AuthResPool::GetScheduleCount(uint64_t scheduleId, uint64_t &scheduleCou
     }
     scheduleCount = iter->second->executorNum;
     COAUTH_HILOGD(MODULE_SERVICE, "get schedule count success");
-    resultCode = SUCCESS;
+    return SUCCESS;
 }
 
 int32_t AuthResPool::DeleteScheduleCallback(uint64_t scheduleId)
