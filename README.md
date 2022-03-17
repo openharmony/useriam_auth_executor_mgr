@@ -4,7 +4,7 @@
 
 ## Introduction
 
-As a basic component of the Identity & Access Management (IAM) subsystem, Authentication Executor Management (auth_executor_mgr) manages and schedules authentication resources in the system. Currently, password authentication and facial authentication are supported.
+As a basic component of the User Identity & Access Management (IAM) subsystem, Authentication Executor Management (auth_executor_mgr) manages and schedules authentication resources in the system. Currently, password authentication and facial authentication are supported.
 
 The user authentication unit on the device is called authentication executor.
 
@@ -16,19 +16,19 @@ The auth_executor_mgr module provides a set of resource management APIs. After i
 
 
 
-The OpenHarmony framework implements the auth_executor_mgr service and has encapsulated the collaborative scheduling and resource management APIs. Device vendors need to adapt some functions of the authentication executor management component to meet higher security requirements. The APIs that need to be adapted by device vendors are defined in the IAM common HDI.
+The OpenHarmony framework implements the auth_executor_mgr service and has encapsulated the collaborative scheduling and resource management APIs. Device vendors need to adapt some functions of the auth_executor_mgr component to meet higher security requirements. The APIs that need to be adapted by device vendors are defined in the IAM common HDI.
 
 ## Directory Structure
 
 ```undefined
 //base/user_iam/auth_executor_mgr
-├── common			    	# Directory for storing the IAM common HDI
+├── common					# Directory for storing the IAM common HDI
 ├── frameworks				# Framework code
 ├── interfaces				# Directory for storing external interfaces
 │   └── innerkits			# Header files exposed to the internal subsystem
-├── sa_profile				# Profile of the Service Ability
-├── services				# Implementation of Service Ability services
-├── test				    # Directory for storing test code
+├── sa_profile				# Profile of the Service ability
+├── services				# Implementation of the Service ability
+├── test					# Directory for storing test code
 ├── utils					# Directory for storing utility code
 ├── auth_executor_mgr.gni	# Build configuration
 └── bundle.json				# Component description file
@@ -67,17 +67,17 @@ The OpenHarmony framework implements the auth_executor_mgr service and has encap
 
 ### Usage Guidelines
 
-- The auth_executor_mgr SA provides interconnection APIs for the authentication executors. The authentication executors call the related API to register with the auth_executor_mgr.
+- The auth_executor_mgr Service ability provides interconnection APIs for the authentication executors. The authentication executors call the related API to register with the auth_executor_mgr.
 - The APIs defined in the ```common\interface\coauth_interface.h``` header file must be implemented in a TEE. The authentication executor information cannot be tampered with, and the result returned by the authentication executor must be verified in the TEE.
 
 ## Repositories Involved
 
-**[useriam_auth_executor_mgr](https://gitee.com/useriam_auth_executor_mgr/blob/master/README.md)**
+**[useriam_auth_executor_mgr](https://gitee.com/openharmony-sig/useriam_coauth)**
 
-[useriam_user_idm](https://gitee.com/openharmony/useriam_user_idm/blob/master/README.md)
+[useriam_user_idm](https://gitee.com/openharmony-sig/useriam_useridm)
 
-[useriam_user_auth](https://gitee.com/openharmony/useriam_user_auth/blob/master/README.md)
+[useriam_user_auth](https://gitee.com/openharmony-sig/useriam_userauth)
 
-[useriam_pin_auth](https://gitee.com/openharmony/useriam_pin_auth/blob/master/README.md)
+[useriam_pin_auth](https://gitee.com/openharmony-sig/useriam_pinauth)
 
-useriam_faceauth
+[useriam_faceauth](https://gitee.com/openharmony/useriam_faceauth)
