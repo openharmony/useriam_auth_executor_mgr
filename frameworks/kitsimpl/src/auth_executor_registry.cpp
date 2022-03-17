@@ -97,11 +97,7 @@ void AuthExecutorRegistry::QueryStatus(AuthExecutor &executorInfo, std::shared_p
         COAUTH_HILOGE(MODULE_INNERKIT, "GetProxy is nullptr");
         return;
     }
-    sptr<IQueryCallback> iQueryCallback = new (std::nothrow) QueryCallbackStub(callback);
-    if (iQueryCallback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "iQueryCallback is nullptr");
-        return;       
-    }
+    sptr<IQueryCallback> iQueryCallback = new QueryCallbackStub(callback);
     return proxy->QueryStatus(executorInfo, iQueryCallback);
 }
 
