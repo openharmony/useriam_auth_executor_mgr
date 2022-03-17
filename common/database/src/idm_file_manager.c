@@ -220,6 +220,8 @@ ResultCode UpdateFileInfo(LinkedList *userInfoList)
         ret = RESULT_BAD_WRITE;
         goto EXIT;
     }
+
+    // This is for example only. Should be implemented in trusted environment.
     ret = fileOperator->writeFile(IDM_USER_INFO, parcel->buf, parcel->contentSize);
     if (ret != RESULT_SUCCESS) {
         LOG_ERROR("file write failed, %{public}u", parcel->contentSize);
