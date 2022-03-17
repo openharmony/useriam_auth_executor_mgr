@@ -31,7 +31,7 @@ public:
 
 private:
     std::string pkgName_;
-    int32_t callerUid_;
+    uint64_t callerUid_;
 };
 } // namespace CoAuth
 } // namespace UserIAM
