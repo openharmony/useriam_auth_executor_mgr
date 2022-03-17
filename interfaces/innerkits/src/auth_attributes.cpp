@@ -60,7 +60,7 @@ int32_t AuthAttributes::GetBoolValue(AuthAttributeType attrType, bool &value)
     std::map<AuthAttributeType, bool>::iterator iter = boolValueMap_.find(attrType);
     if (iter == boolValueMap_.end()) {
         return FAIL;
-    }    
+    }
     value = iter->second;
     return SUCCESS;
 }
@@ -70,7 +70,7 @@ int32_t AuthAttributes::GetUint32Value(AuthAttributeType attrType, uint32_t &val
     std::map<AuthAttributeType, uint32_t>::iterator iter = uint32ValueMap_.find(attrType);
     if (iter == uint32ValueMap_.end()) {
         return FAIL;
-    }    
+    }
     value = iter->second;
     return SUCCESS;
 }
@@ -80,7 +80,7 @@ int32_t AuthAttributes::GetUint64Value(AuthAttributeType attrType, uint64_t &val
     std::map<AuthAttributeType, uint64_t>::iterator iter = uint64ValueMap_.find(attrType);
     if (iter == uint64ValueMap_.end()) {
         return FAIL;
-    }    
+    }
     value = iter->second;
     return SUCCESS;
 }
@@ -90,7 +90,7 @@ int32_t AuthAttributes::GetUint32ArrayValue(AuthAttributeType attrType, std::vec
     std::map<AuthAttributeType, std::vector<uint32_t>>::iterator iter = uint32ArraylValueMap_.find(attrType);
     if (iter == uint32ArraylValueMap_.end()) {
         return FAIL;
-    }    
+    }
     value = iter->second;
     return SUCCESS;
 }
@@ -100,7 +100,7 @@ int32_t AuthAttributes::GetUint64ArrayValue(AuthAttributeType attrType, std::vec
     std::map<AuthAttributeType, std::vector<uint64_t>>::iterator iter = uint64ArraylValueMap_.find(attrType);
     if (iter == uint64ArraylValueMap_.end()) {
         return FAIL;
-    }    
+    }
     value = iter->second;
     return SUCCESS;
 }
@@ -110,7 +110,7 @@ int32_t AuthAttributes::GetUint8ArrayValue(AuthAttributeType attrType, std::vect
     std::map<AuthAttributeType, std::vector<uint8_t>>::iterator iter = uint8ArrayValueMap_.find(attrType);
     if (iter == uint8ArrayValueMap_.end()) {
         return FAIL;
-    }    
+    }
     value = iter->second;
     return SUCCESS;
 }

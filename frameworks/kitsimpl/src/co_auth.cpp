@@ -125,7 +125,7 @@ void CoAuth::SetExecutorProp(AuthResPool::AuthAttributes &conditions, std::share
         return;
     }
 
-    sptr<ISetPropCallback> iSetExecutorCallback = new SetPropCallbackStub(callback);    
+    sptr<ISetPropCallback> iSetExecutorCallback = new SetPropCallbackStub(callback);
     return proxy->SetExecutorProp(conditions, iSetExecutorCallback);
 }
 

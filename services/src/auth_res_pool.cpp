@@ -34,7 +34,6 @@ int32_t AuthResPool::Insert(uint64_t executorID, std::shared_ptr<ResAuthExecutor
     }
     COAUTH_HILOGI(MODULE_SERVICE, "authResPool_ insert success");
     return SUCCESS;
-
 }
 
 int32_t AuthResPool::Insert(uint64_t scheduleId, uint64_t executorNum, sptr<ICoAuthCallback> callback)

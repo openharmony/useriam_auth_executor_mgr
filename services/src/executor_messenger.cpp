@@ -55,7 +55,7 @@ int32_t ExecutorMessenger::SendData(uint64_t scheduleId, uint64_t transNum, int3
         return FAIL;
     }
     callback->OnAcquireInfo(acquire);
-    COAUTH_HILOGD(MODULE_SERVICE, "feedback acquire info");    
+    COAUTH_HILOGD(MODULE_SERVICE, "feedback acquire info");
     return SUCCESS;
 }
 
