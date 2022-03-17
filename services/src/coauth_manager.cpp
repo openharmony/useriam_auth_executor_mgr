@@ -45,12 +45,7 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
         COAUTH_HILOGE(MODULE_SERVICE, "executorId does not exist.");
         return callback->OnFinish(FAIL, scheduleToken);
     }
-    sptr<IRemoteObject::DeathRecipient> dr =
-        new (std::nothrow) ResICoAuthCallbackDeathRecipient(scheduleId, this);
-    if (dr == nullptr) {
-        COAUTH_HILOGE(MODULE_SERVICE, "dr is nullptr.");
-        return callback->OnFinish(FAIL, scheduleToken);
-    }
+    sptr<IRemoteObject::DeathRecipient> dr = new ResICoAuthCallbackDeathRecipient(scheduleId, this);
     if ((!callback->AsObject()->AddDeathRecipient(dr))) {
         COAUTH_HILOGE(MODULE_SERVICE, "Failed to add death recipient ResICoAuthCallbackDeathRecipient");
     }
