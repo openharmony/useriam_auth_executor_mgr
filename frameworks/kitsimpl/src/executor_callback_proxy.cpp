@@ -81,7 +81,7 @@ int32_t ExecutorCallbackProxy::OnBeginExecute(uint64_t scheduleId, std::vector<u
         return FAIL;
     }
     COAUTH_HILOGI(MODULE_INNERKIT, "result = %{public}d", result);
-    return SUCCESS;
+    return result;
 }
 
 int32_t ExecutorCallbackProxy::OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr)

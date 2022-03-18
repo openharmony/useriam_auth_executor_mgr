@@ -49,10 +49,95 @@ void CoAuthTest::TearDown()
 
 /**
  * @tc.name: UseriamUtTest001
- * @tc.desc: Test AuthType(PIN).
+ * @tc.desc: Test GetExecutorProp(FACE).
  * @tc.type: FUNC
  */
 HWTEST_F(CoAuthTest, UseriamUtTest001, TestSize.Level0)
+{
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest016 enter.");
+    AuthResPool::AuthAttributes conditions;
+    conditions.SetUint32Value(AUTH_TYPE, FACE);
+    conditions.SetBoolValue(AUTH_CONTROLLER, 0);
+    conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
+    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
+
+    std::vector<uint64_t> val1;
+    val1.push_back(1);
+    conditions.SetUint64ArrayValue(AUTH_TEMPLATE_ID_LIST, val1);
+
+    std::vector<uint8_t> val2;
+    val2.push_back('5');
+    conditions.SetUint8ArrayValue(AUTH_CALLER_NAME, val2);
+
+    std::shared_ptr<AuthResPool::AuthAttributes> values = std::make_shared<AuthResPool::AuthAttributes>();
+    int32_t ret = CoAuth::GetInstance().GetExecutorProp(conditions, values);
+    sleep(5);
+    EXPECT_NE(0, ret);
+}
+
+/**
+ * @tc.name: UseriamUtTest002
+ * @tc.desc: Test GetExecutorProp().
+ * @tc.type: FUNC
+ */
+HWTEST_F(CoAuthTest, UseriamUtTest002, TestSize.Level0)
+{
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest017 enter.");
+    AuthResPool::AuthAttributes conditions;
+    conditions.SetBoolValue(AUTH_CONTROLLER, 0);
+    conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
+    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
+
+    std::vector<uint64_t> val1;
+    val1.push_back(1);
+    conditions.SetUint64ArrayValue(AUTH_TEMPLATE_ID_LIST, val1);
+
+    std::vector<uint8_t> val2;
+    val2.push_back('5');
+    conditions.SetUint8ArrayValue(AUTH_CALLER_NAME, val2);
+
+    std::shared_ptr<AuthResPool::AuthAttributes> values = nullptr;
+    int32_t ret = CoAuth::GetInstance().GetExecutorProp(conditions, values);
+    sleep(5);
+    EXPECT_EQ(1, ret);
+}
+
+/**
+ * @tc.name: UseriamUtTest003
+ * @tc.desc: Test GetExecutorProp(PIN).
+ * @tc.type: FUNC
+ */
+HWTEST_F(CoAuthTest, UseriamUtTest003, TestSize.Level0)
+{
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest018 enter.");
+    AuthResPool::AuthAttributes conditions;
+    conditions.SetUint32Value(AUTH_TYPE, PIN);
+    conditions.SetBoolValue(AUTH_CONTROLLER, 0);
+    conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
+    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
+    conditions.SetUint32Value(AUTH_PROPERTY_MODE, 1);
+    conditions.SetUint64Value(AUTH_TEMPLATE_ID, 1);
+
+    std::vector<uint64_t> val1;
+    val1.push_back(1);
+    conditions.SetUint64ArrayValue(AUTH_TEMPLATE_ID_LIST, val1);
+
+    std::vector<uint8_t> val2;
+    val2.push_back('5');
+    conditions.SetUint8ArrayValue(AUTH_CALLER_NAME, val2);
+
+    std::shared_ptr<AuthResPool::AuthAttributes> values = std::make_shared<AuthResPool::AuthAttributes>();
+    int32_t ret = CoAuth::GetInstance().GetExecutorProp(conditions, values);
+    sleep(5);
+    EXPECT_EQ(0, ret);
+}
+
+/**
+ * @tc.name: UseriamUtTest004
+ * @tc.desc: Test AuthType(PIN).
+ * @tc.type: FUNC
+ */
+HWTEST_F(CoAuthTest, UseriamUtTest004, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest001 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = std::make_shared<AuthResPool::AuthExecutor>();
@@ -100,11 +185,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest001, TestSize.Level0)
 
 
 /**
- * @tc.name: UseriamUtTest002
+ * @tc.name: UseriamUtTest005
  * @tc.desc: Test empty callback.
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest002, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest005, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest002 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = std::make_shared<AuthResPool::AuthExecutor>();
@@ -124,11 +209,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest002, TestSize.Level0)
     EXPECT_LE(FAIL, ret);
 }
 /**
- * @tc.name: UseriamUtTest003
+ * @tc.name: UseriamUtTest006
  * @tc.desc: Test AuthType(FACE).
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest003, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest006, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest003 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = std::make_shared<AuthResPool::AuthExecutor>();
@@ -175,11 +260,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest003, TestSize.Level0)
 }
 
 /**
- * @tc.name: UseriamUtTest004
+ * @tc.name: UseriamUtTest007
  * @tc.desc: Test publicKey error length.
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest004, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest007, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest004 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = std::make_shared<AuthResPool::AuthExecutor>();
@@ -226,11 +311,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest004, TestSize.Level0)
 }
 
 /**
- * @tc.name: UseriamUtTest005
+ * @tc.name: UseriamUtTest008
  * @tc.desc: Test empty executorInfo and empty callback.
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest005, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest008, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest005 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = nullptr;
@@ -240,11 +325,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest005, TestSize.Level0)
 }
 
 /**
- * @tc.name: UseriamUtTest006
+ * @tc.name: UseriamUtTest009
  * @tc.desc: Test AuthType(PIN).
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest006, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest009, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest006 start");
     AuthResPool::AuthExecutor executorInfo;
@@ -274,11 +359,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest006, TestSize.Level0)
 }
 
 /**
- * @tc.name: UseriamUtTest007
+ * @tc.name: UseriamUtTest0010
  * @tc.desc: Test empty executorInfo and empty callback.
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest007, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest010, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest007 start");
     AuthResPool::AuthExecutor executorInfo;
@@ -288,11 +373,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest007, TestSize.Level0)
 }
 
 /**
- * @tc.name: UseriamUtTest008
+ * @tc.name: UseriamUtTest011
  * @tc.desc: Test AuthType(FACE).
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest008, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest011, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest008 start");
     AuthResPool::AuthExecutor executorInfo;
@@ -321,11 +406,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest008, TestSize.Level0)
     SUCCEED();
 }
 /**
- * @tc.name: UseriamUtTest009
+ * @tc.name: UseriamUtTest012
  * @tc.desc: Test empty callback.
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest009, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest012, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest009 start");
     AuthResPool::AuthExecutor executorInfo;
@@ -346,11 +431,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest009, TestSize.Level0)
     SUCCEED();
 }
 /**
- * @tc.name: UseriamUtTest010
+ * @tc.name: UseriamUtTest013
  * @tc.desc: Test empty authInfo and empty callback.
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest010, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest013, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest010 start");
     AuthInfo authInfo;
@@ -360,11 +445,11 @@ HWTEST_F(CoAuthTest, UseriamUtTest010, TestSize.Level0)
 }
 
 /**
- * @tc.name: UseriamUtTest011
+ * @tc.name: UseriamUtTest014
  * @tc.desc: Test normal value.
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest011, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest011 start");
     AuthInfo authInfo;
@@ -387,12 +472,13 @@ HWTEST_F(CoAuthTest, UseriamUtTest011, TestSize.Level0)
     CoAuth::GetInstance().BeginSchedule(1, authInfo, callback);
     SUCCEED();
 }
+
 /**
- * @tc.name: UseriamUtTest012
+ * @tc.name: UseriamUtTest015
  * @tc.desc: Test empty callback.
  * @tc.type: FUNC
  */
-HWTEST_F(CoAuthTest, UseriamUtTest012, TestSize.Level0)
+HWTEST_F(CoAuthTest, UseriamUtTest015, TestSize.Level0)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest012 start");
     AuthInfo authInfo;
@@ -404,7 +490,12 @@ HWTEST_F(CoAuthTest, UseriamUtTest012, TestSize.Level0)
     SUCCEED();
 }
 
-HWTEST_F(CoAuthTest, UseriamUtTest013, TestSize.Level0)
+/**
+ * @tc.name: UseriamUtTest016
+ * @tc.desc: Test Cancel().
+ * @tc.type: FUNC
+ */
+HWTEST_F(CoAuthTest, UseriamUtTest016, TestSize.Level0)
 {
     COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest013 start.");
     uint64_t scheduleId = 0;
@@ -414,7 +505,12 @@ HWTEST_F(CoAuthTest, UseriamUtTest013, TestSize.Level0)
     EXPECT_NE(0, CoAuth::GetInstance().Cancel(scheduleId));
 }
 
-HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
+/**
+ * @tc.name: UseriamUtTest017
+ * @tc.desc: Test SetExecutorProp().
+ * @tc.type: FUNC
+ */
+HWTEST_F(CoAuthTest, UseriamUtTest017, TestSize.Level0)
 {
     COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest014 start.");
     AuthResPool::AuthAttributes conditions;
@@ -448,7 +544,12 @@ HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
     SUCCEED();
 }
 
-HWTEST_F(CoAuthTest, UseriamUtTest015, TestSize.Level0)
+/**
+ * @tc.name: UseriamUtTest018
+ * @tc.desc: Test SetExecutorProp().
+ * @tc.type: FUNC
+ */
+HWTEST_F(CoAuthTest, UseriamUtTest018, TestSize.Level0)
 {
     COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest015 start.");
     AuthResPool::AuthAttributes conditions;
@@ -468,76 +569,6 @@ HWTEST_F(CoAuthTest, UseriamUtTest015, TestSize.Level0)
     CoAuth::GetInstance().SetExecutorProp(conditions, callback);
     sleep(5);
     SUCCEED();
-}
-
-HWTEST_F(CoAuthTest, UseriamUtTest016, TestSize.Level0)
-{
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest016 start.");
-    AuthResPool::AuthAttributes conditions;
-    conditions.SetUint32Value(AUTH_TYPE, FACE);
-    conditions.SetBoolValue(AUTH_CONTROLLER, 0);
-    conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
-    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
-
-    std::vector<uint64_t> val1;
-    val1.push_back(1);
-    conditions.SetUint64ArrayValue(AUTH_TEMPLATE_ID_LIST, val1);
-
-    std::vector<uint8_t> val2;
-    val2.push_back('5');
-    conditions.SetUint8ArrayValue(AUTH_CALLER_NAME, val2);
-
-    std::shared_ptr<AuthResPool::AuthAttributes> values = std::make_shared<AuthResPool::AuthAttributes>();
-    int32_t ret = CoAuth::GetInstance().GetExecutorProp(conditions, values);
-    sleep(5);
-    EXPECT_EQ(0, ret);
-}
-
-HWTEST_F(CoAuthTest, UseriamUtTest017, TestSize.Level0)
-{
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest017 start.");
-    AuthResPool::AuthAttributes conditions;
-    conditions.SetBoolValue(AUTH_CONTROLLER, 0);
-    conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
-    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
-
-    std::vector<uint64_t> val1;
-    val1.push_back(1);
-    conditions.SetUint64ArrayValue(AUTH_TEMPLATE_ID_LIST, val1);
-
-    std::vector<uint8_t> val2;
-    val2.push_back('5');
-    conditions.SetUint8ArrayValue(AUTH_CALLER_NAME, val2);
-
-    std::shared_ptr<AuthResPool::AuthAttributes> values = nullptr;
-    int32_t ret = CoAuth::GetInstance().GetExecutorProp(conditions, values);
-    sleep(5);
-    EXPECT_EQ(1, ret);
-}
-
-HWTEST_F(CoAuthTest, UseriamUtTest018, TestSize.Level0)
-{
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest018 start.");
-    AuthResPool::AuthAttributes conditions;
-    conditions.SetUint32Value(AUTH_TYPE, PIN);
-    conditions.SetBoolValue(AUTH_CONTROLLER, 0);
-    conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
-    conditions.SetUint64Value(AUTH_SCHEDULE_ID, 1);
-    conditions.SetUint32Value(AUTH_PROPERTY_MODE, 1);
-    conditions.SetUint64Value(AUTH_TEMPLATE_ID, 1);
-
-    std::vector<uint64_t> val1;
-    val1.push_back(1);
-    conditions.SetUint64ArrayValue(AUTH_TEMPLATE_ID_LIST, val1);
-
-    std::vector<uint8_t> val2;
-    val2.push_back('5');
-    conditions.SetUint8ArrayValue(AUTH_CALLER_NAME, val2);
-
-    std::shared_ptr<AuthResPool::AuthAttributes> values = std::make_shared<AuthResPool::AuthAttributes>();
-    int32_t ret = CoAuth::GetInstance().GetExecutorProp(conditions, values);
-    sleep(5);
-    EXPECT_EQ(0, ret);
 }
 }
 }
