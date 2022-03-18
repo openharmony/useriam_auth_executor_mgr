@@ -45,5 +45,5 @@ ResultCode InitTokenKey(void)
         return RESULT_GENERAL_ERROR;
     }
     g_tokenKey->contentSize = g_tokenKey->maxSize;
-    return RESULT_SUCCESS; 
+    return RESULT_SUCCESS;
 }
