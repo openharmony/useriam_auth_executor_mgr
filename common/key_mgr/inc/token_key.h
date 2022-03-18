@@ -19,8 +19,6 @@
 #include "buffer.h"
 #include "defines.h"
 
-#define SHA256_KEY_LEN 32
-
 Buffer *GetTokenKey(void);
 ResultCode InitTokenKey(void);
 

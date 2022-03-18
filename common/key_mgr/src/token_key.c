@@ -22,6 +22,8 @@
 #include "buffer.h"
 #include "defines.h"
 
+#define SHA256_KEY_LEN 32
+
 // This is for example only. Should be implemented in trusted environment.
 static Buffer *g_tokenKey = NULL;
 
