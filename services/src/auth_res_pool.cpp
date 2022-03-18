@@ -119,6 +119,10 @@ int32_t AuthResPool::ScheduleCountMinus(uint64_t scheduleId)
         COAUTH_HILOGE(MODULE_SERVICE, "scheduleId is not found and count minus one failed");
         return FAIL;
     }
+    if (iter->second->executorNum <= 0) {
+        COAUTH_HILOGE(MODULE_SERVICE, "executorNum is less than 1");
+        return FAIL;
+    }
     iter->second->executorNum--;
     COAUTH_HILOGD(MODULE_SERVICE, "schedule count minus one success");
     return SUCCESS;
