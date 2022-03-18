@@ -59,8 +59,8 @@ ohos_shared_library("useriam_common_lib") {
     "database/inc",
     "common/inc",
     "interface",
-    "key_mgr/inc",
     "idm/inc",
+    "key_mgr/inc",
     "user_auth/inc",
     "//third_party/openssl/include",
   ]
