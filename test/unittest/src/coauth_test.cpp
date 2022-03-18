@@ -54,7 +54,7 @@ void CoAuthTest::TearDown()
  */
 HWTEST_F(CoAuthTest, UseriamUtTest001, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest016 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest001 enter.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
@@ -82,7 +82,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest001, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest002, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest017 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest002 enter.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
     conditions.SetUint32Value(AUTH_SCHEDULE_MODE, 1);
@@ -109,7 +109,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest002, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest003, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest018 enter.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest003 enter.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetUint32Value(AUTH_TYPE, PIN);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
@@ -139,7 +139,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest003, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest004, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest001 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest004 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = std::make_shared<AuthResPool::AuthExecutor>();
     executorInfo->SetAuthType(PIN);
     executorInfo->SetAuthAbility(1);
@@ -191,7 +191,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest004, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest005, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest002 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest005 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = std::make_shared<AuthResPool::AuthExecutor>();
     executorInfo->SetAuthType(PIN);
     executorInfo->SetAuthAbility(1);
@@ -215,7 +215,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest005, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest006, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest003 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest006 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = std::make_shared<AuthResPool::AuthExecutor>();
     executorInfo->SetAuthType(FACE);
     executorInfo->SetAuthAbility(1);
@@ -266,7 +266,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest006, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest007, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest004 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest007 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = std::make_shared<AuthResPool::AuthExecutor>();
     executorInfo->SetAuthType(FACE);
     executorInfo->SetAuthAbility(1);
@@ -317,7 +317,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest007, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest008, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest005 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest008 start");
     std::shared_ptr<AuthResPool::AuthExecutor> executorInfo = nullptr;
     std::shared_ptr<AuthResPool::ExecutorCallback> callback = nullptr;
     uint64_t ret = AuthResPool::AuthExecutorRegistry::GetInstance().Register(executorInfo, callback);
@@ -331,7 +331,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest008, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest009, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest006 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest009 start");
     AuthResPool::AuthExecutor executorInfo;
     executorInfo.SetAuthType(PIN);
     executorInfo.SetAuthAbility(1);
@@ -365,7 +365,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest009, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest010, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest007 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest010 start");
     AuthResPool::AuthExecutor executorInfo;
     std::shared_ptr<AuthResPool::QueryCallback> callback = nullptr;
     AuthResPool::AuthExecutorRegistry::GetInstance().QueryStatus(executorInfo, callback);
@@ -379,7 +379,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest010, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest011, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest008 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest011 start");
     AuthResPool::AuthExecutor executorInfo;
     executorInfo.SetAuthType(FACE);
     executorInfo.SetAuthAbility(1);
@@ -412,7 +412,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest011, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest012, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest009 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest012 start");
     AuthResPool::AuthExecutor executorInfo;
     executorInfo.SetAuthType(FACE);
     executorInfo.SetAuthAbility(1);
@@ -437,7 +437,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest012, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest013, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest010 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest013 start");
     AuthInfo authInfo;
     std::shared_ptr<CoAuthCallback> callback = nullptr;
     CoAuth::GetInstance().BeginSchedule(1, authInfo, callback);
@@ -451,7 +451,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest013, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest011 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest014 start");
     AuthInfo authInfo;
     std::string value = "packagedemo";
     authInfo.SetPkgName(value);
@@ -480,7 +480,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest014, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest015, TestSize.Level0)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest012 start");
+    COAUTH_HILOGD(MODULE_INNERKIT, "UseriamUtTest015 start");
     AuthInfo authInfo;
     std::string value = "packagedemo";
     authInfo.SetPkgName(value);
@@ -497,7 +497,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest015, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest016, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest013 start.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest016 enter.");
     uint64_t scheduleId = 0;
     EXPECT_NE(0, CoAuth::GetInstance().Cancel(scheduleId));
 
@@ -512,7 +512,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest016, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest017, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest014 start.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest017 enter.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
@@ -551,7 +551,7 @@ HWTEST_F(CoAuthTest, UseriamUtTest017, TestSize.Level0)
  */
 HWTEST_F(CoAuthTest, UseriamUtTest018, TestSize.Level0)
 {
-    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest015 start.");
+    COAUTH_HILOGE(MODULE_SERVICE, "UseriamUtTest018 enter.");
     AuthResPool::AuthAttributes conditions;
     conditions.SetUint32Value(AUTH_TYPE, FACE);
     conditions.SetBoolValue(AUTH_CONTROLLER, 0);
