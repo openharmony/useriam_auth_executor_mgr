@@ -88,7 +88,7 @@ int32_t AddCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId)
     LOG_INFO("begin");
     GlobalLock();
     if (enrollToken.size() != sizeof(CoAuth::ScheduleToken)) {
-        LOG_ERROR("enrollToken is invalid, size is %{public}u", enrollToken.size());
+        LOG_ERROR("enrollToken is invalid, size is %{public}zu", enrollToken.size());
         GlobalUnLock();
         return RESULT_BAD_PARAM;
     }

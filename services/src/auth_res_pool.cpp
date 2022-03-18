@@ -55,8 +55,8 @@ int32_t AuthResPool::FindExecutorCallback(uint64_t executorID, sptr<ResIExecutor
 {
     std::lock_guard<std::mutex> lock(authMutex_);
     std::map<uint64_t, std::shared_ptr<ExecutorRegister>>::iterator iter = authResPool_.find(executorID);
-    if (iter != authResPool_.end()) {
-        COAUTH_HILOGE(MODULE_SERVICE, "executorID is not found, size is %{public}u", authResPool_.size());
+    if (iter == authResPool_.end()) {
+        COAUTH_HILOGE(MODULE_SERVICE, "executorID is not found, size is %{public}zu", authResPool_.size());
         return FAIL;
     }
     callback = iter->second->callback;
@@ -80,7 +80,7 @@ int32_t AuthResPool::FindExecutorCallback(uint32_t authType2Find, sptr<ResIExecu
             return SUCCESS;
         }
     }
-    COAUTH_HILOGE(MODULE_SERVICE, "authType is not found, size is %{public}u", authResPool_.size());
+    COAUTH_HILOGE(MODULE_SERVICE, "authType is not found, size is %{public}zu", authResPool_.size());
     callback = nullptr;
     return FAIL;
 }
