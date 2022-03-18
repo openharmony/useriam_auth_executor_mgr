@@ -1,117 +1,83 @@
-# useriam_coauth
-
-- [简介](#简介)
-- [目录](#目录)
-- [编译构建](#编译构建)
-  - [准备](#准备)
-  - [获取源码](#获取源码)
-  - [编译构建](#编译构建)
-
-- [说明](#说明)
-  - [接口说明](#接口说明)
-  - [使用说明](#使用说明)
-- [相关仓](#相关仓)
-
-
-## 简介
-
-**协同认证（coauth）**是用户IAM子系统的基础部件之一，提供系统内认证相关资源的统一管理和协同调度能力，当前支持口令认证和人脸认证的对接。
-
-我们将设备上的一个用户身份认证单元，称为**认证执行器**。
-
-协同认证定义了一套**资源管理**接口，新增的认证执行器在实现了认证资源管理定义的接口后，可以对接到协同认证框架上，从而为系统提供相关身份认证能力。
-
-**图1** 协同认证架构图
-
-<img src="figures/coauth架构图.png" alt="coauth架构图" style="zoom:80%;" />
+# Authentication Executor Management (auth_executor_mgr)
 
 
 
-如图所示，OpenHarmony框架已经实现了协同认证的系统服务，并对上封装了协同调度和资源管理的接口。协同认证部件内部分功能需要厂商适配来达到更高的安全性要求。需要南向厂商适配的接口，在用户IAM Common HDI中有定义。
+## Introduction
 
-## 目录
+As a basic component of the Identity & Access Management (IAM) subsystem, Authentication Executor Management (auth_executor_mgr) manages and schedules authentication resources in the system. Currently, password authentication and facial authentication are supported.
+
+The user authentication unit on the device is called authentication executor.
+
+The auth_executor_mgr module provides a set of resource management APIs. After implementing these APIs, the authentication executor can connect to auth_executor_mgr to provide authentication capabilities for the system.
+
+**Figure 1** auth_executor_mgr architecture
+
+<img src="figures/auth_executor_mgr_architecture.png" alt="auth_executor_mgr_architecture.png" style="zoom:80%;" />
+
+
+
+The OpenHarmony framework implements the auth_executor_mgr service and has encapsulated the collaborative scheduling and resource management APIs. Device vendors need to adapt some functions of the authentication executor management component to meet higher security requirements. The APIs that need to be adapted by device vendors are defined in the IAM common HDI.
+
+## Directory Structure
 
 ```undefined
-//base/user_iam/coauth
-├── coauth.gni			# 构建配置
-├── ohos.build			# 组件描述文件
-├── frameworks			# 框架代码
-├── interfaces			# 对外接口存放目录
-│   └── innerkits		# 对内部子系统暴露的头文件，供系统服务使用
-├── sa_profile			# Service Ability 配置文件
-├── services			# Service Ability 服务实现
-├── test				# 测试代码存入目录
-└── utils				# 工具代码存放目录
+//base/user_iam/auth_executor_mgr
+├── common			    	# Directory for storing the IAM common HDI
+├── frameworks				# Framework code
+├── interfaces				# Directory for storing external interfaces
+│   └── innerkits			# Header files exposed to the internal subsystem
+├── sa_profile				# Profile of the Service Ability
+├── services				# Implementation of Service Ability services
+├── test				    # Directory for storing test code
+├── utils					# Directory for storing utility code
+├── auth_executor_mgr.gni	# Build configuration
+└── bundle.json				# Component description file
 ```
 
-## 编译构建
 
+## Usage
 
-### 准备
+### Available APIs
 
-开发者需要在Linux上搭建编译环境：
+**Table 1** APIs for managing authentication resources
 
--   [Ubuntu编译环境准备](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-env-setup-linux.md)
--   Hi3518EV300单板：参考[环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3518-setting.md)
--   Hi3516DV300单板：参考[环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3516-setting.md)
-
-### 获取源码
-
-在Linux服务器上下载并解压一套源代码，源码获取方式参考[源码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)。
-
-### 编译构建
-
-开发者开发第一个应用程序可参考：
-
--   [helloworld for Hi3518EV300](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3518-running.md)
-
--   [helloworld for Hi3516DV300](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3516-running.md)
-
-
-## 说明
-
-### 接口说明
-
-**表1** 资源管理接口
-
-| 接口名  | 描述                             |
+| API | Description                            |
 | ------ | -------------------------------- |
-| uint64_t Register(std::shared_ptr<AuthExecutor> executorInfo, std::shared_ptr<ExecutorCallback> callback); | 注册接口，执行器传入基本信息和实现的回调函数 |
-| void QueryStatus(AuthExecutor &executorInfo, std::shared_ptr<QueryCallback> callback); | 状态查询接口，查询当前执行器是否已经注册 |
+| uint64_t Register(std::shared_ptr<AuthExecutor> executorInfo, std::shared_ptr<ExecutorCallback> callback); | Registers an authentication executor to transfer basic authentication information.|
+| void QueryStatus(AuthExecutor &executorInfo, std::shared_ptr<QueryCallback> callback); | Obtains the authentication executor status (whether the authentication executor has been registered).|
 
-**表2** 执行器需要实现的回调接口
+**Table 2** APIs for executing authentication
 
-| 接口名 | 描述                       |
+| API| Description                      |
 | ------ | -------------------------------- |
-| virtual void OnMessengerReady(const sptr&lt;IExecutorMessenger&gt; &amp;messenger); | 通知执行器信使可用，传入信使（用于后续协同认证与执行器通信） |
-| virtual int32_t OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey, std::shared_ptr<AuthAttributes> commandAttrs); | 通知执行器开始执行认证相关操作，commandAttrs中传入本次操作的属性 |
-| virtual int32_t OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr); | 通知执行器结束本次操作 |
-| virtual int32_t OnSetProperty(std::shared_ptr<AuthAttributes> properties); | 设置属性信息 |
-| virtual int32_t OnGetProperty(std::shared_ptr<AuthAttributes> conditions, std::shared_ptr<AuthAttributes> values); | 获取属性信息 |
+| virtual void OnMessengerReady(const sptr&lt;IExecutorMessenger&gt; &amp;messenger); | Notifies the authentication executor that the messenger is available and transfers the messenger for subsequent communication with the executor.|
+| virtual int32_t OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey, std::shared_ptr<AuthAttributes> commandAttrs); | Instructs the authentication executor to perform authentication-related operations. The operation attributes are passed in by **commandAttrs**.|
+| virtual int32_t OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr); | Instructs the authentication executor to complete this operation.|
+| virtual int32_t OnSetProperty(std::shared_ptr<AuthAttributes> properties); | Sets property information.|
+| virtual int32_t OnGetProperty(std::shared_ptr<AuthAttributes> conditions, std::shared_ptr<AuthAttributes> values); | Obtains property information.|
 
-**表3** 信使函数
+**Table 3** APIs for managing the messenger
 
-| 接口名                                                       | 描述                                                         |
+| API                                                      | Description                                                        |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| virtual int32_t SendData(uint64_t scheduleId, uint64_t transNum, int32_t srcType, int32_t dstType, std::shared_ptr&lt;AuthMessage&gt; msg) override; | 发送消息，消息源为执行器，目的端为协同认证框架，消息内容由执行器指定，比如返回人脸认证过程中的提示信息（光线过暗） |
-| virtual int32_t Finish(uint64_t scheduleId, int32_t srcType, int32_t resultCode, std::shared_ptr<AuthAttributes> finalResult) override; | 操作结束，消息源为执行器，目的端为协同认证框架，消息内容为本次操作的最终结果 |
+| virtual int32_t SendData(uint64_t scheduleId, uint64_t transNum, int32_t srcType, int32_t dstType, std::shared_ptr&lt;AuthMessage&gt; msg) override; | Sends a message from the authentication executor to the auth_executor_mgr. The message content is specified by the authentication executor, for example, a message indicating dark light during facial authentication.|
+| virtual int32_t Finish(uint64_t scheduleId, int32_t srcType, int32_t resultCode, std::shared_ptr<AuthAttributes> finalResult) override; | Sends a message from the authentication executor to the auth_executor_mgr to complete this operation. The message contains the result of the operation.|
 
 
 
-### 使用说明
+### Usage Guidelines
 
-- 协同认证SA提供执行器对接接口，各身份认证执行器调用资源管理接口完成认证执行器的注册
-- 需在可信执行环境内实现头文件```common\hal\interface\coauth_interface.h``` 中定义的接口，保证认证执行器信息不可篡改，并在可信执行环境内校验认证执行器返回的结果
+- The auth_executor_mgr SA provides interconnection APIs for the authentication executors. The authentication executors call the related API to register with the auth_executor_mgr.
+- The APIs defined in the ```common\interface\coauth_interface.h``` header file must be implemented in a TEE. The authentication executor information cannot be tampered with, and the result returned by the authentication executor must be verified in the TEE.
 
-## 相关仓
+## Repositories Involved
 
-**[useriam_coauth](https://gitee.com/openharmony-sig/useriam_coauth)**
+**[useriam_auth_executor_mgr](https://gitee.com/useriam_auth_executor_mgr/blob/master/README.md)**
 
-[useriam_useridm](https://gitee.com/openharmony-sig/useriam_useridm)
+[useriam_user_idm](https://gitee.com/openharmony/useriam_user_idm/blob/master/README.md)
 
-[useriam_userauth](https://gitee.com/openharmony-sig/useriam_userauth)
+[useriam_user_auth](https://gitee.com/openharmony/useriam_user_auth/blob/master/README.md)
 
-[useriam_pinauth](https://gitee.com/openharmony-sig/useriam_pinauth)
+[useriam_pin_auth](https://gitee.com/openharmony/useriam_pin_auth/blob/master/README.md)
 
-[useriam_faceauth](https://gitee.com/openharmony/useriam_faceauth)
-
+useriam_faceauth
