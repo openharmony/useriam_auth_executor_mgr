@@ -245,7 +245,7 @@ void CoAuthManager::ResICoAuthCallbackDeathRecipient::OnRemoteDied(const wptr<IR
         COAUTH_HILOGE(MODULE_SERVICE, "parent or parent coAuthResMgrPtr_ is nullptr");
         return;
     }
-    parent_->coAuthResMgrPtr_->DeleteScheduleCallback(scheduleId); 
+    parent_->coAuthResMgrPtr_->DeleteScheduleCallback(scheduleId);
 }
 
 void CoAuthManager::TimeOut(uint64_t scheduleId)
