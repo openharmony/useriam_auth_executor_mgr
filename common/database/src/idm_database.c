@@ -67,7 +67,7 @@ void DestroyUserInfoList(void)
 static bool MatchUserInfo(void *data, void *condition)
 {
     if (data == NULL || condition == NULL) {
-        LOG_ERROR("params is null, please check invalid node");
+        LOG_ERROR("please check invalid node");
         return false;
     }
     UserInfo *userInfo = (UserInfo *)data;
