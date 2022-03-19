@@ -56,7 +56,7 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     }
     sptr<IRemoteObject::DeathRecipient> dr = new ResIExecutorCallbackDeathRecipient(executorId, this);
     if (!callback->AsObject()->AddDeathRecipient(dr)) {
-        COAUTH_HILOGE(MODULE_SERVICE, "failed to add death recipient ResIExecutorCallbackDeathRecipient");
+        COAUTH_HILOGE(MODULE_SERVICE, "add death recipient ResIExecutorCallbackDeathRecipient failed");
         return INVALID_EXECUTOR_ID;
     }
     coAuthResPool_.Insert(executorId, executorInfo, callback);

@@ -48,7 +48,7 @@ static ExecutorInfoHal CopyExecutorInfoIn(const ExecutorInfo &executorInfo)
     executorInfoHal.esl = executorInfo.esl;
     executorInfoHal.executorType = executorInfo.executorType;
     if (memcpy_s(executorInfoHal.pubKey, PUBLIC_KEY_LEN, executorInfo.publicKey, PUBLIC_KEY_LEN) != EOK) {
-        LOG_ERROR("memcpy faied");
+        LOG_ERROR("memcpy failed");
     }
     return executorInfoHal;
 }
