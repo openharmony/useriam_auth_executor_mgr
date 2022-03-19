@@ -32,7 +32,7 @@ int32_t CoAuthCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     std::u16string descripter = CoAuthCallbackStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();
     if (descripter != remoteDescripter) {
-        COAUTH_HILOGD(MODULE_INNERKIT, "descriptor is not matched!");
+        COAUTH_HILOGD(MODULE_INNERKIT, "descriptor is not matched");
         return FAIL;
     }
     switch (code) {
@@ -66,7 +66,7 @@ int32_t CoAuthCallbackStub::OnAcquireInfoStub(MessageParcel &data, MessageParcel
 void CoAuthCallbackStub::OnFinish(uint32_t resultCode, std::vector<uint8_t> &scheduleToken)
 {
     if (callback_ == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "callback_ is null.");
+        COAUTH_HILOGE(MODULE_INNERKIT, "callback_ is null");
     } else {
         callback_->OnFinish(resultCode, scheduleToken);
     }
@@ -75,7 +75,7 @@ void CoAuthCallbackStub::OnFinish(uint32_t resultCode, std::vector<uint8_t> &sch
 void CoAuthCallbackStub::OnAcquireInfo(uint32_t acquire)
 {
     if (callback_ == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "callback_ is null.");
+        COAUTH_HILOGE(MODULE_INNERKIT, "callback_ is null");
     } else {
         callback_->OnAcquireInfo(acquire);
     }

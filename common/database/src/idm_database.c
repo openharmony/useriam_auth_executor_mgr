@@ -233,17 +233,16 @@ static ResultCode GetAllEnrolledInfoFromUser(UserInfo *userInfo, EnrolledInfoHal
     (void)memset_s(*enrolledInfos, sizeof(EnrolledInfoHal) * size, 0, sizeof(EnrolledInfoHal) * size);
     LinkedListNode *temp = enrolledInfoList->head;
     ResultCode result = RESULT_SUCCESS;
-    uint32_t cnt;
-    for (cnt = 0; cnt < size; cnt++) {
+    for (*num = 0; *num < size; (*num)++) {
         if (temp == NULL) {
             LOG_ERROR("temp node is null, something wrong");
             result = RESULT_BAD_PARAM;
             goto EXIT;
         }
         EnrolledInfoHal *tempInfo = (EnrolledInfoHal *)temp->data;
-        if (memcpy_s(*enrolledInfos + cnt, sizeof(EnrolledInfoHal) * (size - cnt),
+        if (memcpy_s(*enrolledInfos + *num, sizeof(EnrolledInfoHal) * (size - *num),
             tempInfo, sizeof(EnrolledInfoHal)) != EOK) {
-            LOG_ERROR("copy the %u information failed", cnt);
+            LOG_ERROR("copy the %u information failed", *num);
             result = RESULT_NO_MEMORY;
             goto EXIT;
         }
@@ -256,7 +255,6 @@ EXIT:
         *enrolledInfos = NULL;
         *num = 0;
     }
-    *num = cnt;
     return result;
 }
 
@@ -272,17 +270,16 @@ static ResultCode GetAllCredentialInfoFromUser(UserInfo *userInfo, CredentialInf
     (void)memset_s(*credentialInfos, sizeof(CredentialInfoHal) * size, 0, sizeof(CredentialInfoHal) * size);
     LinkedListNode *temp = credentialInfoList->head;
     ResultCode result = RESULT_SUCCESS;
-    uint32_t cnt;
-    for (cnt = 0; cnt < size; cnt++) {
+    for (*num = 0; *num < size; (*num)++) {
         if (temp == NULL) {
             LOG_ERROR("temp node is NULL, something wrong");
             result = RESULT_BAD_PARAM;
             goto EXIT;
         }
         CredentialInfoHal *tempInfo = (CredentialInfoHal *)temp->data;
-        if (memcpy_s((*credentialInfos) + cnt, sizeof(CredentialInfoHal) * (size - cnt),
+        if (memcpy_s((*credentialInfos) + *num, sizeof(CredentialInfoHal) * (size - *num),
             tempInfo, sizeof(CredentialInfoHal)) != EOK) {
-            LOG_ERROR("copy the %u information failed", cnt);
+            LOG_ERROR("copy the %u information failed", *num);
             result = RESULT_NO_MEMORY;
             goto EXIT;
         }
@@ -296,7 +293,6 @@ EXIT:
         *credentialInfos = NULL;
         *num = 0;
     }
-    *num = cnt;
     return result;
 }
 
