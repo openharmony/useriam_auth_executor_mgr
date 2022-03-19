@@ -241,11 +241,10 @@ void CoAuthManager::ResICoAuthCallbackDeathRecipient::OnRemoteDied(const wptr<IR
         COAUTH_HILOGE(MODULE_SERVICE, "remote is nullptr");
         return;
     }
-    if (parent_ == nullptr || parent_->coAuthResMgrPtr_ == nullptr) {
-        COAUTH_HILOGE(MODULE_SERVICE, "parent or parent coAuthResMgrPtr_ is nullptr");
-        return;
+    if (parent_ != nullptr && parent_->coAuthResMgrPtr_ != nullptr) {
+        parent_->coAuthResMgrPtr_->DeleteScheduleCallback(scheduleId);
     }
-    parent_->coAuthResMgrPtr_->DeleteScheduleCallback(scheduleId);
+    COAUTH_HILOGW(MODULE_SERVICE, "ResICoAuthCallbackDeathRecipient::Recv death notice.");
 }
 
 void CoAuthManager::TimeOut(uint64_t scheduleId)
