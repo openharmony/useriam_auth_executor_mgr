@@ -26,7 +26,7 @@ uint64_t GetRtcTime(void)
     struct timespec curTime;
     int res = clock_gettime(CLOCK_REALTIME, &curTime);
     if (res != 0) {
-        LOG_ERROR("get time fail");
+        LOG_ERROR("get time failed");
         return 0;
     }
     return curTime.tv_sec * MS_OF_S + curTime.tv_nsec / NS_OF_MS;
@@ -37,7 +37,7 @@ uint64_t GetSystemTime(void)
     struct timespec curTime;
     int res = clock_gettime(CLOCK_MONOTONIC, &curTime);
     if (res != 0) {
-        LOG_ERROR("get time fail");
+        LOG_ERROR("get time failed");
         return 0;
     }
     return curTime.tv_sec * MS_OF_S + curTime.tv_nsec / NS_OF_MS;

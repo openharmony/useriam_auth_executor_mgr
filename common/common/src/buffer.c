@@ -76,7 +76,7 @@ Buffer *CreateBuffer(const uint32_t size)
 Buffer *CreateBufferByData(const uint8_t *data, const uint32_t dataSize)
 {
     if ((data == NULL) || (dataSize == 0) || (dataSize > MAX_BUFFER_SIZE)) {
-        LOG_ERROR("invalid param, size: %u", size);
+        LOG_ERROR("invalid param, dataSize: %u", dataSize);
         return NULL;
     }
 

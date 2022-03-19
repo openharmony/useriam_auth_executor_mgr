@@ -144,7 +144,7 @@ void CoAuthProxy::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const s
     uint64_t callerUid;
     authInfo.GetCallerUid(callerUid);
     data.WriteUint64(callerUid);
-    COAUTH_HILOGD(MODULE_INNERKIT, "write callerUid: %{public}" PRIu64, GetCallerUid);
+    COAUTH_HILOGD(MODULE_INNERKIT, "write callerUid: %{public}" PRIu64, callerUid);
 
     if (!data.WriteUint64(scheduleId)) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write scheduleId failed");
