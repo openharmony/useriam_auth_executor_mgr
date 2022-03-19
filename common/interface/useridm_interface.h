@@ -40,7 +40,6 @@ int32_t OpenSession(int32_t userId, uint64_t &challenge);
 int32_t CloseSession();
 int32_t InitSchedulation(std::vector<uint8_t> authToken, int32_t userId, uint32_t authType, uint64_t authSubType,
     uint64_t &scheduleId);
-int32_t DeleteScheduleId(uint64_t &scheduleId);
 int32_t AddCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId);
 int32_t DeleteCredential(int32_t userId, uint64_t credentialId, std::vector<uint8_t> authToken,
     CredentialInfo &credentialInfo);

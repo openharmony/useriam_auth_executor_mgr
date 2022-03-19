@@ -74,15 +74,6 @@ int32_t InitSchedulation(std::vector<uint8_t> authToken, int32_t userId, uint32_
     return ret;
 }
 
-int32_t DeleteScheduleId(uint64_t &scheduleId)
-{
-    LOG_INFO("begin");
-    GlobalLock();
-    int32_t ret = CancelScheduleIdFunc(&scheduleId);
-    GlobalUnLock();
-    return ret;
-}
-
 int32_t AddCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId)
 {
     LOG_INFO("begin");

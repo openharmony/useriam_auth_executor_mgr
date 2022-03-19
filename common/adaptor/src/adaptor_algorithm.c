@@ -256,31 +256,6 @@ int32_t HmacSha256(const Buffer *hmacKey, const Buffer *data, Buffer **hmac)
     return RESULT_SUCCESS;
 }
 
-int32_t HmacSha512(const Buffer *hmacKey, const Buffer *data, Buffer **hmac)
-{
-    if (hmac == NULL) {
-        LOG_ERROR("hmac is null");
-        return RESULT_BAD_PARAM;
-    }
-    const EVP_MD *alg = EVP_sha512();
-    if (alg == NULL) {
-        LOG_ERROR("no algo");
-        return RESULT_GENERAL_ERROR;
-    }
-    *hmac = CreateBuffer(SHA512_DIGEST_SIZE);
-    if (*hmac == NULL) {
-        LOG_ERROR("create buffer fail");
-        return RESULT_NO_MEMORY;
-    }
-    if (IamHmac(alg, hmacKey, data, *hmac) != RESULT_SUCCESS) {
-        DestoryBuffer(*hmac);
-        *hmac = NULL;
-        LOG_ERROR("hmac fail");
-        return RESULT_GENERAL_ERROR;
-    }
-    return RESULT_SUCCESS;
-}
-
 int32_t SecureRandom(uint8_t *buffer, uint32_t size)
 {
     if (buffer == NULL || size > INT_MAX) {

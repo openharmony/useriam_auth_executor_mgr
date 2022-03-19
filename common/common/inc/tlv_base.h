@@ -60,10 +60,7 @@ uint64_t Ntohll(uint64_t data);
 
 TlvListNode *CreateTlvList(void);
 int32_t DestroyTlvList(TlvListNode *list);
-TlvObject *CreateTlvObject(int32_t type, uint32_t length, const void *value);
-TlvObject *CreateEmptyTlvObject(int32_t type);
 TlvType *CreateTlvType(int32_t type, uint32_t length, const void *value);
-void DestroyTlvObject(TlvObject *object);
 int32_t AddTlvNode(TlvListNode *list, const TlvObject *object);
 
 #endif // TLV_BASE_H
