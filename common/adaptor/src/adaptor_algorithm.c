@@ -258,7 +258,7 @@ int32_t HmacSha256(const Buffer *hmacKey, const Buffer *data, Buffer **hmac)
 int32_t SecureRandom(uint8_t *buffer, uint32_t size)
 {
     if (buffer == NULL || size > INT_MAX) {
-        LOG_ERROR("bad paramed");
+        LOG_ERROR("bad param");
         return RESULT_BAD_PARAM;
     }
     if (RAND_bytes(buffer, (int)size) != OPENSSL_SUCCESS) {
