@@ -24,9 +24,6 @@
 #define MAX_BUFFER_SIZE 512000
 #define TLV_HEADER_LEN (sizeof(int32_t) + sizeof(uint32_t))
 
-int32_t SerializeTlvWrapper(const TlvListNode *head, uint8_t *buffer,
-    uint32_t maxSize, uint32_t *contentSize);
-
 int32_t ParseTlvWrapper(const uint8_t *buffer, uint32_t bufferSize, TlvListNode *head);
 int32_t ParseGetHeadTag(const TlvListNode *node, int32_t *tag);
 
@@ -38,16 +35,7 @@ Buffer *ParseBuffPara(TlvListNode *node, int32_t msgType);
 int32_t ParseUint8Para(TlvListNode *node, int32_t msgType, uint8_t *retVal);
 
 int32_t GetUint64Para(TlvListNode *head, int32_t msgType, uint64_t *retVal);
-int32_t GetInt64Para(TlvListNode *head, int32_t msgType, int64_t *retVal);
 int32_t GetUint32Para(TlvListNode *head, int32_t msgType, uint32_t *retVal);
 int32_t GetInt32Para(TlvListNode *head, int32_t msgType, int32_t *retVal);
 Buffer *GetBuffPara(TlvListNode *head, int32_t msgType);
-int32_t GetUint8Para(TlvListNode *head, int32_t msgType, uint8_t *retVal);
-
-int32_t TlvAppendByte(TlvListNode *head, int32_t type, const uint8_t *value, uint32_t length);
-int32_t TlvAppendShort(TlvListNode *head, int32_t type, short value);
-int32_t TlvAppendInt(TlvListNode *head, int32_t type, uint32_t value);
-int32_t TlvAppendLong(TlvListNode *head, int32_t type, uint64_t value);
-int32_t TlvAppendObject(TlvListNode *head, int32_t type, const uint8_t *buffer, uint32_t length);
-
 #endif // TLV_WRAPPER_H

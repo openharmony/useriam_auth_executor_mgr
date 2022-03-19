@@ -25,6 +25,7 @@ extern "C" {
 #include "context_manager.h"
 #include "adaptor_log.h"
 #include "lock.h"
+#include "token_key.h"
 }
 
 namespace OHOS {
@@ -55,6 +56,10 @@ int32_t Init()
     }
     if (InitCoAuth() != RESULT_SUCCESS) {
         LOG_ERROR("init user auth failed");
+        goto FAIL;
+    }
+    if (InitTokenKey() != RESULT_SUCCESS) {
+        LOG_ERROR("init token key failed");
         goto FAIL;
     }
     g_isInitUserIAM = true;
