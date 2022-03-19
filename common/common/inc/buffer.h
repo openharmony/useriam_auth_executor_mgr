@@ -28,7 +28,6 @@ typedef struct {
 
 bool IsBufferValid(const Buffer *buffer);
 Buffer *CreateBuffer(const uint32_t size);
-ResultCode InitBuffer(Buffer *buffer, const uint8_t *buf, const uint32_t bufSize);
 void DestoryBuffer(Buffer *buffer);
 Buffer *CopyBuffer(const Buffer *buffer);
 bool CompareBuffer(const Buffer *buffer1, const Buffer *buffer2);

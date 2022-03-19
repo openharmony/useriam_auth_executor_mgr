@@ -104,22 +104,6 @@ Buffer *CreateBufferByData(const uint8_t *data, const uint32_t dataSize)
     return buffer;
 }
 
-ResultCode InitBuffer(Buffer *buffer, const uint8_t *buf, const uint32_t bufSize)
-{
-    if (!IsBufferValid(buffer) || (buf == NULL) || (bufSize == 0)) {
-        LOG_ERROR("Bad param");
-        return RESULT_BAD_PARAM;
-    }
-
-    if (memcpy_s(buffer->buf, buffer->maxSize, buf, bufSize) != EOK) {
-        LOG_ERROR("Copy buffer fail");
-        return RESULT_BAD_COPY;
-    }
-    buffer->contentSize = bufSize;
-
-    return RESULT_SUCCESS;
-}
-
 void DestoryBuffer(Buffer *buffer)
 {
     if (buffer != NULL) {
