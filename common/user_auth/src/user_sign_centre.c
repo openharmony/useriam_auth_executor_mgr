@@ -39,7 +39,7 @@ static bool IsTimeValid(const UserAuthTokenHal *userAuthToken)
 ResultCode UserAuthTokenSign(UserAuthTokenHal *userAuthToken)
 {
     if (userAuthToken == NULL) {
-        LOG_ERROR("userAuthToken is NULL");
+        LOG_ERROR("userAuthToken is null");
         return RESULT_BAD_PARAM;
     }
     userAuthToken->version = TOKEN_VERSION;
@@ -74,7 +74,7 @@ EXIT:
 ResultCode UserAuthTokenVerify(const UserAuthTokenHal *userAuthToken)
 {
     if (userAuthToken == NULL) {
-        LOG_ERROR("userAuthToken is NULL");
+        LOG_ERROR("userAuthToken is null");
         return RESULT_BAD_PARAM;
     }
 
@@ -99,7 +99,7 @@ ResultCode UserAuthTokenVerify(const UserAuthTokenHal *userAuthToken)
     }
 
     if (!CompareBuffer(rightSign, sign)) {
-        LOG_ERROR("sign compare failed ");
+        LOG_ERROR("sign compare failed");
         ret = RESULT_BAD_SIGN;
     }
 

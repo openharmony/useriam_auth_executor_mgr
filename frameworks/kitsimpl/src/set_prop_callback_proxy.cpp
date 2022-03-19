@@ -26,22 +26,22 @@ void SetPropCallbackProxy::OnResult(uint32_t result, std::vector<uint8_t> &extra
     MessageParcel data;
     MessageParcel reply;
     if (!data.WriteInterfaceToken(SetPropCallbackProxy::GetDescriptor())) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed");
         return;
     }
     if (!data.WriteUint32(result)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint32(result).");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write result failed");
         return;
     }
 
     if (!data.WriteUInt8Vector(extraInfo)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "fail to write WriteUInt8Vector extraInfo");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write extraInfo failed");
         return;
     }
 
     bool ret = SendRequest(static_cast<int32_t>(ISetPropCallback::ONRESULT), data, reply);
     if (!ret) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "SendRequest is failed, error code: %{public}d", ret);
+        COAUTH_HILOGE(MODULE_INNERKIT, "send request failed, error code: %{public}d", ret);
     }
 }
 
@@ -49,13 +49,13 @@ bool SetPropCallbackProxy::SendRequest(uint32_t code, MessageParcel &data, Messa
 {
     sptr<IRemoteObject> remote = Remote();
     if (remote == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to get remote.");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get remote failed");
         return false;
     }
     MessageOption option(MessageOption::TF_SYNC);
     int32_t result = remote->SendRequest(code, data, reply, option);
     if (result != OHOS::NO_ERROR) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to SendRequest.result = %{public}d", result);
+        COAUTH_HILOGE(MODULE_INNERKIT, "send request failed, result = %{public}d", result);
         return false;
     }
     return true;

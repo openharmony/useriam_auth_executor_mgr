@@ -30,7 +30,7 @@ int32_t CoAuthStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     std::u16string descripter = CoAuthStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();
     if (descripter != remoteDescripter) {
-        COAUTH_HILOGE(MODULE_SERVICE, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        COAUTH_HILOGE(MODULE_SERVICE, "descriptor is not matched");
         return E_GET_POWER_SERVICE_FAILED;
     }
 

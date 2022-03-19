@@ -30,7 +30,7 @@ namespace UserIAM {
 namespace UserAuth {
 int32_t GenerateSolution(AuthSolution param, std::vector<uint64_t> &scheduleIds)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     uint64_t *scheduleIdsGet = nullptr;
     uint32_t scheduleIdNum = 0;
@@ -57,7 +57,7 @@ int32_t GenerateSolution(AuthSolution param, std::vector<uint64_t> &scheduleIds)
 int32_t RequestAuthResult(uint64_t contextId, std::vector<uint8_t> &scheduleToken, UserAuthToken &authToken,
     std::vector<uint64_t> &scheduleIds)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     if (scheduleToken.size() != sizeof(CoAuth::ScheduleToken)) {
         LOG_ERROR("param is invalid");
@@ -98,7 +98,7 @@ int32_t RequestAuthResult(uint64_t contextId, std::vector<uint8_t> &scheduleToke
 
 int32_t CancelContext(uint64_t contextId, std::vector<uint64_t> &scheduleIds)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     uint64_t *scheduleIdsGet = nullptr;
     uint32_t scheduleIdNum = 0;
@@ -118,7 +118,7 @@ int32_t CancelContext(uint64_t contextId, std::vector<uint64_t> &scheduleIds)
 
 int32_t GetAuthTrustLevel(int32_t userId, uint32_t authType, uint32_t &authTrustLevel)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     int32_t ret = SingleAuthTrustLevel(userId, authType, &authTrustLevel);
     GlobalUnLock();

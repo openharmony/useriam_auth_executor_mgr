@@ -231,7 +231,6 @@ int32_t ParseUint8Para(TlvListNode *node, int32_t msgType, uint8_t *retVal)
     return OPERA_SUCC;
 }
 
-
 int32_t GetUint64Para(TlvListNode *head, int32_t msgType, uint64_t *retVal)
 {
     if ((head == NULL) || (retVal == NULL)) {

@@ -35,23 +35,23 @@ sptr<CoAuth::ICoAuth> AuthExecutorRegistry::GetProxy()
 
     sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (sam == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get system ability manager");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get system ability manager failed");
         return nullptr;
     }
     sptr<IRemoteObject> obj = sam->CheckSystemAbility(SUBSYS_USERIAM_SYS_ABILITY_AUTHEXECUTORMGR);
     if (obj == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get coauth service");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get coauth service failed");
         return nullptr;
     }
     sptr<IRemoteObject::DeathRecipient> dr = new AuthExecutorRegistryDeathRecipient();
     if ((obj->IsProxyObject()) && (!obj->AddDeathRecipient(dr))) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to add death recipient");
+        COAUTH_HILOGE(MODULE_INNERKIT, "add death recipient failed");
         return nullptr;
     }
 
     proxy_ = iface_cast<CoAuth::ICoAuth>(obj);
     deathRecipient_ = dr;
-    COAUTH_HILOGI(MODULE_INNERKIT, "Succeed to connect coauth service");
+    COAUTH_HILOGI(MODULE_INNERKIT, "connect coauth service success");
     return proxy_;
 }
 
@@ -69,16 +69,16 @@ void AuthExecutorRegistry::ResetProxy(const wptr<IRemoteObject>& remote)
 }
 
 uint64_t AuthExecutorRegistry::Register(std::shared_ptr<AuthExecutor> executorInfo,
-                                        std::shared_ptr<ExecutorCallback> callback)
+    std::shared_ptr<ExecutorCallback> callback)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "Register start");
     if (executorInfo == nullptr || callback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Register failed,executorInfo or callback is nullptr");
+        COAUTH_HILOGE(MODULE_INNERKIT, "executorInfo or callback is nullptr");
         return FAIL;
     }
     auto proxy = GetProxy();
     if (proxy == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "GetProxy is nullptr");
+        COAUTH_HILOGE(MODULE_INNERKIT, "proxy is nullptr");
         return FAIL;
     }
     sptr<IExecutorCallback> iExecutorCallback = new ExecutorCallbackStub(callback);
@@ -89,12 +89,12 @@ void AuthExecutorRegistry::QueryStatus(AuthExecutor &executorInfo, std::shared_p
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "QueryStatus start");
     if (callback == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "QueryStatus failed, callback is nullptr");
+        COAUTH_HILOGE(MODULE_INNERKIT, "callback is nullptr");
         return;
     }
     auto proxy = GetProxy();
     if (proxy == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "GetProxy is nullptr");
+        COAUTH_HILOGE(MODULE_INNERKIT, "proxy is nullptr");
         return;
     }
     sptr<IQueryCallback> iQueryCallback = new QueryCallbackStub(callback);
@@ -104,12 +104,12 @@ void AuthExecutorRegistry::QueryStatus(AuthExecutor &executorInfo, std::shared_p
 void AuthExecutorRegistry::AuthExecutorRegistryDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
     if (remote == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "OnRemoteDied failed, remote is nullptr");
+        COAUTH_HILOGE(MODULE_INNERKIT, "remote is nullptr");
         return;
     }
 
     AuthExecutorRegistry::GetInstance().ResetProxy(remote);
-    COAUTH_HILOGE(MODULE_INNERKIT, "CoAuthDeathRecipient::Recv death notice.");
+    COAUTH_HILOGE(MODULE_INNERKIT, "AuthExecutorRegistryDeathRecipient::Recv death notice");
 }
 } // namespace AuthResPool
 } // namespace UserIAM

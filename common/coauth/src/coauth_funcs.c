@@ -152,12 +152,12 @@ bool IsExecutorExistFunc(uint32_t authType)
     LinkedList *executorsQuery = NULL;
     int32_t ret = QueryExecutor(authType, &executorsQuery);
     if (ret != RESULT_SUCCESS || executorsQuery == NULL) {
-        LOG_ERROR("query executor fail");
+        LOG_ERROR("query executor failed");
         return false;
     }
 
     if (executorsQuery->getSize(executorsQuery) == 0) {
-        LOG_ERROR("get size fail");
+        LOG_ERROR("get size failed");
         DestroyLinkedList(executorsQuery);
         return false;
     }

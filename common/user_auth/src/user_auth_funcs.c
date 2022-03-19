@@ -80,7 +80,7 @@ int32_t RequestAuthResultFunc(uint64_t contextId, const Buffer *scheduleToken, U
     }
     int32_t ret = CoAuthTokenVerify(&scheduleTokenStruct);
     if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("failed to verify the token");
+        LOG_ERROR("verify token failed");
         return RESULT_BAD_SIGN;
     }
 
@@ -120,7 +120,7 @@ int32_t CancelContextFunc(uint64_t contextId, uint64_t **scheduleIdArray, uint32
 {
     UserAuthContext *authContext = GetContext(contextId);
     if (authContext == NULL) {
-        LOG_ERROR("don't have this context");
+        LOG_ERROR("get context failed");
         return RESULT_NOT_FOUND;
     }
     int32_t ret = GetScheduleIds(authContext, scheduleIdArray, scheduleNum);

@@ -21,17 +21,17 @@ namespace OHOS {
 namespace UserIAM {
 namespace AuthResPool {
 int32_t ExecutorMessengerProxy::SendData(uint64_t scheduleId, uint64_t transNum,
-                                         int32_t srcType, int32_t dstType, std::shared_ptr<AuthMessage> msg)
+    int32_t srcType, int32_t dstType, std::shared_ptr<AuthMessage> msg)
 {
     if (msg == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "AuthMessage is null!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "msg is nullptr");
         return INVALID_PARAMETERS;
     }
     MessageParcel data;
     MessageParcel reply;
     int32_t result = 0;
     if (!data.WriteInterfaceToken(ExecutorMessengerProxy::GetDescriptor())) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed");
         return FAIL;
     }
     if (!data.WriteUint64(scheduleId)) {
@@ -62,16 +62,16 @@ int32_t ExecutorMessengerProxy::SendData(uint64_t scheduleId, uint64_t transNum,
 
 
 int32_t ExecutorMessengerProxy::Finish(uint64_t scheduleId, int32_t srcType, int32_t resultCode,
-                                       std::shared_ptr<AuthAttributes> finalResult)
+    std::shared_ptr<AuthAttributes> finalResult)
 {
     if (finalResult == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "finalResult is null!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "finalResult is nullptr");
         return INVALID_PARAMETERS;
     }
     MessageParcel data;
     MessageParcel reply;
     if (!data.WriteInterfaceToken(ExecutorMessengerProxy::GetDescriptor())) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed");
         return FAIL;
     }
     if (!data.WriteUint64(scheduleId)) {
@@ -98,17 +98,18 @@ int32_t ExecutorMessengerProxy::Finish(uint64_t scheduleId, int32_t srcType, int
     }
     return result;
 }
+
 bool ExecutorMessengerProxy::SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply)
 {
     sptr<IRemoteObject> remote = Remote();
     if (remote == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to get remote.");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get remote failed");
         return false;
     }
     MessageOption option(MessageOption::TF_SYNC);
     int32_t result = remote->SendRequest(code, data, reply, option);
     if (result != OHOS::NO_ERROR) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to SendRequest.result = %{public}d", result);
+        COAUTH_HILOGE(MODULE_INNERKIT, "send request failed, result = %{public}d", result);
         return false;
     }
     return true;

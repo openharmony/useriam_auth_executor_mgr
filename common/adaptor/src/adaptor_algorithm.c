@@ -40,13 +40,13 @@ static KeyPair *CreateEd25519KeyPair()
     }
     keyPair->pubKey = CreateBuffer(ED25519_FIX_PUBKEY_BUFFER_SIZE);
     if (keyPair->pubKey == NULL) {
-        LOG_ERROR("no memory for pub key");
+        LOG_ERROR("no memory for public key");
         Free(keyPair);
         return NULL;
     }
     keyPair->priKey = CreateBuffer(ED25519_FIX_PRIKEY_BUFFER_SIZE);
     if (keyPair->priKey == NULL) {
-        LOG_ERROR("no memory for pri key");
+        LOG_ERROR("no memory for private key");
         DestoryBuffer(keyPair->pubKey);
         Free(keyPair);
         return NULL;
@@ -75,11 +75,11 @@ bool IsEd25519KeyPairValid(const KeyPair *keyPair)
         return false;
     }
     if (!CheckBufferWithSize(keyPair->pubKey, ED25519_FIX_PUBKEY_BUFFER_SIZE)) {
-        LOG_ERROR("invalid pub key");
+        LOG_ERROR("invalid public key");
         return false;
     }
     if (!CheckBufferWithSize(keyPair->priKey, ED25519_FIX_PRIKEY_BUFFER_SIZE)) {
-        LOG_ERROR("invalid pri key");
+        LOG_ERROR("invalid private key");
         return false;
     }
     return true;
@@ -89,32 +89,32 @@ KeyPair *GenerateEd25519KeyPair(void)
 {
     KeyPair *keyPair = CreateEd25519KeyPair();
     if (keyPair == NULL) {
-        LOG_ERROR("create key pair fail");
+        LOG_ERROR("create key pair failed");
         return NULL;
     }
     EVP_PKEY *key = NULL;
     EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);
     if (ctx == NULL) {
-        LOG_ERROR("new ctx fail");
+        LOG_ERROR("new ctx failed");
         goto ERROR;
     }
     if (EVP_PKEY_keygen_init(ctx) != OPENSSL_SUCCESS) {
-        LOG_ERROR("init ctx fail");
+        LOG_ERROR("init ctx failed");
         goto ERROR;
     }
     if (EVP_PKEY_keygen(ctx, &key) != OPENSSL_SUCCESS) {
-        LOG_ERROR("generate key fail");
+        LOG_ERROR("generate key failed");
         goto ERROR;
     }
     size_t pubKeySize = keyPair->pubKey->maxSize;
     if (EVP_PKEY_get_raw_public_key(key, keyPair->pubKey->buf, &pubKeySize) != OPENSSL_SUCCESS) {
-        LOG_ERROR("get pub key fail");
+        LOG_ERROR("get public key failed");
         goto ERROR;
     }
     keyPair->pubKey->contentSize = pubKeySize;
     size_t priKeySize = keyPair->priKey->maxSize;
     if (EVP_PKEY_get_raw_private_key(key, keyPair->priKey->buf, &priKeySize) != OPENSSL_SUCCESS) {
-        LOG_ERROR("get pri key fail");
+        LOG_ERROR("get private key failed");
         goto ERROR;
     }
     keyPair->priKey->contentSize = priKeySize;
@@ -136,34 +136,34 @@ EXIT:
 int32_t Ed25519Sign(const KeyPair *keyPair, const Buffer *data, Buffer **sign)
 {
     if (!IsEd25519KeyPairValid(keyPair) || !IsBufferValid(data) || sign == NULL) {
-        LOG_ERROR("bad param");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     int32_t ret = RESULT_GENERAL_ERROR;
     EVP_PKEY *key = EVP_PKEY_new_raw_private_key(EVP_PKEY_ED25519, NULL,
         keyPair->priKey->buf, keyPair->priKey->contentSize);
     if (key == NULL) {
-        LOG_ERROR("get pri key fail");
+        LOG_ERROR("get private key failed");
         return ret;
     }
     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
     if (ctx == NULL) {
-        LOG_ERROR("get ctx fail");
+        LOG_ERROR("get ctx failed");
         EVP_PKEY_free(key);
         return ret;
     }
     if (EVP_DigestSignInit(ctx, NULL, NULL, NULL, key) != OPENSSL_SUCCESS) {
-        LOG_ERROR("init sign fail");
+        LOG_ERROR("init sign failed");
         goto EXIT;
     }
     *sign = CreateBuffer(ED25519_FIX_SIGN_BUFFER_SIZE);
     if (!IsBufferValid(*sign)) {
-        LOG_ERROR("create buffer fail");
+        LOG_ERROR("create buffer failed");
         goto EXIT;
     }
     size_t signSize = (*sign)->maxSize;
     if (EVP_DigestSign(ctx, (*sign)->buf, &signSize, data->buf, data->contentSize) != OPENSSL_SUCCESS) {
-        LOG_ERROR("sign fail");
+        LOG_ERROR("sign failed");
         DestoryBuffer(*sign);
         *sign = NULL;
         goto EXIT;
@@ -187,21 +187,21 @@ int32_t Ed25519Verify(const Buffer *pubKey, const Buffer *data, const Buffer *si
     int32_t ret = RESULT_GENERAL_ERROR;
     EVP_PKEY *key = EVP_PKEY_new_raw_public_key(EVP_PKEY_ED25519, NULL, pubKey->buf, pubKey->contentSize);
     if (key == NULL) {
-        LOG_ERROR("get pub key fail");
+        LOG_ERROR("get public key failed");
         return ret;
     }
     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
     if (ctx == NULL) {
-        LOG_ERROR("get ctx fail");
+        LOG_ERROR("get ctx failed");
         EVP_PKEY_free(key);
         return ret;
     }
     if (EVP_DigestVerifyInit(ctx, NULL, NULL, NULL, key) != OPENSSL_SUCCESS) {
-        LOG_ERROR("init verify fail");
+        LOG_ERROR("init verify failed");
         goto EXIT;
     }
     if (EVP_DigestVerify(ctx, sign->buf, sign->contentSize, data->buf, data->contentSize) != OPENSSL_SUCCESS) {
-        LOG_ERROR("verify fail");
+        LOG_ERROR("verify failed");
         goto EXIT;
     }
     ret = RESULT_SUCCESS;
@@ -212,8 +212,7 @@ EXIT:
     return ret;
 }
 
-static int32_t IamHmac(const EVP_MD *alg,
-    const Buffer *hmacKey, const Buffer *data, Buffer *hmac)
+static int32_t IamHmac(const EVP_MD *alg, const Buffer *hmacKey, const Buffer *data, Buffer *hmac)
 {
     if (!IsBufferValid(hmacKey) || hmacKey->contentSize > INT_MAX ||
         !IsBufferValid(data) || !IsBufferValid(hmac) || hmac->maxSize > UINT_MAX) {
@@ -224,7 +223,7 @@ static int32_t IamHmac(const EVP_MD *alg,
     uint8_t *hmacData = HMAC(alg, hmacKey->buf, (int)hmacKey->contentSize, data->buf, data->contentSize,
         hmac->buf, &hmacSize);
     if (hmacData == NULL) {
-        LOG_ERROR("hmac fail");
+        LOG_ERROR("hmac failed");
         return RESULT_GENERAL_ERROR;
     }
     hmac->contentSize = hmacSize;
@@ -244,13 +243,13 @@ int32_t HmacSha256(const Buffer *hmacKey, const Buffer *data, Buffer **hmac)
     }
     *hmac = CreateBuffer(SHA256_DIGEST_SIZE);
     if (*hmac == NULL) {
-        LOG_ERROR("create buffer fail");
+        LOG_ERROR("create buffer failed");
         return RESULT_NO_MEMORY;
     }
     if (IamHmac(alg, hmacKey, data, *hmac) != RESULT_SUCCESS) {
         DestoryBuffer(*hmac);
         *hmac = NULL;
-        LOG_ERROR("hmac fail");
+        LOG_ERROR("hmac failed");
         return RESULT_GENERAL_ERROR;
     }
     return RESULT_SUCCESS;
@@ -263,7 +262,7 @@ int32_t SecureRandom(uint8_t *buffer, uint32_t size)
         return RESULT_BAD_PARAM;
     }
     if (RAND_bytes(buffer, (int)size) != OPENSSL_SUCCESS) {
-        LOG_ERROR("rand fail");
+        LOG_ERROR("rand failed");
         return RESULT_GENERAL_ERROR;
     }
     return RESULT_SUCCESS;

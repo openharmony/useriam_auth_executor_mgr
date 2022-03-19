@@ -37,7 +37,7 @@ static bool g_isInitUserIAM = false;
 int32_t Init()
 {
     GlobalLock();
-    LOG_INFO("check useriam folder exist or init it.");
+    LOG_INFO("check useriam folder exist or init it");
     if (IDM_USER_FOLDER && access(IDM_USER_FOLDER, 0) == -1) {
         mkdir(IDM_USER_FOLDER, S_IRWXU);
     }

@@ -142,17 +142,17 @@ ResultCode RegisterExecutorToPool(ExecutorInfoHal *executorInfo)
     }
     ResultCode result = GenerateValidExecutorId(&executorInfo->executorId);
     if (result != RESULT_SUCCESS) {
-        LOG_ERROR("get executorId fail");
+        LOG_ERROR("get executorId failed");
         return result;
     }
     ExecutorInfoHal *executorCopy = CopyExecutorInfo(executorInfo);
     if (executorCopy == NULL) {
-        LOG_ERROR("copy executor fail");
+        LOG_ERROR("copy executor failed");
         return RESULT_NO_MEMORY;
     }
     result = g_poolList->insert(g_poolList, (void *)executorCopy);
     if (result != RESULT_SUCCESS) {
-        LOG_ERROR("insert fail");
+        LOG_ERROR("insert failed");
         DestroyExecutorInfo(executorCopy);
         return result;
     }
@@ -180,7 +180,7 @@ ExecutorInfoHal *CopyExecutorInfo(ExecutorInfoHal *src)
         return NULL;
     }
     if (memcpy_s(dest, sizeof(ExecutorInfoHal), src, sizeof(ExecutorInfoHal)) != EOK) {
-        LOG_ERROR("copy executor info fail");
+        LOG_ERROR("copy executor info failed");
         Free(dest);
         return NULL;
     }
@@ -199,12 +199,12 @@ ResultCode QueryExecutor(uint32_t authType, LinkedList **result)
     }
     *result = CreateLinkedList(DestroyExecutorInfo);
     if (*result == NULL) {
-        LOG_ERROR("create result list fail");
+        LOG_ERROR("create result list failed");
         return RESULT_NO_MEMORY;
     }
     LinkedListIterator *iterator = g_poolList->createIterator(g_poolList);
     if (iterator == NULL) {
-        LOG_ERROR("create iterator fail");
+        LOG_ERROR("create iterator failed");
         DestroyLinkedList(*result);
         return RESULT_NO_MEMORY;
     }
@@ -220,11 +220,11 @@ ResultCode QueryExecutor(uint32_t authType, LinkedList **result)
         }
         ExecutorInfoHal *copy = CopyExecutorInfo(executorInfo);
         if (copy == NULL) {
-            LOG_ERROR("copy executor info fail");
+            LOG_ERROR("copy executor info failed");
             continue;
         }
         if ((*result)->insert(*result, copy) != RESULT_SUCCESS) {
-            LOG_ERROR("insert executor info fail");
+            LOG_ERROR("insert executor info failed");
             DestroyExecutorInfo(copy);
             continue;
         }

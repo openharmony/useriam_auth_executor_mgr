@@ -80,13 +80,13 @@ ResultCode AddCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
         return RESULT_NO_MEMORY;
     }
     if (memcpy_s(schedule, sizeof(CoAuthSchedule), coAuthSchedule, sizeof(CoAuthSchedule)) != EOK) {
-        LOG_ERROR("copy fail");
+        LOG_ERROR("copy failed");
         Free(schedule);
         return RESULT_BAD_COPY;
     }
     ResultCode result = g_scheduleList->insert(g_scheduleList, schedule);
     if (result != RESULT_SUCCESS) {
-        LOG_ERROR("insert fail");
+        LOG_ERROR("insert failed");
         Free(schedule);
         return result;
     }
@@ -125,7 +125,7 @@ ResultCode GetCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
     }
     LinkedListIterator *iterator = g_scheduleList->createIterator(g_scheduleList);
     if (iterator == NULL) {
-        LOG_ERROR("create iterator fail");
+        LOG_ERROR("create iterator failed");
         return RESULT_NO_MEMORY;
     }
     int32_t result = RESULT_BAD_MATCH;
@@ -135,7 +135,7 @@ ResultCode GetCoAuthSchedule(CoAuthSchedule *coAuthSchedule)
             continue;
         }
         if (memcpy_s(coAuthSchedule, sizeof(CoAuthSchedule), schedule, sizeof(CoAuthSchedule)) != EOK) {
-            LOG_ERROR("memcpy fail");
+            LOG_ERROR("memcpy failed");
             result = RESULT_BAD_COPY;
             break;
         }
@@ -230,7 +230,7 @@ CoAuthSchedule *GenerateAuthSchedule(uint64_t contextId, uint32_t authType, uint
         return NULL;
     }
     if (memset_s(coAuthSchedule, sizeof(CoAuthSchedule), 0, sizeof(CoAuthSchedule)) != EOK) {
-        LOG_ERROR("reset coAuthSchedule fail");
+        LOG_ERROR("reset coAuthSchedule failed");
         goto EXIT;
     }
     ResultCode ret = GenerateValidScheduleId(&coAuthSchedule->scheduleId);
@@ -265,7 +265,7 @@ CoAuthSchedule *GenerateIdmSchedule(uint64_t challenge, uint32_t authType, uint6
         return NULL;
     }
     if (memset_s(coAuthSchedule, sizeof(CoAuthSchedule), 0, sizeof(CoAuthSchedule)) != EOK) {
-        LOG_ERROR("reset coAuthSchedule fail");
+        LOG_ERROR("reset coAuthSchedule failed");
         goto EXIT;
     }
     ResultCode ret = GenerateValidScheduleId(&coAuthSchedule->scheduleId);

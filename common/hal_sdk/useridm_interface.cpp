@@ -53,7 +53,7 @@ int32_t CloseSession()
 int32_t InitSchedulation(std::vector<uint8_t> authToken, int32_t userId, uint32_t authType, uint64_t authSubType,
     uint64_t &scheduleId)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     if (authToken.size() != sizeof(UserAuth::UserAuthToken) && authType != PIN_AUTH) {
         LOG_ERROR("authToken len is invalid");
@@ -76,7 +76,7 @@ int32_t InitSchedulation(std::vector<uint8_t> authToken, int32_t userId, uint32_
 
 int32_t AddCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     if (enrollToken.size() != sizeof(CoAuth::ScheduleToken)) {
         LOG_ERROR("enrollToken is invalid, size is %{public}zu", enrollToken.size());
@@ -97,7 +97,7 @@ int32_t AddCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId)
 int32_t DeleteCredential(int32_t userId, uint64_t credentialId, std::vector<uint8_t> authToken,
     CredentialInfo &credentialInfo)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     authToken.resize(sizeof(UserAuth::UserAuthToken));
     if (authToken.size() != sizeof(UserAuth::UserAuthToken)) {
@@ -131,7 +131,7 @@ int32_t DeleteCredential(int32_t userId, uint64_t credentialId, std::vector<uint
 
 int32_t QueryCredential(int32_t userId, uint32_t authType, std::vector<CredentialInfo> &credentialInfos)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     CredentialInfoHal *credentialInfoHals = nullptr;
     uint32_t num = 0;
@@ -160,7 +160,7 @@ int32_t QueryCredential(int32_t userId, uint32_t authType, std::vector<Credentia
 
 int32_t GetSecureUid(int32_t userId, uint64_t &secureUid, std::vector<EnrolledInfo> &enrolledInfos)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     EnrolledInfoHal *enrolledInfoHals = nullptr;
     uint32_t num = 0;
@@ -188,7 +188,7 @@ int32_t GetSecureUid(int32_t userId, uint64_t &secureUid, std::vector<EnrolledIn
 
 int32_t DeleteUserEnforce(int32_t userId, std::vector<CredentialInfo> &credentialInfos)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     CredentialInfoHal *credentialInfoHals = nullptr;
     uint32_t num = 0;
@@ -218,7 +218,7 @@ int32_t DeleteUserEnforce(int32_t userId, std::vector<CredentialInfo> &credentia
 
 int32_t DeleteUser(int32_t userId, std::vector<uint8_t> authToken, std::vector<CredentialInfo> &credentialInfos)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     authToken.resize(sizeof(UserAuthTokenHal));
     if (authToken.size() != sizeof(UserAuthTokenHal)) {
@@ -251,7 +251,7 @@ int32_t DeleteUser(int32_t userId, std::vector<uint8_t> authToken, std::vector<C
 
 int32_t UpdateCredential(std::vector<uint8_t> enrollToken, uint64_t &credentialId, CredentialInfo &deletedCredential)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     if (enrollToken.size() != sizeof(CoAuth::ScheduleToken)) {
         LOG_ERROR("enrollToken is invalid");
