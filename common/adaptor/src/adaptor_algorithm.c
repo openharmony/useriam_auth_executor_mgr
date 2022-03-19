@@ -108,13 +108,13 @@ KeyPair *GenerateEd25519KeyPair(void)
     }
     size_t pubKeySize = keyPair->pubKey->maxSize;
     if (EVP_PKEY_get_raw_public_key(key, keyPair->pubKey->buf, &pubKeySize) != OPENSSL_SUCCESS) {
-        LOG_ERROR("get pub key failed");
+        LOG_ERROR("get public key failed");
         goto ERROR;
     }
     keyPair->pubKey->contentSize = pubKeySize;
     size_t priKeySize = keyPair->priKey->maxSize;
     if (EVP_PKEY_get_raw_private_key(key, keyPair->priKey->buf, &priKeySize) != OPENSSL_SUCCESS) {
-        LOG_ERROR("get pri key failed");
+        LOG_ERROR("get private key failed");
         goto ERROR;
     }
     keyPair->priKey->contentSize = priKeySize;
@@ -187,7 +187,7 @@ int32_t Ed25519Verify(const Buffer *pubKey, const Buffer *data, const Buffer *si
     int32_t ret = RESULT_GENERAL_ERROR;
     EVP_PKEY *key = EVP_PKEY_new_raw_public_key(EVP_PKEY_ED25519, NULL, pubKey->buf, pubKey->contentSize);
     if (key == NULL) {
-        LOG_ERROR("get pub key failed");
+        LOG_ERROR("get public key failed");
         return ret;
     }
     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
