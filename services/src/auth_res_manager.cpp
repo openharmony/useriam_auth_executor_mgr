@@ -56,16 +56,16 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     }
     sptr<IRemoteObject::DeathRecipient> dr = new ResIExecutorCallbackDeathRecipient(executorId, this);
     if (!callback->AsObject()->AddDeathRecipient(dr)) {
-        COAUTH_HILOGE(MODULE_SERVICE, "Failed to add death recipient ResIExecutorCallbackDeathRecipient");
+        COAUTH_HILOGE(MODULE_SERVICE, "failed to add death recipient ResIExecutorCallbackDeathRecipient");
         return INVALID_EXECUTOR_ID;
     }
     coAuthResPool_.Insert(executorId, executorInfo, callback);
-    COAUTH_HILOGI(MODULE_SERVICE, "register is successfull!");
+
     // Assign messenger
     sptr<UserIAM::AuthResPool::IExecutorMessenger> messenger =
         new UserIAM::AuthResPool::ExecutorMessenger(&coAuthResPool_);
     callback->OnMessengerReady(messenger);
-    COAUTH_HILOGD(MODULE_SERVICE, "register is successfull,exeID is XXXX%{public}04" PRIx64, executorId);
+    COAUTH_HILOGD(MODULE_SERVICE, "register is successfull, exeID is XXXX%{public}04" PRIx64, executorId);
     return executorId;
 }
 
@@ -81,15 +81,15 @@ void AuthResManager::QueryStatus(ResAuthExecutor &executorInfo, sptr<ResIQueryCa
     }
     result = executorInfo.GetAuthType(authType);
     if (result == SUCCESS) {
-        COAUTH_HILOGI(MODULE_SERVICE, "GetAuthType is success");
+        COAUTH_HILOGI(MODULE_SERVICE, "get AuthType success");
         isExist = IsExecutorExist(authType); // call TA
     } else {
-        COAUTH_HILOGE(MODULE_SERVICE, "GetAuthType is failure");
+        COAUTH_HILOGE(MODULE_SERVICE, "get AuthType failed");
     }
     if (isExist == false) {
-        COAUTH_HILOGE(MODULE_SERVICE, "query status executor register is not exist!");
+        COAUTH_HILOGE(MODULE_SERVICE, "query status executor register is not exist");
     } else {
-        COAUTH_HILOGI(MODULE_SERVICE, "query status executor register is exist!");
+        COAUTH_HILOGI(MODULE_SERVICE, "query status executor register is exist");
     }
     callback->OnResult(isExist ? SUCCESS : FAIL);
 }
@@ -144,9 +144,9 @@ void AuthResManager::ResIExecutorCallbackDeathRecipient::OnRemoteDied(const wptr
 
     int32_t ret = ExecutorUnRegister(executorID_);
     if (ret != SUCCESS) {
-        COAUTH_HILOGE(MODULE_SERVICE, "executor unregister fail.");
+        COAUTH_HILOGE(MODULE_SERVICE, "executor unregister failed");
     }
-    COAUTH_HILOGW(MODULE_SERVICE, "ResIExecutorCallbackDeathRecipient::Recv death notice.");
+    COAUTH_HILOGW(MODULE_SERVICE, "ResIExecutorCallbackDeathRecipient::Recv death notice");
 }
 } // namespace CoAuth
 } // namespace UserIAM

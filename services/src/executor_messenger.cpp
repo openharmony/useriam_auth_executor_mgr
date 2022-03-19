@@ -111,7 +111,7 @@ int32_t ExecutorMessenger::Finish(uint64_t scheduleId, int32_t srcType, int32_t 
     int32_t findRet = ScheResPool_->FindScheduleCallback(scheduleId, callback);
     if (findRet != SUCCESS || callback == nullptr) {
         DeleteScheduleInfoById(scheduleId);
-        COAUTH_HILOGE(MODULE_SERVICE, "get schedule callback fail");
+        COAUTH_HILOGE(MODULE_SERVICE, "get schedule callback failed");
         return FAIL;
     }
     std::vector<uint8_t> scheduleToken;

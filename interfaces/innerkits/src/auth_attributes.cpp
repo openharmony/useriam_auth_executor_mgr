@@ -395,7 +395,7 @@ int32_t AuthAttributes::Pack(std::vector<uint8_t> &buffer)
 
 
 void AuthAttributes::Write32Array(std::vector<uint32_t> &uint32ArraylValue, uint8_t *writePointer,
-                                  std::vector<uint8_t> &buffer)
+    std::vector<uint8_t> &buffer)
 {
     for (std::size_t num = 0; num < uint32ArraylValue.size(); num++) {
         writePointer = static_cast<uint8_t*>(static_cast<void *>(&uint32ArraylValue[num]));
@@ -403,7 +403,7 @@ void AuthAttributes::Write32Array(std::vector<uint32_t> &uint32ArraylValue, uint
     }
 }
 void AuthAttributes::Write64Array(std::vector<uint64_t> &uint64ArraylValue, uint8_t *writePointer,
-                                  std::vector<uint8_t> &buffer)
+    std::vector<uint8_t> &buffer)
 {
     for (std::size_t num = 0; num < uint64ArraylValue.size(); num++) {
         writePointer = static_cast<uint8_t*>(static_cast<void *>(&uint64ArraylValue[num]));
@@ -411,9 +411,8 @@ void AuthAttributes::Write64Array(std::vector<uint64_t> &uint64ArraylValue, uint
     }
 }
 
-void  AuthAttributes::PackToBuffer(std::map<AuthAttributeType, ValueType>::iterator iter,
-                                   uint32_t dataLength, uint8_t *writePointer,
-                                   std::vector<uint8_t> &buffer)
+void AuthAttributes::PackToBuffer(std::map<AuthAttributeType, ValueType>::iterator iter,
+    uint32_t dataLength, uint8_t *writePointer, std::vector<uint8_t> &buffer)
 {
     bool boolValue;
     uint32_t uint32Value;

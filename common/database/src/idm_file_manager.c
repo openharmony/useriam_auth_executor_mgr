@@ -42,7 +42,7 @@ static uint8_t *GetStreamAddress(const Buffer *object)
 static ResultCode CapacityExpansion(Buffer *object, uint32_t targetCapacity)
 {
     if (!IsBufferValid(object) || object->maxSize > MAX_BUFFER_LEN / DEFAULT_EXPANSION_RATIO) {
-        LOG_ERROR("Params are invalid");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     uint32_t targetSize = object->maxSize;
@@ -50,16 +50,16 @@ static ResultCode CapacityExpansion(Buffer *object, uint32_t targetCapacity)
         targetSize = targetSize * DEFAULT_EXPANSION_RATIO;
     }
     if (targetSize < targetCapacity) {
-        LOG_ERROR("Target capacity can not reach");
+        LOG_ERROR("target capacity can not reach");
         return RESULT_BAD_PARAM;
     }
     uint8_t *buf = Malloc(targetSize);
     if (buf == NULL) {
-        LOG_ERROR("Malloc failed");
+        LOG_ERROR("malloc failed");
         return RESULT_NO_MEMORY;
     }
     if (memcpy_s(buf, targetSize, object->buf, object->contentSize) != EOK) {
-        LOG_ERROR("Copy failed");
+        LOG_ERROR("copy failed");
         Free(buf);
         return RESULT_NO_MEMORY;
     }
@@ -72,7 +72,7 @@ static ResultCode CapacityExpansion(Buffer *object, uint32_t targetCapacity)
 static ResultCode StreamWrite(Buffer *parcel, void *from, uint32_t size)
 {
     if (!IsBufferValid(parcel) || from == NULL) {
-        LOG_ERROR("Param is invalid");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     if (GetRemainSpace(parcel) < size) {
@@ -83,7 +83,7 @@ static ResultCode StreamWrite(Buffer *parcel, void *from, uint32_t size)
         }
     }
     if (memcpy_s(GetStreamAddress(parcel), GetRemainSpace(parcel), from, size) != EOK) {
-        LOG_ERROR("Copy failed");
+        LOG_ERROR("copy failed");
         return RESULT_NO_MEMORY;
     }
     parcel->contentSize += size;
@@ -93,7 +93,7 @@ static ResultCode StreamWrite(Buffer *parcel, void *from, uint32_t size)
 static ResultCode StreamWriteEnrolledInfo(Buffer *parcel, LinkedList *enrolledList)
 {
     if (!IsBufferValid(parcel) || enrolledList == NULL) {
-        LOG_ERROR("Param is invalid");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     uint32_t size = enrolledList->getSize(enrolledList);
@@ -105,11 +105,11 @@ static ResultCode StreamWriteEnrolledInfo(Buffer *parcel, LinkedList *enrolledLi
     LinkedListNode *temp = enrolledList->head;
     for (uint32_t i = 0; i < size; i++) {
         if (temp == NULL) {
-            LOG_ERROR("ListSize is invalid");
+            LOG_ERROR("listSize is invalid");
             return RESULT_BAD_PARAM;
         }
         if (StreamWrite(parcel, temp->data, sizeof(EnrolledInfoHal)) != RESULT_SUCCESS) {
-            LOG_ERROR("EnrolledInfo streamWrite failed");
+            LOG_ERROR("enrolledInfo streamWrite failed");
             return RESULT_GENERAL_ERROR;
         }
         temp = temp->next;
@@ -120,7 +120,7 @@ static ResultCode StreamWriteEnrolledInfo(Buffer *parcel, LinkedList *enrolledLi
 static ResultCode StreamWriteCredentialList(Buffer *parcel, LinkedList *credentialList)
 {
     if (!IsBufferValid(parcel) || credentialList == NULL) {
-        LOG_ERROR("Param is invalid");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     uint32_t size = credentialList->getSize(credentialList);
@@ -132,11 +132,11 @@ static ResultCode StreamWriteCredentialList(Buffer *parcel, LinkedList *credenti
     LinkedListNode *temp = credentialList->head;
     for (uint32_t i = 0; i < size; i++) {
         if (temp == NULL) {
-            LOG_ERROR("ListSize is invalid");
+            LOG_ERROR("listSize is invalid");
             return RESULT_BAD_PARAM;
         }
         if (StreamWrite(parcel, temp->data, sizeof(CredentialInfoHal)) != RESULT_SUCCESS) {
-            LOG_ERROR("CredentialInfo streamWrite failed");
+            LOG_ERROR("credentialInfo streamWrite failed");
             return RESULT_GENERAL_ERROR;
         }
         temp = temp->next;
@@ -147,7 +147,7 @@ static ResultCode StreamWriteCredentialList(Buffer *parcel, LinkedList *credenti
 static ResultCode StreamWriteUserInfo(Buffer *parcel, UserInfo *userInfo)
 {
     if (!IsBufferValid(parcel) || userInfo == NULL) {
-        LOG_ERROR("Param is invalid");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     ResultCode result;
@@ -176,7 +176,7 @@ static ResultCode StreamWriteUserInfo(Buffer *parcel, UserInfo *userInfo)
 
 ResultCode UpdateFileInfo(LinkedList *userInfoList)
 {
-    LOG_INFO("update begin");
+    LOG_INFO("start");
     if (userInfoList == NULL) {
         LOG_ERROR("userInfo list is null");
         return RESULT_BAD_PARAM;
@@ -216,7 +216,7 @@ ResultCode UpdateFileInfo(LinkedList *userInfoList)
 
     FileOperator *fileOperator = GetFileOperator(DEFAULT_FILE_OPERATOR);
     if (!IsFileOperatorValid(fileOperator)) {
-        LOG_ERROR("Invalid file operation");
+        LOG_ERROR("invalid file operation");
         ret = RESULT_BAD_WRITE;
         goto EXIT;
     }
@@ -224,7 +224,7 @@ ResultCode UpdateFileInfo(LinkedList *userInfoList)
     // This is for example only. Should be implemented in trusted environment.
     ret = fileOperator->writeFile(IDM_USER_INFO, parcel->buf, parcel->contentSize);
     if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("file write failed, %{public}u", parcel->contentSize);
+        LOG_ERROR("write file failed, %{public}u", parcel->contentSize);
     }
 
 EXIT:
@@ -235,11 +235,11 @@ EXIT:
 static ResultCode StreamRead(Buffer *parcel, uint32_t *index, void *to, uint32_t size)
 {
     if (parcel->contentSize <= *index || parcel->contentSize - *index < size) {
-        LOG_ERROR("The buffer length is insufficient.");
+        LOG_ERROR("the buffer length is insufficient");
         return RESULT_BAD_PARAM;
     }
     if (memcpy_s(to, size, parcel->buf + *index, size) != EOK) {
-        LOG_ERROR("Copy failed");
+        LOG_ERROR("copy failed");
         return RESULT_NO_MEMORY;
     }
     *index += size;
@@ -249,7 +249,7 @@ static ResultCode StreamRead(Buffer *parcel, uint32_t *index, void *to, uint32_t
 static ResultCode StreamReadCredentialList(Buffer *parcel, uint32_t *index, LinkedList *credentialList)
 {
     if (!IsBufferValid(parcel) || credentialList == NULL) {
-        LOG_ERROR("Param is invalid");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     uint32_t credentialNum;
@@ -282,7 +282,7 @@ static ResultCode StreamReadCredentialList(Buffer *parcel, uint32_t *index, Link
 static ResultCode StreamReadEnrolledList(Buffer *parcel, uint32_t *index, LinkedList *enrolledList)
 {
     if (!IsBufferValid(parcel) || enrolledList == NULL) {
-        LOG_ERROR("Param is invalid");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     uint32_t enrolledNum;
@@ -292,7 +292,7 @@ static ResultCode StreamReadEnrolledList(Buffer *parcel, uint32_t *index, Linked
         return RESULT_BAD_READ;
     }
     if (enrolledNum > MAX_CREDENTIAL) {
-        LOG_ERROR("Bad enrolled num");
+        LOG_ERROR("bad enrolled num");
         return RESULT_BAD_READ;
     }
     for (uint32_t i = 0; i < enrolledNum; i++) {
@@ -341,7 +341,7 @@ static Buffer *ReadFileInfo()
 {
     FileOperator *fileOperator = GetFileOperator(DEFAULT_FILE_OPERATOR);
     if (!IsFileOperatorValid(fileOperator)) {
-        LOG_ERROR("Invalid file operation");
+        LOG_ERROR("invalid file operation");
         return NULL;
     }
     uint32_t fileSize;
@@ -405,10 +405,10 @@ static bool StreamReadFileInfo(Buffer *parcel, LinkedList *userInfoList)
 
 LinkedList *LoadFileInfo(void)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     FileOperator *fileOperator = GetFileOperator(DEFAULT_FILE_OPERATOR);
     if (!IsFileOperatorValid(fileOperator)) {
-        LOG_ERROR("Invalid file operation");
+        LOG_ERROR("invalid file operation");
         return NULL;
     }
     if (!fileOperator->isFileExist(IDM_USER_INFO)) {
@@ -423,7 +423,7 @@ LinkedList *LoadFileInfo(void)
 
     LinkedList *userInfoList = CreateLinkedList(DestroyUserInfoNode);
     if (userInfoList == NULL) {
-        LOG_ERROR("List create failed");
+        LOG_ERROR("list create failed");
         DestoryBuffer(parcel);
         return NULL;
     }

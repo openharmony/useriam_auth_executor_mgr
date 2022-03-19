@@ -50,7 +50,7 @@ bool IsFileOperatorValid(const FileOperator *fileOperator)
 FileOperator *GetFileOperator(const FileOperatorType type)
 {
     if (type == DEFAULT_FILE_OPERATOR) {
-        LOG_INFO("Get default file operator");
+        LOG_INFO("get default file operator");
         return GetDefaultFileOperator();
     }
     return NULL;

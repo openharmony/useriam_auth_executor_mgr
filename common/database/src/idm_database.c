@@ -67,7 +67,7 @@ void DestroyUserInfoList(void)
 static bool MatchUserInfo(void *data, void *condition)
 {
     if (data == NULL || condition == NULL) {
-        LOG_ERROR("Please check invalid node");
+        LOG_ERROR("params is null, please check invalid node");
         return false;
     }
     UserInfo *userInfo = (UserInfo *)data;
@@ -103,7 +103,7 @@ ResultCode GetSecureUid(int32_t userId, uint64_t *secUid)
     }
     UserInfo *user = QueryUserInfo(userId);
     if (user == NULL) {
-        LOG_ERROR("Can't find this user");
+        LOG_ERROR("can't find this user");
         return RESULT_NOT_FOUND;
     }
     *secUid = user->secUid;
@@ -234,14 +234,14 @@ static ResultCode GetAllEnrolledInfoFromUser(UserInfo *userInfo, EnrolledInfoHal
     ResultCode result = RESULT_SUCCESS;
     for (*num = 0; *num < size; (*num)++) {
         if (temp == NULL) {
-            LOG_ERROR("Temp node is NULL, something wrong");
+            LOG_ERROR("temp node is null, something wrong");
             result = RESULT_BAD_PARAM;
             goto EXIT;
         }
         EnrolledInfoHal *tempInfo = (EnrolledInfoHal *)temp->data;
         if (memcpy_s(*enrolledInfos + *num, sizeof(EnrolledInfoHal) * (size - *num),
             tempInfo, sizeof(EnrolledInfoHal)) != EOK) {
-            LOG_ERROR("Failed to copy the %d information", *num);
+            LOG_ERROR("copy the %d information failed", *num);
             result = RESULT_NO_MEMORY;
             goto EXIT;
         }
@@ -266,18 +266,20 @@ static ResultCode GetAllCredentialInfoFromUser(UserInfo *userInfo, CredentialInf
         LOG_ERROR("credentialInfos malloc failed");
         return RESULT_NO_MEMORY;
     }
+    (void)memset_s(*credentialInfos, sizeof(CredentialInfoHal) * size, 0, sizeof(CredentialInfoHal) * size);
     LinkedListNode *temp = credentialInfoList->head;
     ResultCode result = RESULT_SUCCESS;
-    for (*num = 0; *num < size; (*num)++) {
+    uint32_t cnt;
+    for (cnt = 0; cnt < size; cnt++) {
         if (temp == NULL) {
-            LOG_ERROR("Temp node is NULL, something wrong");
+            LOG_ERROR("temp node is NULL, something wrong");
             result = RESULT_BAD_PARAM;
             goto EXIT;
         }
         CredentialInfoHal *tempInfo = (CredentialInfoHal *)temp->data;
-        if (memcpy_s((*credentialInfos) + *num, sizeof(CredentialInfoHal) * (size - *num),
+        if (memcpy_s((*credentialInfos) + cnt, sizeof(CredentialInfoHal) * (size - cnt),
             tempInfo, sizeof(CredentialInfoHal)) != EOK) {
-            LOG_ERROR("Failed to copy the %d information", *num);
+            LOG_ERROR("copy the %u information failed", cnt);
             result = RESULT_NO_MEMORY;
             goto EXIT;
         }
@@ -291,6 +293,7 @@ EXIT:
         *credentialInfos = NULL;
         *num = 0;
     }
+    *num = cnt;
     return result;
 }
 
@@ -389,7 +392,7 @@ static ResultCode GenerateDeduplicateUint64(LinkedList *collection, uint64_t *de
         }
     }
 
-    LOG_ERROR("generate random fail");
+    LOG_ERROR("generate random failed");
     return RESULT_GENERAL_ERROR;
 }
 
@@ -594,7 +597,7 @@ ResultCode DeleteCredentialInfo(int32_t userId, uint64_t credentialId, Credentia
     LinkedList *credentialList = user->credentialInfoList;
     CredentialInfoHal *credentialQuery = QueryCredentialById(credentialId, credentialList);
     if (credentialQuery == NULL) {
-        LOG_ERROR("don't have this credential");
+        LOG_ERROR("credentialQuery is null");
         return RESULT_UNKNOWN;
     }
     if (memcpy_s(credentialInfo, sizeof(CredentialInfoHal), credentialQuery, sizeof(CredentialInfoHal)) != EOK) {
@@ -665,21 +668,21 @@ ResultCode QueryCredentialInfo(int32_t userId, uint32_t authType, CredentialInfo
 {
     UserInfo *user = QueryUserInfo(userId);
     if (user == NULL) {
-        LOG_ERROR("Can't find this user, userId is %{public}d", userId);
+        LOG_ERROR("can't find this user, userId is %{public}d", userId);
         return RESULT_NOT_FOUND;
     }
     LinkedList *credentialList = user->credentialInfoList;
     if (credentialList == NULL) {
-        LOG_ERROR("CredentialList is null");
+        LOG_ERROR("credentialList is null");
         return RESULT_NOT_FOUND;
     }
     CredentialInfoHal *credentialQuery = QueryCredentialByAuthType(authType, credentialList);
     if (credentialQuery == NULL) {
-        LOG_ERROR("Don't have this credential");
+        LOG_ERROR("credentialQuery is null");
         return RESULT_NOT_FOUND;
     }
     if (memcpy_s(credentialInfo, sizeof(CredentialInfoHal), credentialQuery, sizeof(CredentialInfoHal)) != EOK) {
-        LOG_ERROR("credentialInfo copy failed");
+        LOG_ERROR("copy credentialInfo failed");
         return RESULT_BAD_COPY;
     }
     return RESULT_SUCCESS;

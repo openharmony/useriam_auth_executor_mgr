@@ -45,19 +45,19 @@ bool CheckBufferWithSize(const Buffer *buffer, const uint32_t size)
 Buffer *CreateBuffer(const uint32_t size)
 {
     if ((size == 0) || (size > MAX_BUFFER_SIZE)) {
-        LOG_ERROR("Bad param size:%u", size);
+        LOG_ERROR("invalid param, size: %u", size);
         return NULL;
     }
 
     Buffer *buffer = (Buffer *)Malloc(sizeof(Buffer));
     if (buffer == NULL) {
-        LOG_ERROR("Get buffer struct error");
+        LOG_ERROR("malloc buffer struct failed");
         return NULL;
     }
 
     buffer->buf = (uint8_t *)Malloc(size);
     if (buffer->buf == NULL) {
-        LOG_ERROR("Get buffer error");
+        LOG_ERROR("malloc buffer data failed");
         Free(buffer);
         return NULL;
     }
@@ -76,25 +76,25 @@ Buffer *CreateBuffer(const uint32_t size)
 Buffer *CreateBufferByData(const uint8_t *data, const uint32_t dataSize)
 {
     if ((data == NULL) || (dataSize == 0) || (dataSize > MAX_BUFFER_SIZE)) {
-        LOG_ERROR("Bad param size:%u", dataSize);
+        LOG_ERROR("invalid param, size: %u", size);
         return NULL;
     }
 
     Buffer *buffer = (Buffer *)Malloc(sizeof(Buffer));
     if (buffer == NULL) {
-        LOG_ERROR("Get buffer struct error");
+        LOG_ERROR("malloc buffer struct failed");
         return NULL;
     }
 
     buffer->buf = (uint8_t *)Malloc(dataSize);
     if (buffer->buf == NULL) {
-        LOG_ERROR("Get buffer error");
+        LOG_ERROR("malloc buffer data failed");
         Free(buffer);
         return NULL;
     }
 
     if (memcpy_s(buffer->buf, dataSize, data, dataSize) != EOK) {
-        LOG_ERROR("Cpy buffer error");
+        LOG_ERROR("copy buffer failed");
         DestoryBuffer(buffer);
         return NULL;
     }
@@ -107,12 +107,12 @@ Buffer *CreateBufferByData(const uint8_t *data, const uint32_t dataSize)
 ResultCode InitBuffer(Buffer *buffer, const uint8_t *buf, const uint32_t bufSize)
 {
     if (!IsBufferValid(buffer) || (buf == NULL) || (bufSize == 0)) {
-        LOG_ERROR("Bad param");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
 
     if (memcpy_s(buffer->buf, buffer->maxSize, buf, bufSize) != EOK) {
-        LOG_ERROR("Copy buffer fail");
+        LOG_ERROR("copy buffer failed");
         return RESULT_BAD_COPY;
     }
     buffer->contentSize = bufSize;
@@ -125,7 +125,7 @@ void DestoryBuffer(Buffer *buffer)
     if (buffer != NULL) {
         if (buffer->buf != NULL) {
             if (memset_s(buffer->buf, buffer->maxSize, 0, buffer->maxSize) != EOK) {
-                LOG_ERROR("DestoryBuffer memset fail!");
+                LOG_ERROR("meset failed");
             }
             Free(buffer->buf);
             buffer->buf = NULL;
@@ -139,18 +139,18 @@ void DestoryBuffer(Buffer *buffer)
 Buffer *CopyBuffer(const Buffer *buffer)
 {
     if (!IsBufferValid(buffer)) {
-        LOG_ERROR("Invalid buffer");
+        LOG_ERROR("invalid buffer");
         return NULL;
     }
 
     Buffer *copyBuffer = CreateBuffer(buffer->maxSize);
     if (copyBuffer == NULL) {
-        LOG_ERROR("Invalid buffer");
+        LOG_ERROR("create buffer failed");
         return NULL;
     }
 
     if (memcpy_s(copyBuffer->buf, copyBuffer->maxSize, buffer->buf, buffer->contentSize) != EOK) {
-        LOG_ERROR("Copy buffer fail");
+        LOG_ERROR("copy buffer failed");
         goto FAIL;
     }
     copyBuffer->contentSize = buffer->contentSize;
@@ -178,11 +178,11 @@ bool CompareBuffer(const Buffer *buffer1, const Buffer *buffer2)
 ResultCode GetBufferData(const Buffer *buffer, uint8_t *data, uint32_t *dataSize)
 {
     if (!IsBufferValid(buffer) || (data == NULL) || (dataSize == NULL)) {
-        LOG_ERROR("Bad param");
+        LOG_ERROR("invalid params");
         return RESULT_BAD_PARAM;
     }
     if (memcpy_s(data, *dataSize, buffer->buf, buffer->contentSize) != EOK) {
-        LOG_ERROR("Copy buffer fail");
+        LOG_ERROR("copy buffer failed");
         return RESULT_BAD_COPY;
     }
     *dataSize = buffer->contentSize;

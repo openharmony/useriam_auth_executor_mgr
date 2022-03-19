@@ -36,23 +36,23 @@ sptr<ICoAuth> CoAuth::GetProxy()
 
     sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (sam == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get system ability manager");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get system ability manager failed");
         return nullptr;
     }
     sptr<IRemoteObject> obj = sam->CheckSystemAbility(SUBSYS_USERIAM_SYS_ABILITY_AUTHEXECUTORMGR);
     if (obj == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get coauth manager service");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get coauth manager service failed");
         return nullptr;
     }
     sptr<IRemoteObject::DeathRecipient> dr = new CoAuthDeathRecipient();
     if ((obj->IsProxyObject()) && (!obj->AddDeathRecipient(dr))) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to add death recipient");
+        COAUTH_HILOGE(MODULE_INNERKIT, "add death recipient failed");
         return nullptr;
     }
 
     proxy_ = iface_cast<ICoAuth>(obj);
     deathRecipient_ = dr;
-    COAUTH_HILOGD(MODULE_INNERKIT, "Succeed to connect coauth manager service");
+    COAUTH_HILOGD(MODULE_INNERKIT, "connect coauth manager service success");
     return proxy_;
 }
 

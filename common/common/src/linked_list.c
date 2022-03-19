@@ -23,7 +23,7 @@
 static ResultCode InsertNode(LinkedList *list, void *data)
 {
     if (list == NULL) {
-        LOG_ERROR("get null list");
+        LOG_ERROR("list is null");
         return RESULT_BAD_PARAM;
     }
     if (list->size == UINT32_MAX) {
@@ -45,11 +45,11 @@ static ResultCode InsertNode(LinkedList *list, void *data)
 static ResultCode RemoveNode(LinkedList *list, void *condition, MatchFunc matchFunc, bool destroyNode)
 {
     if (list == NULL) {
-        LOG_ERROR("get null list");
+        LOG_ERROR("list is null");
         return RESULT_BAD_PARAM;
     }
     if (matchFunc == NULL) {
-        LOG_ERROR("get null match func");
+        LOG_ERROR("matchFunc is null");
         return RESULT_BAD_PARAM;
     }
     LinkedListNode *pre = NULL;
@@ -83,7 +83,7 @@ static ResultCode RemoveNode(LinkedList *list, void *condition, MatchFunc matchF
 static uint32_t GetSize(LinkedList *list)
 {
     if (list == NULL) {
-        LOG_ERROR("get null list");
+        LOG_ERROR("list is null");
         return 0;
     }
     return list->size;
@@ -92,7 +92,7 @@ static uint32_t GetSize(LinkedList *list)
 static bool IteratorHasNext(LinkedListIterator *iterator)
 {
     if (iterator == NULL) {
-        LOG_ERROR("get null iterator");
+        LOG_ERROR("iterator is null");
         return false;
     }
     return iterator->current != NULL;
@@ -112,12 +112,12 @@ static void *IteratorNext(LinkedListIterator *iterator)
 static LinkedListIterator *CreateIterator(struct LinkedList *list)
 {
     if (list == NULL) {
-        LOG_ERROR("get null list");
+        LOG_ERROR("list is null");
         return NULL;
     }
     LinkedListIterator *iterator = (LinkedListIterator *)Malloc(sizeof(LinkedListIterator));
     if (iterator == NULL) {
-        LOG_ERROR("bad memory");
+        LOG_ERROR("malloc failed");
         return NULL;
     }
     iterator->current = list->head;
@@ -129,7 +129,7 @@ static LinkedListIterator *CreateIterator(struct LinkedList *list)
 static void DestroyIterator(LinkedListIterator *iterator)
 {
     if (iterator == NULL) {
-        LOG_ERROR("get null iterator");
+        LOG_ERROR("iterator is null");
         return;
     }
     Free(iterator);
@@ -138,7 +138,7 @@ static void DestroyIterator(LinkedListIterator *iterator)
 LinkedList *CreateLinkedList(DestroyDataFunc destroyDataFunc)
 {
     if (destroyDataFunc == NULL) {
-        LOG_ERROR("get null func");
+        LOG_ERROR("destroyDataFunc is null");
         return NULL;
     }
     LinkedList *list = Malloc(sizeof(LinkedList));
@@ -160,7 +160,7 @@ LinkedList *CreateLinkedList(DestroyDataFunc destroyDataFunc)
 static void DestroyLinkedListNode(const LinkedList *list, LinkedListNode *node)
 {
     if (node == NULL) {
-        LOG_ERROR("get null node");
+        LOG_ERROR("node is null");
         return;
     }
     if ((list != NULL) && (list->destroyDataFunc != NULL)) {
@@ -172,7 +172,7 @@ static void DestroyLinkedListNode(const LinkedList *list, LinkedListNode *node)
 void DestroyLinkedList(LinkedList *list)
 {
     if (list == NULL) {
-        LOG_ERROR("get null list");
+        LOG_ERROR("list is null");
         return;
     }
     while (list->head != NULL) {

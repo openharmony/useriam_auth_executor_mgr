@@ -25,13 +25,13 @@ SetPropCallbackStub::SetPropCallbackStub(const std::shared_ptr<SetPropCallback>&
     callback_ = impl;
 }
 
-int32_t SetPropCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
-                                             MessageParcel &reply, MessageOption &option)
+int32_t SetPropCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
+    MessageOption &option)
 {
     std::u16string descripter = SetPropCallbackStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();
     if (descripter != remoteDescripter) {
-        COAUTH_HILOGD(MODULE_INNERKIT, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        COAUTH_HILOGD(MODULE_INNERKIT, "descriptor is not matched");
         return FAIL;
     }
     switch (code) {

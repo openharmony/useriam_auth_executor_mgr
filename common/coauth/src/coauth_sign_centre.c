@@ -46,7 +46,7 @@ static bool IsTimeValid(const ScheduleTokenHal *coAuthToken)
 ResultCode CoAuthTokenSign(ScheduleTokenHal *coAuthToken)
 {
     if (coAuthToken == NULL) {
-        LOG_ERROR("coAuthToken is NULL");
+        LOG_ERROR("coAuthToken is null");
         return RESULT_BAD_PARAM;
     }
     coAuthToken->version = TOKEN_VERSION;
@@ -81,7 +81,7 @@ EXIT:
 ResultCode CoAuthTokenVerify(const ScheduleTokenHal *coAuthToken)
 {
     if (coAuthToken == NULL) {
-        LOG_ERROR("coAuthToken is NULL");
+        LOG_ERROR("coAuthToken is null");
         return RESULT_BAD_PARAM;
     }
 
