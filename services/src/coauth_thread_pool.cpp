@@ -18,7 +18,7 @@
 namespace OHOS {
 namespace UserIAM {
 namespace CoAuth {
-const int32_t COAUTH_THREAD_NUM = 20;
+constexpr int32_t COAUTH_THREAD_NUM = 20;
 std::mutex CoAuthThreadPool::mutex_;
 std::shared_ptr<CoAuthThreadPool> CoAuthThreadPool::instance_ = nullptr;
 CoAuthThreadPool::CoAuthThreadPool()
