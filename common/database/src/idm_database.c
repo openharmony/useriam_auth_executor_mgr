@@ -230,6 +230,7 @@ static ResultCode GetAllEnrolledInfoFromUser(UserInfo *userInfo, EnrolledInfoHal
         LOG_ERROR("enrolledInfos malloc failed");
         return RESULT_NO_MEMORY;
     }
+    (void)memset_s(*enrolledInfos, sizeof(EnrolledInfoHal) * size, 0, sizeof(EnrolledInfoHal) * size);
     LinkedListNode *temp = enrolledInfoList->head;
     ResultCode result = RESULT_SUCCESS;
     uint32_t cnt;
