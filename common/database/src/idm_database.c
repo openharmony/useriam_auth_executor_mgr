@@ -232,16 +232,17 @@ static ResultCode GetAllEnrolledInfoFromUser(UserInfo *userInfo, EnrolledInfoHal
     }
     LinkedListNode *temp = enrolledInfoList->head;
     ResultCode result = RESULT_SUCCESS;
-    for (*num = 0; *num < size; (*num)++) {
+    uint32_t cnt;
+    for (cnt = 0; cnt < size; cnt++) {
         if (temp == NULL) {
             LOG_ERROR("temp node is null, something wrong");
             result = RESULT_BAD_PARAM;
             goto EXIT;
         }
         EnrolledInfoHal *tempInfo = (EnrolledInfoHal *)temp->data;
-        if (memcpy_s(*enrolledInfos + *num, sizeof(EnrolledInfoHal) * (size - *num),
+        if (memcpy_s(*enrolledInfos + cnt, sizeof(EnrolledInfoHal) * (size - cnt),
             tempInfo, sizeof(EnrolledInfoHal)) != EOK) {
-            LOG_ERROR("copy the %d information failed", *num);
+            LOG_ERROR("copy the %u information failed", cnt);
             result = RESULT_NO_MEMORY;
             goto EXIT;
         }
@@ -254,6 +255,7 @@ EXIT:
         *enrolledInfos = NULL;
         *num = 0;
     }
+    *num = cnt;
     return result;
 }
 
