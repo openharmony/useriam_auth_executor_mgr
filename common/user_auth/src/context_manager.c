@@ -57,7 +57,7 @@ static void CopyParamToContext(UserAuthContext *context, AuthSolutionHal params)
 
 UserAuthContext *GenerateContext(AuthSolutionHal params)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     if (g_contextList == NULL) {
         LOG_ERROR("need init");
         return NULL;
@@ -134,7 +134,7 @@ static void DestroyScheduleNode(void *data)
 
 static ResultCode CreateSchedules(UserAuthContext *context)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     context->scheduleList = CreateLinkedList(DestroyScheduleNode);
     if (context->scheduleList == NULL) {
         LOG_ERROR("schedule list create failed");

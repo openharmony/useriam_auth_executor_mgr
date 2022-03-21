@@ -25,6 +25,7 @@ extern "C" {
 #include "context_manager.h"
 #include "adaptor_log.h"
 #include "lock.h"
+#include "token_key.h"
 }
 
 namespace OHOS {
@@ -36,7 +37,7 @@ static bool g_isInitUserIAM = false;
 int32_t Init()
 {
     GlobalLock();
-    LOG_INFO("check useriam folder exist or init it.");
+    LOG_INFO("check useriam folder exist or init it");
     if (IDM_USER_FOLDER && access(IDM_USER_FOLDER, 0) == -1) {
         mkdir(IDM_USER_FOLDER, S_IRWXU);
     }
@@ -55,6 +56,10 @@ int32_t Init()
     }
     if (InitCoAuth() != RESULT_SUCCESS) {
         LOG_ERROR("init user auth failed");
+        goto FAIL;
+    }
+    if (InitTokenKey() != RESULT_SUCCESS) {
+        LOG_ERROR("init token key failed");
         goto FAIL;
     }
     g_isInitUserIAM = true;

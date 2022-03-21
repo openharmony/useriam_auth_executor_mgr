@@ -57,141 +57,123 @@ void AuthAttributes::clear()
 
 int32_t AuthAttributes::GetBoolValue(AuthAttributeType attrType, bool &value)
 {
-    int32_t ret = SUCCESS;
     std::map<AuthAttributeType, bool>::iterator iter = boolValueMap_.find(attrType);
-    if (iter != boolValueMap_.end()) {
-        value = iter->second;
-    } else {
-        ret = FAIL;
+    if (iter == boolValueMap_.end()) {
+        return FAIL;
     }
-    return ret;
+    value = iter->second;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::GetUint32Value(AuthAttributeType attrType, uint32_t &value)
 {
-    int32_t ret = SUCCESS;
     std::map<AuthAttributeType, uint32_t>::iterator iter = uint32ValueMap_.find(attrType);
-    if (iter != uint32ValueMap_.end()) {
-        value = iter->second;
-    } else {
-        ret = FAIL;
+    if (iter == uint32ValueMap_.end()) {
+        return FAIL;
     }
-    return ret;
+    value = iter->second;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::GetUint64Value(AuthAttributeType attrType, uint64_t &value)
 {
-    int32_t ret = SUCCESS;
     std::map<AuthAttributeType, uint64_t>::iterator iter = uint64ValueMap_.find(attrType);
-    if (iter != uint64ValueMap_.end()) {
-        value = iter->second;
-    } else {
-        ret = FAIL;
+    if (iter == uint64ValueMap_.end()) {
+        return FAIL;
     }
-    return ret;
+    value = iter->second;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::GetUint32ArrayValue(AuthAttributeType attrType, std::vector<uint32_t> &value)
 {
-    int32_t ret = SUCCESS;
     std::map<AuthAttributeType, std::vector<uint32_t>>::iterator iter = uint32ArraylValueMap_.find(attrType);
-    if (iter != uint32ArraylValueMap_.end()) {
-        value = iter->second;
-    } else {
-        ret = FAIL;
+    if (iter == uint32ArraylValueMap_.end()) {
+        return FAIL;
     }
-    return ret;
+    value = iter->second;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::GetUint64ArrayValue(AuthAttributeType attrType, std::vector<uint64_t> &value)
 {
-    int32_t ret = SUCCESS;
     std::map<AuthAttributeType, std::vector<uint64_t>>::iterator iter = uint64ArraylValueMap_.find(attrType);
-    if (iter != uint64ArraylValueMap_.end()) {
-        value = iter->second;
-    } else {
-        ret = FAIL;
+    if (iter == uint64ArraylValueMap_.end()) {
+        return FAIL;
     }
-    return ret;
+    value = iter->second;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::GetUint8ArrayValue(AuthAttributeType attrType, std::vector<uint8_t> &value)
 {
-    int32_t ret = SUCCESS;
     std::map<AuthAttributeType, std::vector<uint8_t>>::iterator iter = uint8ArrayValueMap_.find(attrType);
-    if (iter != uint8ArrayValueMap_.end()) {
-        value = iter->second;
-    } else {
-        ret = FAIL;
+    if (iter == uint8ArrayValueMap_.end()) {
+        return FAIL;
     }
-    return ret;
+    value = iter->second;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::SetBoolValue(AuthAttributeType attrType, bool value)
 {
-    int32_t ret = SUCCESS;
     if (authAttributesPosition_[attrType] != BOOLTYPE) {
         return FAIL;
     }
     boolValueMap_[attrType] = value;
     existAttributes_.push_back(attrType);
-    return ret;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::SetUint32Value(AuthAttributeType attrType, uint32_t value)
 {
-    int32_t ret = SUCCESS;
     if (authAttributesPosition_[attrType] != UINT32TYPE) {
         return FAIL;
     }
     uint32ValueMap_[attrType] = value;
     existAttributes_.push_back(attrType);
     COAUTH_HILOGD(MODULE_INNERKIT, "SetUint32Value : %{public}u.", value);
-    return ret;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::SetUint64Value(AuthAttributeType attrType, uint64_t value)
 {
-    int32_t ret = SUCCESS;
     if (authAttributesPosition_[attrType] != UINT64TYPE) {
         return FAIL;
     }
     uint64ValueMap_[attrType] = value;
     existAttributes_.push_back(attrType);
-    return ret;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::SetUint32ArrayValue(AuthAttributeType attrType, std::vector<uint32_t> &value)
 {
-    int32_t ret = SUCCESS;
     if (authAttributesPosition_[attrType] != UINT32ARRAYTYPE) {
         return FAIL;
     }
     uint32ArraylValueMap_[attrType] = value;
     existAttributes_.push_back(attrType);
-    return ret;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::SetUint64ArrayValue(AuthAttributeType attrType, std::vector<uint64_t> &value)
 {
-    int32_t ret = SUCCESS;
     if (authAttributesPosition_[attrType] != UINT64ARRAYTYPE) {
         return FAIL;
     }
     uint64ArraylValueMap_[attrType] = value;
     existAttributes_.push_back(attrType);
-    return ret;
+    return SUCCESS;
 }
 
 int32_t AuthAttributes::SetUint8ArrayValue(AuthAttributeType attrType, std::vector<uint8_t> &value)
 {
-    int32_t ret = SUCCESS;
     if (authAttributesPosition_[attrType] != UINT8ARRAYTYPE) {
         return FAIL;
     }
     uint8ArrayValueMap_[attrType] = value;
     existAttributes_.push_back(attrType);
-    return ret;
+    return SUCCESS;
 }
 
 void AuthAttributes::UnpackTag(AuthAttributeType &tag, std::vector<uint8_t> &buffer,
@@ -265,7 +247,7 @@ void AuthAttributes::UnpackUint8ArrayType(std::vector<uint8_t> &buffer, AuthAttr
 
 AuthAttributes* AuthAttributes::Unpack(std::vector<uint8_t> &buffer)
 {
-    if (buffer.size() == 0) {
+    if (buffer.empty()) {
         return nullptr;
     }
     uint32_t dataLength;
@@ -413,7 +395,7 @@ int32_t AuthAttributes::Pack(std::vector<uint8_t> &buffer)
 
 
 void AuthAttributes::Write32Array(std::vector<uint32_t> &uint32ArraylValue, uint8_t *writePointer,
-                                  std::vector<uint8_t> &buffer)
+    std::vector<uint8_t> &buffer)
 {
     for (std::size_t num = 0; num < uint32ArraylValue.size(); num++) {
         writePointer = static_cast<uint8_t*>(static_cast<void *>(&uint32ArraylValue[num]));
@@ -421,7 +403,7 @@ void AuthAttributes::Write32Array(std::vector<uint32_t> &uint32ArraylValue, uint
     }
 }
 void AuthAttributes::Write64Array(std::vector<uint64_t> &uint64ArraylValue, uint8_t *writePointer,
-                                  std::vector<uint8_t> &buffer)
+    std::vector<uint8_t> &buffer)
 {
     for (std::size_t num = 0; num < uint64ArraylValue.size(); num++) {
         writePointer = static_cast<uint8_t*>(static_cast<void *>(&uint64ArraylValue[num]));
@@ -429,9 +411,8 @@ void AuthAttributes::Write64Array(std::vector<uint64_t> &uint64ArraylValue, uint
     }
 }
 
-void  AuthAttributes::PackToBuffer(std::map<AuthAttributeType, ValueType>::iterator iter,
-                                   uint32_t dataLength, uint8_t *writePointer,
-                                   std::vector<uint8_t> &buffer)
+void AuthAttributes::PackToBuffer(std::map<AuthAttributeType, ValueType>::iterator iter,
+    uint32_t dataLength, uint8_t *writePointer, std::vector<uint8_t> &buffer)
 {
     bool boolValue;
     uint32_t uint32Value;

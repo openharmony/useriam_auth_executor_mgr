@@ -20,17 +20,9 @@
 #include "adaptor_algorithm.h"
 #include "adaptor_log.h"
 #include "adaptor_time.h"
+#include "token_key.h"
 
 #define TOKEN_VALIDITY_PERIOD (10 * 60 * 1000)
-
-#define DEMO_KEY { \
-    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, \
-    0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, \
-    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, \
-    0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20, \
-}
-
-static uint8_t g_userAuthTokenKey[SHA256_KEY_LEN] = DEMO_KEY;
 
 static bool IsTimeValid(const UserAuthTokenHal *userAuthToken)
 {
@@ -47,13 +39,13 @@ static bool IsTimeValid(const UserAuthTokenHal *userAuthToken)
 ResultCode UserAuthTokenSign(UserAuthTokenHal *userAuthToken)
 {
     if (userAuthToken == NULL) {
-        LOG_ERROR("userAuthToken is NULL");
+        LOG_ERROR("userAuthToken is null");
         return RESULT_BAD_PARAM;
     }
     userAuthToken->version = TOKEN_VERSION;
     ResultCode ret = RESULT_SUCCESS;
     Buffer *data = CreateBufferByData((uint8_t *)userAuthToken, AUTH_TOKEN_DATA_LEN);
-    Buffer *key = CreateBufferByData(g_userAuthTokenKey, SHA256_KEY_LEN);
+    Buffer *key = GetTokenKey();
     Buffer *sign = NULL;
     if (data == NULL || key == NULL) {
         LOG_ERROR("lack of member");
@@ -82,7 +74,7 @@ EXIT:
 ResultCode UserAuthTokenVerify(const UserAuthTokenHal *userAuthToken)
 {
     if (userAuthToken == NULL) {
-        LOG_ERROR("userAuthToken is NULL");
+        LOG_ERROR("userAuthToken is null");
         return RESULT_BAD_PARAM;
     }
 
@@ -92,7 +84,7 @@ ResultCode UserAuthTokenVerify(const UserAuthTokenHal *userAuthToken)
     }
     ResultCode ret = RESULT_SUCCESS;
     Buffer *data = CreateBufferByData((uint8_t *)userAuthToken, AUTH_TOKEN_DATA_LEN);
-    Buffer *key = CreateBufferByData(g_userAuthTokenKey, SHA256_KEY_LEN);
+    Buffer *key = GetTokenKey();
     Buffer *sign = CreateBufferByData((uint8_t *)userAuthToken->sign, SHA256_SIGN_LEN);
     Buffer *rightSign = NULL;
     if (data == NULL || key == NULL || sign == NULL) {
@@ -107,7 +99,7 @@ ResultCode UserAuthTokenVerify(const UserAuthTokenHal *userAuthToken)
     }
 
     if (!CompareBuffer(rightSign, sign)) {
-        LOG_ERROR("sign compare failed ");
+        LOG_ERROR("sign compare failed");
         ret = RESULT_BAD_SIGN;
     }
 

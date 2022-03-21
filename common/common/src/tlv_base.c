@@ -80,67 +80,6 @@ TlvType *CreateTlvType(int32_t type, uint32_t length, const void *value)
     return tlv;
 }
 
-TlvObject *CreateTlvObject(int32_t type, uint32_t length, const void *value)
-{
-    TlvObject *object = (TlvObject *)Malloc(sizeof(TlvListNode));
-    if (object == NULL) {
-        return NULL;
-    }
-    TlvType *tlv = CreateTlvType(type, length, value);
-    if (tlv == NULL) {
-        Free(object);
-        return NULL;
-    }
-    object->value = tlv;
-    return object;
-}
-
-static TlvType *CreateEmptyTlvType(int32_t type)
-{
-    TlvType *tlv = (TlvType *)Malloc(sizeof(TlvType));
-    if (tlv == NULL) {
-        return NULL;
-    }
-
-    tlv->type = type;
-    tlv->length = 0;
-    tlv->value = NULL;
-    return tlv;
-}
-
-TlvObject *CreateEmptyTlvObject(int32_t type)
-{
-    TlvObject *object = (TlvObject *)Malloc(sizeof(TlvListNode));
-    if (object == NULL) {
-        return NULL;
-    }
-    TlvType *tlv = CreateEmptyTlvType(type);
-    if (tlv == NULL) {
-        Free(object);
-        return NULL;
-    }
-    object->value = tlv;
-    return object;
-}
-
-void DestroyTlvObject(TlvObject *object)
-{
-    if (object == NULL) {
-        return;
-    }
-    TlvType *tlv = object->value;
-    if (tlv == NULL) {
-        Free(object);
-        return;
-    }
-    if (tlv->value != NULL) {
-        Free(tlv->value);
-        tlv->value = NULL;
-    }
-    Free(tlv);
-    Free(object);
-}
-
 int32_t DestroyTlvList(TlvListNode *head)
 {
     if (head == NULL) {

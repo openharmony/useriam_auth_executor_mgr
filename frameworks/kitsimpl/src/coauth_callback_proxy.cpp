@@ -28,16 +28,16 @@ void CoAuthCallbackProxy::OnFinish(uint32_t resultCode, std::vector<uint8_t> &sc
     MessageParcel reply;
 
     if (!data.WriteInterfaceToken(CoAuthCallbackProxy::GetDescriptor())) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed");
         return;
     }
     if (!data.WriteUint32(resultCode)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint32(resultCode).");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write resultCode failed");
         return;
     }
 
     if (!data.WriteUInt8Vector(scheduleToken)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUInt8Vector(scheduleToken).");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write scheduleToken failed");
         return;
     }
 
@@ -51,11 +51,11 @@ void CoAuthCallbackProxy::OnAcquireInfo(uint32_t acquire)
 {
     MessageParcel data;
     if (!data.WriteInterfaceToken(CoAuthCallbackProxy::GetDescriptor())) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write descriptor failed");
         return;
     }
     if (!data.WriteUint32(acquire)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteUint32(acquire).");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write acquire failed");
         return;
     }
 
@@ -70,13 +70,13 @@ bool CoAuthCallbackProxy::SendRequest(uint32_t code, MessageParcel &data, Messag
 {
     sptr<IRemoteObject> remote = Remote();
     if (remote == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to get remote.");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get remote failed");
         return false;
     }
     MessageOption option(MessageOption::TF_SYNC);
     int32_t result = remote->SendRequest(code, data, reply, option);
     if (result != OHOS::NO_ERROR) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to SendRequest.result = %{public}d", result);
+        COAUTH_HILOGE(MODULE_INNERKIT, "send request failed, result = %{public}d", result);
         return false;
     }
     return true;

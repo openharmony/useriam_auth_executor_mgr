@@ -67,40 +67,6 @@ static int32_t PutTlvObject(TlvListNode *head, int32_t type, uint32_t length, co
     return ret;
 }
 
-int32_t SerializeTlvWrapper(const TlvListNode *head, uint8_t *buffer, uint32_t maxSize, uint32_t *contentSize)
-{
-    if (head == NULL || buffer == NULL || contentSize == NULL || maxSize == 0) {
-        return PARAM_ERR;
-    }
-
-    uint32_t offset = 0;
-    TlvListNode *node = head->next;
-    while (node != NULL) {
-        TlvType *tlv = node->data.value;
-        int32_t type = Ntohl(tlv->type);
-        if ((offset > UINT32_MAX - sizeof(int32_t)) || (offset + sizeof(int32_t) > maxSize) ||
-            (memcpy_s(buffer + offset, sizeof(int32_t), &type, sizeof(int32_t)) != EOK)) {
-            return MEMCPY_ERR;
-        }
-        offset += sizeof(int32_t);
-        uint32_t len = Ntohl(tlv->length);
-        if ((offset > UINT32_MAX - sizeof(int32_t)) || (offset + sizeof(int32_t) > maxSize) ||
-            (memcpy_s(buffer + offset, sizeof(int32_t), &len, sizeof(int32_t)) != EOK)) {
-            return MEMCPY_ERR;
-        }
-        offset += sizeof(int32_t);
-        if ((offset > UINT32_MAX - tlv->length) || (offset + tlv->length > maxSize) ||
-            ((tlv->length != 0) && (memcpy_s(buffer + offset, maxSize - offset, tlv->value, tlv->length) != EOK))) {
-            return MEMCPY_ERR;
-        }
-        offset += tlv->length;
-        node = node->next;
-    }
-
-    *contentSize = offset;
-    return OPERA_SUCC;
-}
-
 int32_t ParseGetHeadTag(const TlvListNode *node, int32_t *tag)
 {
     if (node == NULL || tag == NULL) {
@@ -142,49 +108,6 @@ int32_t ParseTlvWrapper(const uint8_t *buffer, uint32_t bufferSize, TlvListNode 
     }
 
     return OPERA_SUCC;
-}
-
-int32_t TlvAppendByte(TlvListNode *head, int32_t type, const uint8_t *value, uint32_t length)
-{
-    if (head == NULL || value == NULL) {
-        return PARAM_ERR;
-    }
-    return PutTlvObject(head, type, length, value);
-}
-
-int32_t TlvAppendShort(TlvListNode *head, int32_t type, short value)
-{
-    if (head == NULL) {
-        return PARAM_ERR;
-    }
-    short tempValue = Ntohs(value);
-    return PutTlvObject(head, type, sizeof(short), &tempValue);
-}
-
-int32_t TlvAppendInt(TlvListNode *head, int32_t type, uint32_t value)
-{
-    if (head == NULL) {
-        return PARAM_ERR;
-    }
-    uint32_t tempValue = Ntohl(value);
-    return PutTlvObject(head, type, sizeof(int32_t), &tempValue);
-}
-
-int32_t TlvAppendLong(TlvListNode *head, int32_t type, uint64_t value)
-{
-    if (head == NULL) {
-        return PARAM_ERR;
-    }
-    uint64_t tempValue = Ntohll(value);
-    return PutTlvObject(head, type, sizeof(int64_t), &tempValue);
-}
-
-int32_t TlvAppendObject(TlvListNode *head, int32_t type, const uint8_t *buffer, uint32_t length)
-{
-    if (head == NULL || buffer == NULL || length == 0 || length > MAX_BUFFER_SIZE) {
-        return PARAM_ERR;
-    }
-    return PutTlvObject(head, type, length, buffer);
 }
 
 static uint8_t *GetTlvValue(TlvListNode *node, int32_t msgType, uint32_t *len)
@@ -272,22 +195,6 @@ int32_t ParseInt32Para(TlvListNode *node, int32_t msgType, int32_t *retVal)
     return OPERA_SUCC;
 }
 
-int32_t ParseShortPara(TlvListNode *node, int32_t msgType, short *retVal)
-{
-    if ((node == NULL) || (retVal == NULL)) {
-        LOG_ERROR("ParseShortPara parameter check failed");
-        return PARAM_ERR;
-    }
-    uint32_t len = 0;
-    uint8_t *val = GetTlvValue(node, msgType, &len);
-    if ((val == NULL) || (len != sizeof(short))) {
-        LOG_ERROR("ParseInt32Para GetTlvValue failed");
-        return OPERA_FAIL;
-    }
-    *retVal = Ntohs(*(short *)val);
-    return OPERA_SUCC;
-}
-
 Buffer *ParseBuffPara(TlvListNode *node, int32_t msgType)
 {
     if (node == NULL) {
@@ -324,7 +231,6 @@ int32_t ParseUint8Para(TlvListNode *node, int32_t msgType, uint8_t *retVal)
     return OPERA_SUCC;
 }
 
-
 int32_t GetUint64Para(TlvListNode *head, int32_t msgType, uint64_t *retVal)
 {
     if ((head == NULL) || (retVal == NULL)) {
@@ -340,27 +246,6 @@ int32_t GetUint64Para(TlvListNode *head, int32_t msgType, uint64_t *retVal)
         }
         if (nodeType == msgType) {
             return ParseUint64Para(node, msgType, retVal);
-        }
-        node = node->next;
-    }
-    return PARAM_ERR;
-}
-
-int32_t GetInt64Para(TlvListNode *head, int32_t msgType, int64_t *retVal)
-{
-    if ((head == NULL) || (retVal == NULL)) {
-        LOG_ERROR("GetInt64Para parameter check failed");
-        return PARAM_ERR;
-    }
-    TlvListNode *node = head;
-    while (node != NULL) {
-        int32_t nodeType;
-        int32_t ret = ParseGetHeadTag(node, &nodeType);
-        if (ret != OPERA_SUCC) {
-            return ret;
-        }
-        if (nodeType == msgType) {
-            return ParseInt64Para(node, msgType, retVal);
         }
         node = node->next;
     }
@@ -428,25 +313,4 @@ Buffer *GetBuffPara(TlvListNode *head, int32_t msgType)
         node = node->next;
     }
     return NULL;
-}
-
-int32_t GetUint8Para(TlvListNode *head, int32_t msgType, uint8_t *retVal)
-{
-    if ((head == NULL) || (retVal == NULL)) {
-        LOG_ERROR("GetUint8Para parameter check failed");
-        return PARAM_ERR;
-    }
-    TlvListNode *node = head;
-    while (node != NULL) {
-        int32_t nodeType;
-        int32_t ret = ParseGetHeadTag(node, &nodeType);
-        if (ret != OPERA_SUCC) {
-            return ret;
-        }
-        if (nodeType == msgType) {
-            return ParseUint8Para(node, msgType, retVal);
-        }
-        node = node->next;
-    }
-    return PARAM_ERR;
 }

@@ -28,13 +28,13 @@ ExecutorCallbackStub::ExecutorCallbackStub(const std::shared_ptr<ExecutorCallbac
 }
 
 int32_t ExecutorCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
-                                              MessageParcel &reply, MessageOption &option)
+    MessageParcel &reply, MessageOption &option)
 {
     COAUTH_HILOGD(MODULE_INNERKIT, "ExecutorCallbackStub::OnRemoteRequest!");
     std::u16string descripter = ExecutorCallbackStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();
     if (descripter != remoteDescripter) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        COAUTH_HILOGE(MODULE_INNERKIT, "descriptor is not matched");
         return FAIL;
     }
 
@@ -62,7 +62,7 @@ int32_t ExecutorCallbackStub::OnMessengerReadyStub(MessageParcel &data, MessageP
         COAUTH_HILOGE(MODULE_INNERKIT, "messenger is nullptr");
         return FAIL;
     }
-    COAUTH_HILOGD(MODULE_INNERKIT, "iface_cast right");
+    COAUTH_HILOGD(MODULE_INNERKIT, "iface_cast is right");
     OnMessengerReady(messenger);
     COAUTH_HILOGD(MODULE_INNERKIT, "OnMessengerReady GetRefPtr");
     return SUCCESS;
@@ -78,7 +78,7 @@ int32_t ExecutorCallbackStub::OnBeginExecuteStub(MessageParcel &data, MessagePar
     commandAttrs->Unpack(buffer);
     int32_t ret = OnBeginExecute(scheduleId, publicKey, commandAttrs);
     if (!reply.WriteInt32(ret)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteInt32(ret)");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write ret failed");
         return FAIL;
     }
     return SUCCESS;
@@ -97,7 +97,7 @@ int32_t ExecutorCallbackStub::OnEndExecuteStub(MessageParcel &data, MessageParce
     consumerAttr->Unpack(buffer);
     int32_t ret = OnEndExecute(scheduleId, consumerAttr);
     if (!reply.WriteInt32(ret)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteInt32(ret)");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write ret failed");
         return FAIL;
     }
     return SUCCESS;
@@ -113,14 +113,14 @@ int32_t ExecutorCallbackStub::OnGetPropertyStub(MessageParcel &data, MessageParc
     std::shared_ptr<AuthAttributes> values = std::make_shared<AuthAttributes>();
     int32_t ret = OnGetProperty(conditions, values);
     if (!reply.WriteInt32(ret)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteInt32(ret)");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write ret failed");
         return FAIL;
     }
 
     std::vector<uint8_t> replyBuffer;
     values->Pack(replyBuffer);
     if (!reply.WriteUInt8Vector(replyBuffer)) {
-        COAUTH_HILOGE(MODULE_SERVICE, "failed to replyBuffer");
+        COAUTH_HILOGE(MODULE_SERVICE, "write replyBuffer failed");
         return FAIL;
     }
     return SUCCESS;
@@ -135,7 +135,7 @@ int32_t ExecutorCallbackStub::OnSetPropertyStub(MessageParcel &data, MessageParc
 
     int32_t ret = OnSetProperty(properties);
     if (!reply.WriteInt32(ret)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteInt32(ret)");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write ret failed");
         return FAIL;
     }
     return SUCCESS;
@@ -151,7 +151,7 @@ void ExecutorCallbackStub::OnMessengerReady(const sptr<IExecutorMessenger> &mess
 }
 
 int32_t ExecutorCallbackStub::OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey,
-                                             std::shared_ptr<AuthAttributes> commandAttrs)
+    std::shared_ptr<AuthAttributes> commandAttrs)
 {
     int32_t ret = FAIL;
     if (callback_ == nullptr) {
@@ -185,7 +185,7 @@ int32_t ExecutorCallbackStub::OnSetProperty(std::shared_ptr<AuthAttributes> prop
 }
 
 int32_t ExecutorCallbackStub::OnGetProperty(std::shared_ptr<AuthAttributes> conditions,
-                                            std::shared_ptr<AuthAttributes> values)
+    std::shared_ptr<AuthAttributes> values)
 {
     int32_t ret = FAIL;
     if (callback_ == nullptr) {

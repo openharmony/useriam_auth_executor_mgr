@@ -32,29 +32,30 @@ int32_t ExecutorMessenger::SendData(uint64_t scheduleId, uint64_t transNum, int3
     if (ScheResPool_ == nullptr || msg == nullptr) {
         COAUTH_HILOGE(MODULE_SERVICE, "ScheResPool_ or msg is nullptr");
         return FAIL;
-    } else {
-        sptr<UserIAM::CoAuth::ICoAuthCallback> callback;
-        int32_t findRet = ScheResPool_->FindScheduleCallback(scheduleId, callback);
-        if (findRet == SUCCESS && callback != nullptr) {
-            std::vector<uint8_t> message;
-            msg->FromUint8Array(message);
-            if (message.size() != sizeof(uint32_t)) {
-                COAUTH_HILOGE(MODULE_SERVICE, "message size not right");
-                return FAIL;
-            }
-
-            // trans to acquireCode
-            uint32_t acquire = 0;
-            if (memcpy_s(&acquire, sizeof(uint32_t), message.data(), message.size()) != EOK) {
-                COAUTH_HILOGE(MODULE_SERVICE, "message copy not right");
-                return FAIL;
-            }
-            callback->OnAcquireInfo(acquire);
-            COAUTH_HILOGD(MODULE_SERVICE, "feedback acquire info");
-        } else {
-            COAUTH_HILOGE(MODULE_SERVICE, "ScheduleCallback not find");
-        }
     }
+
+    sptr<UserIAM::CoAuth::ICoAuthCallback> callback;
+    int32_t findRet = ScheResPool_->FindScheduleCallback(scheduleId, callback);
+    if (findRet != SUCCESS || callback == nullptr) {
+        COAUTH_HILOGE(MODULE_SERVICE, "ScheduleCallback not find");
+        return FAIL;
+    }
+
+    std::vector<uint8_t> message;
+    msg->FromUint8Array(message);
+    if (message.size() != sizeof(uint32_t)) {
+        COAUTH_HILOGE(MODULE_SERVICE, "message size not right");
+        return FAIL;
+    }
+
+    // trans to acquireCode
+    uint32_t acquire = 0;
+    if (memcpy_s(&acquire, sizeof(uint32_t), message.data(), message.size()) != EOK) {
+        COAUTH_HILOGE(MODULE_SERVICE, "message copy not right");
+        return FAIL;
+    }
+    callback->OnAcquireInfo(acquire);
+    COAUTH_HILOGD(MODULE_SERVICE, "feedback acquire info");
     return SUCCESS;
 }
 
@@ -110,7 +111,7 @@ int32_t ExecutorMessenger::Finish(uint64_t scheduleId, int32_t srcType, int32_t 
     int32_t findRet = ScheResPool_->FindScheduleCallback(scheduleId, callback);
     if (findRet != SUCCESS || callback == nullptr) {
         DeleteScheduleInfoById(scheduleId);
-        COAUTH_HILOGE(MODULE_SERVICE, "get schedule callback fail");
+        COAUTH_HILOGE(MODULE_SERVICE, "get schedule callback failed");
         return FAIL;
     }
     std::vector<uint8_t> scheduleToken;

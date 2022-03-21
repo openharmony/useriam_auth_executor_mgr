@@ -30,7 +30,7 @@ int32_t CoAuthStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
     std::u16string descripter = CoAuthStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();
     if (descripter != remoteDescripter) {
-        COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        COAUTH_HILOGE(MODULE_SERVICE, "descriptor is not matched");
         return E_GET_POWER_SERVICE_FAILED;
     }
 
@@ -136,7 +136,7 @@ int32_t CoAuthStub::BeginScheduleStub(MessageParcel& data, MessageParcel& reply)
 
 int32_t CoAuthStub::CancelStub(MessageParcel& data, MessageParcel& reply)
 {
-    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub: CancelStub enter");
+    COAUTH_HILOGI(MODULE_SERVICE, "CoAuthStub: CancelStub start");
 
     uint64_t scheduleId = data.ReadUint64();
     COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64 scheduleId:%{public}" PRIu64, scheduleId);
@@ -151,7 +151,7 @@ int32_t CoAuthStub::CancelStub(MessageParcel& data, MessageParcel& reply)
 
 int32_t CoAuthStub::GetExecutorPropStub(MessageParcel& data, MessageParcel& reply)
 {
-    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub: GetExecutorPropStub enter");
+    COAUTH_HILOGI(MODULE_SERVICE, "CoAuthStub: GetExecutorPropStub start");
     std::vector<uint8_t> buffer;
     AuthResPool::AuthAttributes conditions;
     data.ReadUInt8Vector(&buffer);
@@ -179,7 +179,7 @@ int32_t CoAuthStub::GetExecutorPropStub(MessageParcel& data, MessageParcel& repl
 
 int32_t CoAuthStub::SetExecutorPropStub(MessageParcel& data, MessageParcel& reply)
 {
-    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub: SetExecutorPropStub enter");
+    COAUTH_HILOGI(MODULE_SERVICE, "CoAuthStub: SetExecutorPropStub start");
     std::vector<uint8_t> buffer;
     std::shared_ptr<AuthResPool::AuthAttributes> conditions = std::make_shared<AuthResPool::AuthAttributes>();
 

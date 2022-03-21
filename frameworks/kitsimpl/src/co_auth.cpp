@@ -36,23 +36,23 @@ sptr<ICoAuth> CoAuth::GetProxy()
 
     sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (sam == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get system ability manager");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get system ability manager failed");
         return nullptr;
     }
     sptr<IRemoteObject> obj = sam->CheckSystemAbility(SUBSYS_USERIAM_SYS_ABILITY_AUTHEXECUTORMGR);
     if (obj == nullptr) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to get coauth manager service");
+        COAUTH_HILOGE(MODULE_INNERKIT, "get coauth manager service failed");
         return nullptr;
     }
     sptr<IRemoteObject::DeathRecipient> dr = new CoAuthDeathRecipient();
     if ((obj->IsProxyObject()) && (!obj->AddDeathRecipient(dr))) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "Failed to add death recipient");
+        COAUTH_HILOGE(MODULE_INNERKIT, "add death recipient failed");
         return nullptr;
     }
 
     proxy_ = iface_cast<ICoAuth>(obj);
     deathRecipient_ = dr;
-    COAUTH_HILOGD(MODULE_INNERKIT, "Succeed to connect coauth manager service");
+    COAUTH_HILOGD(MODULE_INNERKIT, "connect coauth manager service success");
     return proxy_;
 }
 
@@ -72,7 +72,7 @@ void CoAuth::ResetProxy(const wptr<IRemoteObject>& remote)
 
 void CoAuth::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, std::shared_ptr<CoAuthCallback> callback)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "BeginSchedule enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "BeginSchedule start");
     if (callback == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "BeginSchedule failed, callback is nullptr");
         return;
@@ -93,7 +93,7 @@ void CoAuth::BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, std::shared_
 
 int32_t CoAuth::Cancel(uint64_t scheduleId)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "CoAuth Cancel enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "CoAuth Cancel start");
     auto proxy = GetProxy();
     if (proxy == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "Cancel failed, proxy is nullptr");
@@ -106,7 +106,7 @@ int32_t CoAuth::Cancel(uint64_t scheduleId)
 int32_t CoAuth::GetExecutorProp(AuthResPool::AuthAttributes &conditions,
                                 std::shared_ptr<AuthResPool::AuthAttributes> values)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "CoAuth: GetExecutorProp enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "CoAuth: GetExecutorProp start");
     auto proxy = GetProxy();
     if (proxy == nullptr || values == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "GetExecutorProp failed, proxy or values is nullptr");
@@ -118,7 +118,7 @@ int32_t CoAuth::GetExecutorProp(AuthResPool::AuthAttributes &conditions,
 
 void CoAuth::SetExecutorProp(AuthResPool::AuthAttributes &conditions, std::shared_ptr<SetPropCallback> callback)
 {
-    COAUTH_HILOGD(MODULE_INNERKIT, "CoAuth: SetExecutorProp enter");
+    COAUTH_HILOGD(MODULE_INNERKIT, "CoAuth: SetExecutorProp start");
     auto proxy = GetProxy();
     if (proxy == nullptr || callback == nullptr) {
         COAUTH_HILOGE(MODULE_INNERKIT, "SetExecutorProp failed, proxy or callback is nullptr");

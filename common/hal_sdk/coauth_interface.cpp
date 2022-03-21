@@ -35,7 +35,7 @@ static ExecutorInfo CopyExecutorInfoOut(const ExecutorInfoHal &executorInfoHal)
     executorInfo.esl = executorInfoHal.esl;
     executorInfo.executorType = executorInfoHal.executorType;
     if (memcpy_s(executorInfo.publicKey, PUBLIC_KEY_LEN, executorInfoHal.pubKey, PUBLIC_KEY_LEN) != EOK) {
-        LOG_ERROR("memcpy fail");
+        LOG_ERROR("memcpy failed");
     }
     return executorInfo;
 }
@@ -48,14 +48,14 @@ static ExecutorInfoHal CopyExecutorInfoIn(const ExecutorInfo &executorInfo)
     executorInfoHal.esl = executorInfo.esl;
     executorInfoHal.executorType = executorInfo.executorType;
     if (memcpy_s(executorInfoHal.pubKey, PUBLIC_KEY_LEN, executorInfo.publicKey, PUBLIC_KEY_LEN) != EOK) {
-        LOG_ERROR("memcpy fail");
+        LOG_ERROR("memcpy failed");
     }
     return executorInfoHal;
 }
 
 static void CopyScheduleInfoOut(ScheduleInfo &scheduleInfo, const ScheduleInfoHal &scheduleInfoHal)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     scheduleInfo.executors.clear();
     scheduleInfo.authSubType = scheduleInfoHal.authSubType;
     scheduleInfo.templateId = scheduleInfoHal.templateId;
@@ -68,7 +68,7 @@ static void CopyScheduleInfoOut(ScheduleInfo &scheduleInfo, const ScheduleInfoHa
 
 int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     ScheduleInfoHal scheduleInfoHal;
     int32_t ret = GetScheduleInfo(scheduleId, &scheduleInfoHal);
@@ -84,7 +84,7 @@ int32_t GetScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 
 int32_t DeleteScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     ScheduleInfoHal scheduleInfoHal;
     int32_t ret = GetScheduleInfo(scheduleId, &scheduleInfoHal);
@@ -102,14 +102,14 @@ int32_t DeleteScheduleInfo(uint64_t scheduleId, ScheduleInfo &scheduleInfo)
 
 static Buffer *CreateBufferByVector(std::vector<uint8_t> &executorFinishMsg)
 {
-    LOG_INFO("executorFinishMsg size is %{public}u", executorFinishMsg.size());
+    LOG_INFO("executorFinishMsg size is %{public}zu", executorFinishMsg.size());
     Buffer *data = CreateBufferByData(&executorFinishMsg[0], executorFinishMsg.size());
     return data;
 }
 
 int32_t GetScheduleToken(std::vector<uint8_t> executorFinishMsg, ScheduleToken &scheduleToken)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     if (executorFinishMsg.empty()) {
         LOG_ERROR("executorFinishMsg is empty");
         ScheduleInfo scheduleInfo;
@@ -143,7 +143,7 @@ int32_t GetScheduleToken(std::vector<uint8_t> executorFinishMsg, ScheduleToken &
 
 int32_t ExecutorRegister(ExecutorInfo executorInfo, uint64_t &executorId)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     ExecutorInfoHal executorInfoHal = CopyExecutorInfoIn(executorInfo);
     int32_t ret = RegisterExecutor(&executorInfoHal, &executorId);
@@ -153,7 +153,7 @@ int32_t ExecutorRegister(ExecutorInfo executorInfo, uint64_t &executorId)
 
 int32_t ExecutorUnRegister(uint64_t executorId)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     int32_t ret = UnRegisterExecutor(executorId);
     GlobalUnLock();
@@ -162,7 +162,7 @@ int32_t ExecutorUnRegister(uint64_t executorId)
 
 bool IsExecutorExist(uint32_t authType)
 {
-    LOG_INFO("begin");
+    LOG_INFO("start");
     GlobalLock();
     bool ret = IsExecutorExistFunc(authType);
     GlobalUnLock();

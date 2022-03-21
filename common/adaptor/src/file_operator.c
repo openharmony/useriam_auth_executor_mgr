@@ -41,12 +41,12 @@ static int32_t ReadFile(const char *fileName, uint8_t *buf, uint32_t len)
     }
     FILE *fileOperator = fopen(fileName, "rb");
     if (fileOperator == NULL) {
-        LOG_ERROR("open file fail");
+        LOG_ERROR("open file failed");
         return RESULT_BAD_PARAM;
     }
     size_t readLen = fread(buf, sizeof(uint8_t), len, fileOperator);
     if (readLen != len) {
-        LOG_ERROR("read file fail");
+        LOG_ERROR("read file failed");
         (void)fclose(fileOperator);
         (void)memset_s(buf, len, 0, len);
         return RESULT_BAD_READ;
@@ -63,12 +63,12 @@ static int32_t WriteFile(const char *fileName, const uint8_t *buf, uint32_t len)
     }
     FILE *fileOperator = fopen(fileName, "wb");
     if (fileOperator == NULL) {
-        LOG_ERROR("open file fail");
+        LOG_ERROR("open file failed");
         return RESULT_BAD_PARAM;
     }
     size_t writeLen = fwrite(buf, sizeof(uint8_t), len, fileOperator);
     if (writeLen != len) {
-        LOG_ERROR("write file fail");
+        LOG_ERROR("write file failed");
         (void)fclose(fileOperator);
         return RESULT_BAD_WRITE;
     }
@@ -85,17 +85,17 @@ static int32_t GetFileLen(const char *fileName, uint32_t *len)
     *len = 0;
     FILE *fileOperator = fopen(fileName, "rb");
     if (fileOperator == NULL) {
-        LOG_ERROR("fopen file fail");
+        LOG_ERROR("fopen file failed");
         return RESULT_BAD_PARAM;
     }
     if (fseek(fileOperator, 0L, SEEK_END) != 0) {
-        LOG_ERROR("seek file fail");
+        LOG_ERROR("seek file failed");
         (void)fclose(fileOperator);
         return RESULT_GENERAL_ERROR;
     }
     long fileLen = ftell(fileOperator);
     if (fileLen < 0 || fileLen > UINT32_MAX) {
-        LOG_ERROR("tell file fail");
+        LOG_ERROR("tell file failed");
         (void)fclose(fileOperator);
         return RESULT_GENERAL_ERROR;
     }
@@ -112,7 +112,7 @@ static int32_t DeleteFile(const char *fileName)
     }
     int ret = remove(fileName);
     if (ret != 0) {
-        LOG_ERROR("delete file fail");
+        LOG_ERROR("delete file failed");
         return RESULT_GENERAL_ERROR;
     }
     return RESULT_SUCCESS;

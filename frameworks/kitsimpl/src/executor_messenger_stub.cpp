@@ -22,14 +22,13 @@ const std::string PERMISSION_AUTH_RESPOOL = "ohos.permission.ACCESS_AUTH_RESPOOL
 const std::string PERMISSION_ACCESS_COAUTH = "ohos.permission.ACCESS_COAUTH";
 
 int32_t ExecutorMessengerStub::OnRemoteRequest(uint32_t code, MessageParcel &data,
-                                               MessageParcel &reply, MessageOption &option)
+    MessageParcel &reply, MessageOption &option)
 {
-    COAUTH_HILOGD(MODULE_SERVICE, "CoAuthStub::OnRemoteRequest, cmd = %{public}u, flags= %{public}d",
-                  code, option.GetFlags());
+    COAUTH_HILOGD(MODULE_SERVICE, "cmd = %{public}u, flags= %{public}d", code, option.GetFlags());
     std::u16string descripter = ExecutorMessengerStub::GetDescriptor();
     std::u16string remoteDescripter = data.ReadInterfaceToken();
     if (descripter != remoteDescripter) {
-        COAUTH_HILOGE(MODULE_SERVICE, "CoAuthStub::OnRemoteRequest failed, descriptor is not matched!");
+        COAUTH_HILOGE(MODULE_SERVICE, "descriptor is not matched");
         return FAIL;
     }
 
@@ -42,6 +41,7 @@ int32_t ExecutorMessengerStub::OnRemoteRequest(uint32_t code, MessageParcel &dat
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
     }
 }
+
 int32_t ExecutorMessengerStub::SendDataStub(MessageParcel& data, MessageParcel& reply)
 {
     uint64_t scheduleId = data.ReadUint64();
@@ -53,7 +53,7 @@ int32_t ExecutorMessengerStub::SendDataStub(MessageParcel& data, MessageParcel& 
     std::shared_ptr<AuthMessage> msg = std::make_shared<AuthMessage>(buffer);
     int32_t ret = SendData(scheduleId, transNum, srcType, dstType, msg); // Call business function
     if (!reply.WriteInt32(ret)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteInt32(ret)");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write ret failed");
         return FAIL;
     }
     return SUCCESS;
@@ -72,7 +72,7 @@ int32_t ExecutorMessengerStub::FinishStub(MessageParcel& data, MessageParcel& re
 
     int32_t ret = Finish(scheduleId, srcType, resultCode, finalResult);
     if (!reply.WriteInt32(ret)) {
-        COAUTH_HILOGE(MODULE_INNERKIT, "failed to WriteInt32(ret)");
+        COAUTH_HILOGE(MODULE_INNERKIT, "write ret failed");
         return FAIL;
     }
     return SUCCESS;
