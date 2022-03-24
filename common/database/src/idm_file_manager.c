@@ -212,6 +212,7 @@ ResultCode UpdateFileInfo(LinkedList *userInfoList)
             ret = RESULT_GENERAL_ERROR;
             goto EXIT;
         }
+        temp = temp->next;
     }
 
     FileOperator *fileOperator = GetFileOperator(DEFAULT_FILE_OPERATOR);
