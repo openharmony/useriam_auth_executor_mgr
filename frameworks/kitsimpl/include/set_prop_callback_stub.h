@@ -29,7 +29,7 @@ public:
     explicit SetPropCallbackStub(const std::shared_ptr<SetPropCallback>& impl);
     ~SetPropCallbackStub() override = default;
 
-    virtual void OnResult(uint32_t result, std::vector<uint8_t> &extraInfo) override;
+    void OnResult(uint32_t result, std::vector<uint8_t> &extraInfo) override;
 
     int32_t OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;

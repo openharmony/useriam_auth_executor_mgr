@@ -86,7 +86,7 @@ void AuthResManager::QueryStatus(ResAuthExecutor &executorInfo, sptr<ResIQueryCa
     } else {
         COAUTH_HILOGE(MODULE_SERVICE, "get AuthType failed");
     }
-    if (isExist == false) {
+    if (!isExist) {
         COAUTH_HILOGE(MODULE_SERVICE, "query status executor register is not exist");
     } else {
         COAUTH_HILOGI(MODULE_SERVICE, "query status executor register is exist");
