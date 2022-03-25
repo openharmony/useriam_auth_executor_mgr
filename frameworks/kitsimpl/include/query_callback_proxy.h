@@ -28,12 +28,10 @@ public:
         : IRemoteProxy<IQueryCallback>(impl) {}
     ~QueryCallbackProxy() override = default;
 
-    virtual void OnResult(uint32_t resultCode) override;
+    void OnResult(uint32_t resultCode) override;
 
 private:
     bool SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply);
-
-private:
     static inline BrokerDelegator<QueryCallbackProxy> delegator_;
 };
 } // namespace AuthResPool

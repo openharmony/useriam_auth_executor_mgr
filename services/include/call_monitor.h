@@ -32,8 +32,8 @@ public:
     DISALLOW_COPY_AND_MOVE(CallMonitor);
 
     void MonitorCall(int64_t waitTime, uint64_t scheduleId, Callback &timeoutFun);
-
     void MonitorRemoveCall(uint64_t scheduleId);
+
 private:
     std::shared_ptr<AppExecFwk::EventHandler> eventHandler_;
 };

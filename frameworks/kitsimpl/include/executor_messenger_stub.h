@@ -29,6 +29,7 @@ public:
     ~ExecutorMessengerStub() override = default;
 
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+
 private:
     int32_t SendDataStub(MessageParcel& data, MessageParcel& reply);
     int32_t FinishStub(MessageParcel& data, MessageParcel& reply);

@@ -30,6 +30,10 @@ void ExecutorCallbackProxy::OnMessengerReady(const sptr<IExecutorMessenger> &mes
         return;
     }
 
+    if (messenger.GetRefPtr() == nullptr) {
+        COAUTH_HILOGE(MODULE_INNERKIT, "messenger.GetRefPtr() is nullptr");
+        return;
+    }
     if (!data.WriteRemoteObject(messenger.GetRefPtr()->AsObject())) {
         COAUTH_HILOGE(MODULE_INNERKIT, "write RemoteObject failed");
         return;

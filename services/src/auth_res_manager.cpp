@@ -54,7 +54,12 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
         COAUTH_HILOGE(MODULE_SERVICE, "register is failure!");
         return INVALID_EXECUTOR_ID;
     }
-    sptr<IRemoteObject::DeathRecipient> dr = new ResIExecutorCallbackDeathRecipient(executorId, this);
+    sptr<IRemoteObject::DeathRecipient> dr =
+        new (std::nothrow) ResIExecutorCallbackDeathRecipient(executorId, this);
+    if (dr == nullptr || callback->AsObject() == nullptr) {
+        COAUTH_HILOGE(MODULE_SERVICE, "dr or callback->AsObject() is nullptr");
+        return INVALID_EXECUTOR_ID;
+    }
     if (!callback->AsObject()->AddDeathRecipient(dr)) {
         COAUTH_HILOGE(MODULE_SERVICE, "add death recipient ResIExecutorCallbackDeathRecipient failed");
         return INVALID_EXECUTOR_ID;
@@ -65,7 +70,7 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     sptr<UserIAM::AuthResPool::IExecutorMessenger> messenger =
         new UserIAM::AuthResPool::ExecutorMessenger(&coAuthResPool_);
     callback->OnMessengerReady(messenger);
-    COAUTH_HILOGD(MODULE_SERVICE, "register is successfull, exeID is XXXX%{public}04" PRIx64, executorId);
+    COAUTH_HILOGD(MODULE_SERVICE, "register is successful, exeID is XXXX%{public}04" PRIx64, executorId);
     return executorId;
 }
 
@@ -86,7 +91,7 @@ void AuthResManager::QueryStatus(ResAuthExecutor &executorInfo, sptr<ResIQueryCa
     } else {
         COAUTH_HILOGE(MODULE_SERVICE, "get AuthType failed");
     }
-    if (isExist == false) {
+    if (!isExist) {
         COAUTH_HILOGE(MODULE_SERVICE, "query status executor register is not exist");
     } else {
         COAUTH_HILOGI(MODULE_SERVICE, "query status executor register is exist");

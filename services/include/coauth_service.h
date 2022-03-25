@@ -39,16 +39,17 @@ class CoAuthService : public SystemAbility, public CoAuthStub {
 public:
     DECLEAR_SYSTEM_ABILITY(CoAuthService);
     explicit CoAuthService(int32_t systemAbilityId, bool runOnCreate = false);
-    virtual ~CoAuthService() override;
+    ~CoAuthService() override;
+
     void OnStart() override;
     void OnStop() override;
-    virtual uint64_t Register(std::shared_ptr<ResAuthExecutor> executorInfo,
-                              const sptr<ResIExecutorCallback> &callback) override;
-    virtual void QueryStatus(ResAuthExecutor &executorInfo, const sptr<ResIQueryCallback> &callback) override;
-    virtual void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback) override;
-    virtual int32_t Cancel(uint64_t scheduleId) override;
-    virtual int32_t GetExecutorProp(ResAuthAttributes &conditions, std::shared_ptr<ResAuthAttributes> values) override;
-    virtual void SetExecutorProp(ResAuthAttributes &conditions, const sptr<ISetPropCallback> &callback) override;
+    uint64_t Register(std::shared_ptr<ResAuthExecutor> executorInfo,
+        const sptr<ResIExecutorCallback> &callback) override;
+    void QueryStatus(ResAuthExecutor &executorInfo, const sptr<ResIQueryCallback> &callback) override;
+    void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback) override;
+    int32_t Cancel(uint64_t scheduleId) override;
+    int32_t GetExecutorProp(ResAuthAttributes &conditions, std::shared_ptr<ResAuthAttributes> values) override;
+    void SetExecutorProp(ResAuthAttributes &conditions, const sptr<ISetPropCallback> &callback) override;
 
 private:
     CoAuthRunningState state_ = CoAuthRunningState::STATE_STOPPED;

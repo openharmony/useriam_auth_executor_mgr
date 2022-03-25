@@ -107,7 +107,7 @@ int32_t AuthResPool::FindScheduleCallback(uint64_t scheduleId, sptr<ICoAuthCallb
         return FAIL;
     }
     callback = iter->second->callback;
-    COAUTH_HILOGI(MODULE_SERVICE, "find shedule callback success");
+    COAUTH_HILOGI(MODULE_SERVICE, "find schedule callback success");
     return SUCCESS;
 }
 

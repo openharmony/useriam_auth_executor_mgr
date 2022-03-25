@@ -27,7 +27,7 @@ public:
     explicit QueryCallbackStub(const std::shared_ptr<QueryCallback>& impl);
     ~QueryCallbackStub() override = default;
 
-    virtual void OnResult(uint32_t resultCode) override;
+    void OnResult(uint32_t resultCode) override;
 
     int32_t OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 

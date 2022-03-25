@@ -28,11 +28,12 @@ public:
     explicit CoAuthCallbackStub(const std::shared_ptr<CoAuthCallback>& impl);
     ~CoAuthCallbackStub() override = default;
 
-    virtual void OnFinish(uint32_t resultCode, std::vector<uint8_t> &scheduleToken) override;
-    virtual void OnAcquireInfo(uint32_t acquire) override;
+    void OnFinish(uint32_t resultCode, std::vector<uint8_t> &scheduleToken) override;
+    void OnAcquireInfo(uint32_t acquire) override;
 
     int32_t OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+
 private:
     int32_t OnFinishStub(MessageParcel &data, MessageParcel &reply);
     int32_t OnAcquireInfoStub(MessageParcel &data, MessageParcel &reply);

@@ -27,12 +27,10 @@ public:
     explicit SetPropCallbackProxy(const sptr<IRemoteObject>& impl)
         : IRemoteProxy<ISetPropCallback>(impl) {}
     ~SetPropCallbackProxy() override = default;
-    virtual void OnResult(uint32_t result, std::vector<uint8_t> &extraInfo) override;
+    void OnResult(uint32_t result, std::vector<uint8_t> &extraInfo) override;
 
 private:
     bool SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply);
-
-private:
     static inline BrokerDelegator<SetPropCallbackProxy> delegator_;
 };
 } // namespace CoAuth

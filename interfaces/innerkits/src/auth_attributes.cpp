@@ -402,6 +402,7 @@ void AuthAttributes::Write32Array(std::vector<uint32_t> &uint32ArraylValue, uint
         buffer.insert(buffer.end(), writePointer, writePointer + sizeof(uint32_t));
     }
 }
+
 void AuthAttributes::Write64Array(std::vector<uint64_t> &uint64ArraylValue, uint8_t *writePointer,
     std::vector<uint8_t> &buffer)
 {

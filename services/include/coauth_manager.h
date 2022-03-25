@@ -37,11 +37,12 @@ public:
 
     void CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<ICoAuthCallback> callback);
     void TimeOut(uint64_t scheduleId);
+
 private:
     void SetAuthAttributes(std::shared_ptr<ResAuthAttributes> commandAttrs,
-                           ScheduleInfo &scheduleInfo, AuthInfo &authInfo);
+        ScheduleInfo &scheduleInfo, AuthInfo &authInfo);
     void BeginExecute(ScheduleInfo &scheduleInfo, std::size_t executorNum, uint64_t scheduleId,
-                      AuthInfo &authInfo, int32_t &executeRet);
+        AuthInfo &authInfo, int32_t &executeRet);
     class ResICoAuthCallbackDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
         ResICoAuthCallbackDeathRecipient(uint64_t scheduleId, CoAuthManager* parent);
@@ -53,6 +54,7 @@ private:
         CoAuthManager* parent_;
         DISALLOW_COPY_AND_MOVE(ResICoAuthCallbackDeathRecipient);
     };
+
     AuthResManager* coAuthResMgrPtr_;
     std::shared_ptr<CallMonitor> monitor_ = nullptr;
 };

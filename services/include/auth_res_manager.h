@@ -36,6 +36,7 @@ public:
     int32_t SaveScheduleCallback(uint64_t scheduleId, uint64_t executorNum, sptr<ICoAuthCallback> callback);
     int32_t FindScheduleCallback(uint64_t scheduleId, sptr<ICoAuthCallback> &callback);
     int32_t DeleteScheduleCallback(uint64_t scheduleId);
+
 private:
     class ResIExecutorCallbackDeathRecipient : public IRemoteObject::DeathRecipient {
     public:

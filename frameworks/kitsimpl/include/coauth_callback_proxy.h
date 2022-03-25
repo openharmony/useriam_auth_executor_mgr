@@ -29,12 +29,11 @@ public:
         : IRemoteProxy<ICoAuthCallback>(impl) {}
     ~CoAuthCallbackProxy() override = default;
 
-    virtual void OnFinish(uint32_t resultCode, std::vector<uint8_t> &scheduleToken) override;
-    virtual void OnAcquireInfo(uint32_t acquire) override;
-private:
-    bool SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply);
+    void OnFinish(uint32_t resultCode, std::vector<uint8_t> &scheduleToken) override;
+    void OnAcquireInfo(uint32_t acquire) override;
 
 private:
+    bool SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply);
     static inline BrokerDelegator<CoAuthCallbackProxy> delegator_;
 };
 } // namespace CoAuth

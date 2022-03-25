@@ -27,11 +27,11 @@ class IExecutorCallback : public IRemoteBroker {
 public:
     virtual void OnMessengerReady(const sptr<IExecutorMessenger> &messenger) = 0;
     virtual int32_t OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey,
-                                   std::shared_ptr<AuthAttributes> commandAttrs) = 0;
+        std::shared_ptr<AuthAttributes> commandAttrs) = 0;
     virtual int32_t OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr) = 0;
     virtual int32_t OnSetProperty(std::shared_ptr<AuthAttributes> properties)  = 0;
     virtual int32_t OnGetProperty(std::shared_ptr<AuthAttributes> conditions,
-                                  std::shared_ptr<AuthAttributes> values) = 0;
+        std::shared_ptr<AuthAttributes> values) = 0;
 
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.UserIAM.AuthResPool.ExecutorCallback");
 

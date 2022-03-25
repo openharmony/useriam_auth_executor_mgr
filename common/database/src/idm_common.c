@@ -15,6 +15,8 @@
 
 #include "idm_common.h"
 
+#include "securec.h"
+
 #include "adaptor_log.h"
 #include "adaptor_memory.h"
 
@@ -55,6 +57,7 @@ UserInfo *InitUserInfoNode(void)
         LOG_ERROR("userInfo malloc failed");
         return NULL;
     }
+    (void)memset_s(userInfo, sizeof(UserInfo), 0, sizeof(UserInfo));
 
     userInfo->credentialInfoList = CreateLinkedList(DestroyCredentialNode);
     if (userInfo->credentialInfoList == NULL) {
@@ -62,7 +65,6 @@ UserInfo *InitUserInfoNode(void)
         Free(userInfo);
         return NULL;
     }
-
     userInfo->enrolledInfoList = CreateLinkedList(DestroyEnrolledNode);
     if (userInfo->enrolledInfoList == NULL) {
         LOG_ERROR("create enrolledInfoList failed");

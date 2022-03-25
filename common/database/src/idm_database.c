@@ -520,7 +520,7 @@ ResultCode AddCredentialInfo(int32_t userId, CredentialInfoHal *credentialInfo)
     }
     UserInfo *user = QueryUserInfo(userId);
     if (user == NULL && credentialInfo->authType == PIN_AUTH) {
-        ResultCode ret =  AddUser(userId, credentialInfo);
+        ResultCode ret = AddUser(userId, credentialInfo);
         if (ret != RESULT_SUCCESS) {
             LOG_ERROR("add user failed");
         }
