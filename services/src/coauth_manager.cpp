@@ -45,10 +45,16 @@ void CoAuthManager::CoAuthHandle(uint64_t scheduleId, AuthInfo &authInfo, sptr<I
         COAUTH_HILOGE(MODULE_SERVICE, "executorId does not exist");
         return callback->OnFinish(FAIL, scheduleToken);
     }
-    sptr<IRemoteObject::DeathRecipient> dr = new ResICoAuthCallbackDeathRecipient(scheduleId, this);
-    if ((!callback->AsObject()->AddDeathRecipient(dr))) {
-        COAUTH_HILOGE(MODULE_SERVICE, "add death recipient ResICoAuthCallbackDeathRecipient failed");
+    sptr<IRemoteObject::DeathRecipient> dr =
+        new (std::nothrow) ResICoAuthCallbackDeathRecipient(scheduleId, this);
+    if (dr == nullptr || callback->AsObject() == nullptr) {
+        COAUTH_HILOGE(MODULE_SERVICE, "dr or callback->AsObject is nullptr");
+    } else {
+        if (!callback->AsObject()->AddDeathRecipient(dr)) {
+            COAUTH_HILOGE(MODULE_SERVICE, "add death recipient ResICoAuthCallbackDeathRecipient failed");
+        }
     }
+
     if (coAuthResMgrPtr_ == nullptr) {
         COAUTH_HILOGE(MODULE_SERVICE, "coAuthResMgrPtr_ is nullptr");
         return callback->OnFinish(FAIL, scheduleToken);
@@ -123,10 +129,10 @@ int32_t CoAuthManager::Cancel(uint64_t scheduleId)
     sptr<ResIExecutorCallback> callback = nullptr;
     int32_t getRet = GetScheduleInfo(scheduleId, scheduleInfo); // call TA
     if (getRet != SUCCESS) {
-        COAUTH_HILOGE(MODULE_SERVICE, "get shedule info filed");
+        COAUTH_HILOGE(MODULE_SERVICE, "get schedule info filed");
         return FAIL;
     }
-    COAUTH_HILOGI(MODULE_SERVICE, "cancel is successfull");
+    COAUTH_HILOGI(MODULE_SERVICE, "cancel is successful");
     std::size_t executorNum = scheduleInfo.executors.size();
     if (executorNum == 0) {
         COAUTH_HILOGE(MODULE_SERVICE, "executorId does not exist");

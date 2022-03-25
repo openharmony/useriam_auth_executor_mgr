@@ -35,7 +35,7 @@ public:
     void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, std::shared_ptr<CoAuthCallback> callback);
     int32_t Cancel(uint64_t scheduleId);
     int32_t GetExecutorProp(AuthResPool::AuthAttributes &conditions,
-                            std::shared_ptr<AuthResPool::AuthAttributes> values);
+        std::shared_ptr<AuthResPool::AuthAttributes> values);
     void SetExecutorProp(AuthResPool::AuthAttributes &conditions, std::shared_ptr<SetPropCallback> callback);
 
 private:
@@ -48,6 +48,7 @@ private:
     private:
         DISALLOW_COPY_AND_MOVE(CoAuthDeathRecipient);
     };
+
     void ResetProxy(const wptr<IRemoteObject>& remote);
     sptr<ICoAuth> GetProxy();
     std::mutex mutex_;

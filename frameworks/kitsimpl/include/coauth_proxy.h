@@ -31,15 +31,16 @@ public:
     ~CoAuthProxy() override = default;
 
     uint64_t Register(std::shared_ptr<AuthResPool::AuthExecutor> executorInfo,
-                      const sptr<AuthResPool::IExecutorCallback> &callback) override;
+        const sptr<AuthResPool::IExecutorCallback> &callback) override;
     void QueryStatus(AuthResPool::AuthExecutor &executorInfo,
-                     const sptr<AuthResPool::IQueryCallback> &callback) override;
+        const sptr<AuthResPool::IQueryCallback> &callback) override;
     void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback) override;
     int32_t Cancel(uint64_t scheduleId) override;
+
     int32_t GetExecutorProp(AuthResPool::AuthAttributes &conditions,
-                            std::shared_ptr<AuthResPool::AuthAttributes> values) override;
+        std::shared_ptr<AuthResPool::AuthAttributes> values) override;
     void SetExecutorProp(AuthResPool::AuthAttributes &conditions,
-                         const sptr<ISetPropCallback> &callback) override;
+        const sptr<ISetPropCallback> &callback) override;
 
 private:
     bool SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, bool isSync = true);

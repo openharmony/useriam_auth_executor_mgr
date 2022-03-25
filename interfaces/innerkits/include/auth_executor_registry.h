@@ -27,10 +27,10 @@ class AuthExecutorRegistry : public DelayedRefSingleton<AuthExecutorRegistry> {
     DECLARE_DELAYED_REF_SINGLETON(AuthExecutorRegistry);
 
 public:
-DISALLOW_COPY_AND_MOVE(AuthExecutorRegistry);
-/* InnerKit */
-uint64_t Register(std::shared_ptr<AuthExecutor> executorInfo, std::shared_ptr<ExecutorCallback> callback);
-void QueryStatus(AuthExecutor &executorInfo, std::shared_ptr<QueryCallback> callback);
+    DISALLOW_COPY_AND_MOVE(AuthExecutorRegistry);
+    /* InnerKit */
+    uint64_t Register(std::shared_ptr<AuthExecutor> executorInfo, std::shared_ptr<ExecutorCallback> callback);
+    void QueryStatus(AuthExecutor &executorInfo, std::shared_ptr<QueryCallback> callback);
 
 private:
     class AuthExecutorRegistryDeathRecipient : public IRemoteObject::DeathRecipient {
@@ -42,6 +42,7 @@ private:
     private:
         DISALLOW_COPY_AND_MOVE(AuthExecutorRegistryDeathRecipient);
     };
+
     void ResetProxy(const wptr<IRemoteObject>& remote);
     sptr<CoAuth::ICoAuth> GetProxy();
     std::mutex mutex_;

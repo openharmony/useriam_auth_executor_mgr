@@ -33,6 +33,7 @@ public:
 
     int32_t OnRemoteRequest(
         uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+
 private:
     int32_t OnFinishStub(MessageParcel &data, MessageParcel &reply);
     int32_t OnAcquireInfoStub(MessageParcel &data, MessageParcel &reply);

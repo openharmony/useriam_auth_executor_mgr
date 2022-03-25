@@ -27,10 +27,11 @@ namespace UserIAM {
 namespace AuthResPool {
 class AuthMessage {
 public:
-    AuthMessage(std::vector<uint8_t> &msg);
+    explicit AuthMessage(std::vector<uint8_t> &msg);
     ~AuthMessage();
     AuthMessage* FromUint8Array(std::vector<uint8_t> &msg);
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.UserIAM.AuthResPool.AuthMessage");
+
 private:
     std::vector<uint8_t> authMessage_;
 };

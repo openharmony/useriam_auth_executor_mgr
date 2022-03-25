@@ -27,14 +27,16 @@ class ExecutorCallbackStub : public IRemoteStub<IExecutorCallback> {
 public:
     ExecutorCallbackStub(const std::shared_ptr<ExecutorCallback>& impl);
     ~ExecutorCallbackStub() override = default;
+
     void OnMessengerReady(const sptr<IExecutorMessenger> &messenger) override;
     int32_t OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey,
-                           std::shared_ptr<AuthAttributes> commandAttrs) override;
+        std::shared_ptr<AuthAttributes> commandAttrs) override;
     int32_t OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr) override;
     int32_t OnSetProperty(std::shared_ptr<AuthAttributes> properties)  override;
     int32_t OnGetProperty(std::shared_ptr<AuthAttributes> conditions,
-                          std::shared_ptr<AuthAttributes> values) override;
+        std::shared_ptr<AuthAttributes> values) override;
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
+
 private:
     int32_t OnMessengerReadyStub(MessageParcel& data, MessageParcel& reply);
     int32_t OnBeginExecuteStub(MessageParcel& data, MessageParcel& reply);

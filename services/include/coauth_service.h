@@ -40,10 +40,11 @@ public:
     DECLEAR_SYSTEM_ABILITY(CoAuthService);
     explicit CoAuthService(int32_t systemAbilityId, bool runOnCreate = false);
     ~CoAuthService() override;
+
     void OnStart() override;
     void OnStop() override;
     uint64_t Register(std::shared_ptr<ResAuthExecutor> executorInfo,
-                      const sptr<ResIExecutorCallback> &callback) override;
+        const sptr<ResIExecutorCallback> &callback) override;
     void QueryStatus(ResAuthExecutor &executorInfo, const sptr<ResIQueryCallback> &callback) override;
     void BeginSchedule(uint64_t scheduleId, AuthInfo &authInfo, const sptr<ICoAuthCallback> &callback) override;
     int32_t Cancel(uint64_t scheduleId) override;

@@ -31,8 +31,6 @@ public:
 
 private:
     bool SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply);
-
-private:
     static inline BrokerDelegator<SetPropCallbackProxy> delegator_;
 };
 } // namespace CoAuth

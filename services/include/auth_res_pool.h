@@ -45,7 +45,7 @@ public:
         sptr<ICoAuthCallback> callback;
     } ScheduleRegister;
     int32_t Insert(uint64_t executorID, std::shared_ptr<ResAuthExecutor> executorInfo,
-                   sptr<ResIExecutorCallback> callback);
+        sptr<ResIExecutorCallback> callback);
     int32_t Insert(uint64_t scheduleId, uint64_t executorNum, sptr<ICoAuthCallback> callback);
     int32_t FindExecutorCallback(uint64_t executorID, sptr<ResIExecutorCallback> &callback);
     int32_t FindExecutorCallback(uint32_t authType, sptr<ResIExecutorCallback> &callback);

@@ -25,12 +25,13 @@ namespace UserIAM {
 namespace AuthResPool {
 class ExecutorMessenger : public ExecutorMessengerStub {
 public:
-    ExecutorMessenger(UserIAM::CoAuth::AuthResPool*);
+    explicit ExecutorMessenger(UserIAM::CoAuth::AuthResPool*);
     ~ExecutorMessenger() override = default;
     int32_t SendData(uint64_t scheduleId, uint64_t transNum, int32_t srcType,
-                     int32_t dstType, std::shared_ptr<AuthMessage> msg) override;
+        int32_t dstType, std::shared_ptr<AuthMessage> msg) override;
     int32_t Finish(uint64_t scheduleId, int32_t srcType, int32_t resultCode,
-                   std::shared_ptr<AuthAttributes> finalResult) override;
+        std::shared_ptr<AuthAttributes> finalResult) override;
+
 private:
     void DeleteScheduleInfoById(uint64_t scheduleId);
     int32_t DoSignToken(uint64_t scheduleId, std::vector<uint8_t>& scheduleToken,

@@ -75,15 +75,14 @@ private:
     std::vector<uint64_t> GetUint64ArrayFromUint8(std::vector<uint8_t> &data, uint32_t begin, uint32_t len);
     std::vector<uint32_t> GetUint32ArrayFromUint8(std::vector<uint8_t> &data, uint32_t begin, uint32_t len);
     void PackToBuffer(std::map<AuthAttributeType, ValueType>::iterator iter,
-                      uint32_t dataLength, uint8_t *writePointer,
-                      std::vector<uint8_t> &buffer);
+        uint32_t dataLength, uint8_t *writePointer, std::vector<uint8_t> &buffer);
     void WriteDataLength(std::vector<uint8_t> &buffer, uint8_t *writePointer, uint32_t dataLength);
     void UnpackTag(AuthAttributeType &tag, std::vector<uint8_t> &buffer,
-                   uint32_t &authDataLength, uint32_t &dataLength);
+        uint32_t &authDataLength, uint32_t &dataLength);
     void Write32Array(std::vector<uint32_t> &uint32ArraylValue, uint8_t *writePointer,
-                      std::vector<uint8_t> &buffer);
+        std::vector<uint8_t> &buffer);
     void Write64Array(std::vector<uint64_t> &uint64ArraylValue, uint8_t *writePointer,
-                      std::vector<uint8_t> &buffer);
+        std::vector<uint8_t> &buffer);
     bool CheckLengthPass(ValueType type, uint32_t currIndex, uint32_t dataLength, uint32_t bufferLength);
     void UnpackUint32ArrayType(std::vector<uint8_t> &buffer, AuthAttributeType tag, uint32_t &authDataLength,
         uint32_t &dataLength);

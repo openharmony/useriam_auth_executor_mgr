@@ -27,15 +27,16 @@ class ExecutorCallbackProxy : public IRemoteProxy<IExecutorCallback> {
 public:
     explicit ExecutorCallbackProxy(const sptr<IRemoteObject>& impl)
         : IRemoteProxy<IExecutorCallback>(impl) {}
-
     ~ExecutorCallbackProxy() override = default;
+
     void OnMessengerReady(const sptr<IExecutorMessenger> &messenger) override;
     int32_t OnBeginExecute(uint64_t scheduleId, std::vector<uint8_t> &publicKey,
-                           std::shared_ptr<AuthAttributes> commandAttrs) override;
+        std::shared_ptr<AuthAttributes> commandAttrs) override;
     int32_t OnEndExecute(uint64_t scheduleId, std::shared_ptr<AuthAttributes> consumerAttr) override;
     int32_t OnSetProperty(std::shared_ptr<AuthAttributes> properties)  override;
     int32_t OnGetProperty(std::shared_ptr<AuthAttributes> conditions,
-                          std::shared_ptr<AuthAttributes> values) override;
+        std::shared_ptr<AuthAttributes> values) override;
+
 private:
     bool SendRequest(uint32_t code, MessageParcel &data, MessageParcel &reply);
     static inline BrokerDelegator<ExecutorCallbackProxy> delegator_;
