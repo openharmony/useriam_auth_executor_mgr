@@ -15,6 +15,8 @@
 
 #include "idm_common.h"
 
+#include "securec.h"
+
 #include "adaptor_log.h"
 #include "adaptor_memory.h"
 
