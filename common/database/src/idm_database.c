@@ -161,7 +161,7 @@ ResultCode DeleteUserInfo(int32_t userId, CredentialInfoHal **credentialInfos, u
     }
     UserInfo *user = QueryUserInfo(userId);
     if (!IsUserInfoValid(user)) {
-        LOG_ERROR("can't find this user1");
+        LOG_ERROR("can't find this user");
         return RESULT_NOT_FOUND;
     }
     ResultCode ret = GetAllCredentialInfoFromUser(user, credentialInfos, num);
@@ -450,7 +450,7 @@ static ResultCode AddCredentialToUser(UserInfo *user, CredentialInfoHal *credent
 
     ret = GenerateDeduplicateUint64(credentialList, &credentialInfo->credentialId, IsCredentialIdDuplicate);
     if (ret != RESULT_SUCCESS) {
-        LOG_ERROR("GenerateValidCredentialId failed");
+        LOG_ERROR("GenerateDeduplicateUint64 failed");
         return ret;
     }
     CredentialInfoHal *credential = Malloc(sizeof(CredentialInfoHal));
