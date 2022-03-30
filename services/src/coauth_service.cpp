@@ -106,7 +106,7 @@ uint64_t CoAuthService::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     }
 
     uint64_t exeID = authResMgr_.Register(executorInfo, callback);
-    COAUTH_HILOGD(MODULE_SERVICE, "exeID is XXXX%{public}4" PRIx64, exeID);
+    COAUTH_HILOGD(MODULE_SERVICE, "exeID is 0xXXXX%{public}04" PRIx64, MASK & exeID);
     return exeID;
 }
 

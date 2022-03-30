@@ -14,6 +14,9 @@
  */
 
 #include "call_monitor.h"
+
+#include <cinttypes>
+
 #include "inner_event.h"
 #include "event_runner.h"
 
@@ -40,7 +43,8 @@ void CallMonitor::MonitorCall(int64_t waitTime, uint64_t scheduleId, Callback &t
         return;
     }
     std::string name = std::to_string(scheduleId);
-    COAUTH_HILOGI(MODULE_SERVICE, "CallMonitor MonitorCall is called, name is %{public}s", name.c_str());
+    COAUTH_HILOGI(MODULE_SERVICE,
+        "CallMonitor MonitorCall is called, name is 0xXXXX%{public}04" PRIx64, MASK & scheduleId);
     eventHandler_->PostHighPriorityTask(timeoutFun, name, waitTime);
 }
 
@@ -51,7 +55,8 @@ void CallMonitor::MonitorRemoveCall(uint64_t scheduleId)
         return;
     }
     std::string name = std::to_string(scheduleId);
-    COAUTH_HILOGI(MODULE_SERVICE, "CallMonitor MonitorRemoveCall is called, name is %{public}s", name.c_str());
+    COAUTH_HILOGI(MODULE_SERVICE,
+        "CallMonitor MonitorRemoveCall is called, name is 0xXXXX%{public}04" PRIx64, MASK & scheduleId);
     eventHandler_->RemoveTask(name);
 }
 } // namespace PinAuth

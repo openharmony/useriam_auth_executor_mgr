@@ -16,8 +16,6 @@
 #ifndef COAUTH_HILOG_WRAPPER_H
 #define COAUTH_HILOG_WRAPPER_H
 
-#define CONFIG_HILOG
-#ifdef CONFIG_HILOG
 #include "hilog/log.h"
 namespace OHOS {
 namespace UserIAM {
@@ -78,17 +76,9 @@ static constexpr OHOS::HiviewDFX::HiLogLabel COAUTH_LABEL[COAUTH_MODULE_BUTT] = 
 #define COAUTH_HILOGW(module, ...) (void)OHOS::HiviewDFX::HiLog::Warn(COAUTH_LABEL[module], FORMATTED(__VA_ARGS__))
 #define COAUTH_HILOGI(module, ...) (void)OHOS::HiviewDFX::HiLog::Info(COAUTH_LABEL[module], FORMATTED(__VA_ARGS__))
 #define COAUTH_HILOGD(module, ...) (void)OHOS::HiviewDFX::HiLog::Debug(COAUTH_LABEL[module], FORMATTED(__VA_ARGS__))
+
+constexpr uint64_t MASK = 0x0000FFFF;
 } // namespace UserIAM
 } // namespace OHOS
-
-#else
-
-#define COAUTH_HILOGF(...)
-#define COAUTH_HILOGE(...)
-#define COAUTH_HILOGW(...)
-#define COAUTH_HILOGI(...)
-#define COAUTH_HILOGD(...)
-
-#endif // CONFIG_HILOG
 
 #endif // COAUTH_HILOG_WRAPPER_H
