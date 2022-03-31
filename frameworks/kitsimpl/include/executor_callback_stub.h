@@ -25,7 +25,7 @@ namespace UserIAM {
 namespace AuthResPool {
 class ExecutorCallbackStub : public IRemoteStub<IExecutorCallback> {
 public:
-    ExecutorCallbackStub(const std::shared_ptr<ExecutorCallback>& impl);
+    explicit ExecutorCallbackStub(const std::shared_ptr<ExecutorCallback>& impl);
     ~ExecutorCallbackStub() override = default;
 
     void OnMessengerReady(const sptr<IExecutorMessenger> &messenger) override;
