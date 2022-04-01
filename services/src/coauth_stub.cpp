@@ -118,10 +118,10 @@ int32_t CoAuthStub::BeginScheduleStub(MessageParcel& data, MessageParcel& reply)
     authInfo.SetPkgName(GetPkgName);
     uint64_t GetCallerUid = data.ReadUint64();
     authInfo.SetCallerUid(GetCallerUid);
-    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64,GetCallerUid:%{public}" PRIu64, GetCallerUid);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64,GetCallerUid:0xXXXX%{public}04" PRIx64, MASK & GetCallerUid);
 
     uint64_t scheduleId = data.ReadUint64();
-    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64,scheduleId:%{public}" PRIu64, scheduleId);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64,scheduleId:0xXXXX%{public}04" PRIx64, MASK & scheduleId);
 
     sptr<ICoAuthCallback> callback = iface_cast<ICoAuthCallback>(data.ReadRemoteObject());
     if (callback == nullptr) {
@@ -139,7 +139,7 @@ int32_t CoAuthStub::CancelStub(MessageParcel& data, MessageParcel& reply)
     COAUTH_HILOGI(MODULE_SERVICE, "CoAuthStub: CancelStub start");
 
     uint64_t scheduleId = data.ReadUint64();
-    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64 scheduleId:%{public}" PRIu64, scheduleId);
+    COAUTH_HILOGD(MODULE_SERVICE, "ReadUint64 scheduleId:0xXXXX%{public}04" PRIx64, MASK & scheduleId);
 
     int ret = Cancel(scheduleId);
     if (!reply.WriteInt32(ret)) {

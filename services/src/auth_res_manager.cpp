@@ -70,7 +70,7 @@ uint64_t AuthResManager::Register(std::shared_ptr<ResAuthExecutor> executorInfo,
     sptr<UserIAM::AuthResPool::IExecutorMessenger> messenger =
         new UserIAM::AuthResPool::ExecutorMessenger(&coAuthResPool_);
     callback->OnMessengerReady(messenger);
-    COAUTH_HILOGD(MODULE_SERVICE, "register is successful, exeID is XXXX%{public}04" PRIx64, executorId);
+    COAUTH_HILOGD(MODULE_SERVICE, "register is successfull, exeID is 0xXXXX%{public}04" PRIx64, MASK & executorId);
     return executorId;
 }
 

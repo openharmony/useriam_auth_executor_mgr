@@ -14,7 +14,6 @@
  */
 
 #include "auth_attributes.h"
-#include <cinttypes>
 
 namespace OHOS {
 namespace UserIAM {
@@ -334,7 +333,6 @@ std::vector<uint32_t> AuthAttributes::GetUint32ArrayFromUint8(std::vector<uint8_
     for (uint32_t i = 0; i < len / sizeof(uint32_t); i++) {
         uint32_t uint32data = GetUint32FromUint8(data, begin + i * sizeof(uint32_t));
         tmp.push_back(uint32data);
-        COAUTH_HILOGD(MODULE_INNERKIT, "buffer read uint32ArrayValue : %{public}u.", uint32data);
     }
     return tmp;
 }
@@ -345,7 +343,6 @@ std::vector<uint64_t> AuthAttributes::GetUint64ArrayFromUint8(std::vector<uint8_
     for (uint32_t i = 0; i < len / sizeof(uint64_t); i++) {
         uint64_t uint64data = GetUint64FromUint8(data, begin + i * sizeof(uint64_t));
         tmp.push_back(uint64data);
-        COAUTH_HILOGD(MODULE_INNERKIT, "buffer read uint64ArrayValue : %{public}" PRIu64, uint64data);
     }
     return tmp;
 }

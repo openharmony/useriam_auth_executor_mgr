@@ -94,7 +94,7 @@ int32_t AuthResPool::DeleteExecutorCallback(uint64_t executorID)
         return FAIL;
     }
     authResPool_.erase(iter);
-    COAUTH_HILOGI(MODULE_SERVICE, "delete executor callback XXXX%{public}" PRIx64 " success", executorID);
+    COAUTH_HILOGI(MODULE_SERVICE, "delete executor callback 0xXXXX%{public}04" PRIx64 " success", MASK & executorID);
     return SUCCESS;
 }
 
