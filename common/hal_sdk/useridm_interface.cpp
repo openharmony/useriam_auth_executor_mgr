@@ -37,7 +37,7 @@ int32_t OpenSession(int32_t userId, uint64_t &challenge)
 {
     GlobalLock();
     int32_t ret = OpenEditSession(userId, &challenge);
-    LOG_INFO("challenge is %{public}llu", challenge);
+    LOG_INFO("challenge is %{public}llu", (unsigned long long)challenge);
     GlobalUnLock();
     return ret;
 }
