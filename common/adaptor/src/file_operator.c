@@ -35,7 +35,7 @@ static bool IsFileExist(const char *fileName)
 
 static int32_t ReadFile(const char *fileName, uint8_t *buf, uint32_t len)
 {
-    if ((fileName == NULL) || (buf == NULL) || (len == 0) || (len > SIZE_MAX)) {
+    if ((fileName == NULL) || (buf == NULL) || (len == 0)) {
         LOG_ERROR("get bad params");
         return RESULT_BAD_PARAM;
     }
@@ -57,7 +57,7 @@ static int32_t ReadFile(const char *fileName, uint8_t *buf, uint32_t len)
 
 static int32_t WriteFile(const char *fileName, const uint8_t *buf, uint32_t len)
 {
-    if ((fileName == NULL) || (buf == NULL) || (len == 0) || (len > SIZE_MAX)) {
+    if ((fileName == NULL) || (buf == NULL) || (len == 0)) {
         LOG_ERROR("get bad params");
         return RESULT_BAD_PARAM;
     }
