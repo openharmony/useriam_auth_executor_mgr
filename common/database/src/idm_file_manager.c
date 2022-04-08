@@ -181,7 +181,7 @@ ResultCode UpdateFileInfo(LinkedList *userInfoList)
         LOG_ERROR("userInfo list is null");
         return RESULT_BAD_PARAM;
     }
-    Buffer *parcel = CreateBuffer(PRE_APPLY_LEN);
+    Buffer *parcel = CreateBufferBySize(PRE_APPLY_LEN);
     if (parcel == NULL) {
         LOG_ERROR("parcel is null");
         return RESULT_BAD_PARAM;
@@ -351,7 +351,7 @@ static Buffer *ReadFileInfo()
         LOG_ERROR("open file failed");
         return NULL;
     }
-    Buffer *parcel = CreateBuffer(fileSize);
+    Buffer *parcel = CreateBufferBySize(fileSize);
     if (parcel == NULL) {
         LOG_ERROR("parcel create failed");
         return NULL;
