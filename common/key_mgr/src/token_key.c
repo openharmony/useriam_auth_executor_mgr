@@ -37,7 +37,7 @@ ResultCode InitTokenKey(void)
     if (g_tokenKey != NULL) {
         return RESULT_SUCCESS;
     }
-    g_tokenKey = CreateBuffer(SHA256_KEY_LEN);
+    g_tokenKey = CreateBufferBySize(SHA256_KEY_LEN);
     if (g_tokenKey == NULL) {
         LOG_ERROR("g_tokenKey: create buffer failed");
         return RESULT_NO_MEMORY;
