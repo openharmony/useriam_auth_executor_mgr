@@ -31,16 +31,11 @@ extern "C" {
 namespace OHOS {
 namespace UserIAM {
 namespace Common {
-static const char *IDM_USER_FOLDER = "/data/useriam";
 static bool g_isInitUserIAM = false;
 
 int32_t Init()
 {
     GlobalLock();
-    LOG_INFO("check useriam folder exist or init it");
-    if (IDM_USER_FOLDER && access(IDM_USER_FOLDER, 0) == -1) {
-        mkdir(IDM_USER_FOLDER, S_IRWXU);
-    }
     if (InitUserAuthContextList() != RESULT_SUCCESS) {
         LOG_ERROR("init user auth failed");
         goto FAIL;
