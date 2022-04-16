@@ -92,7 +92,7 @@ int32_t ParseTlvWrapper(const uint8_t *buffer, uint32_t bufferSize, TlvListNode 
             LOG_ERROR("bufferSize = %{public}u, offset = %{public}u", bufferSize, offset);
             return OPERA_FAIL;
         }
-        int32_t type = Ntohl(*(int32_t *)(buffer + offset));
+        int32_t type = (int32_t)Ntohl(*(int32_t *)(buffer + offset));
         offset += sizeof(int32_t);
         uint32_t length = Ntohl(*(int32_t *)(buffer + offset));
         offset += sizeof(int32_t);
