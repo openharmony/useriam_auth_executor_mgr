@@ -141,7 +141,7 @@ int32_t QueryCredential(int32_t userId, uint32_t authType, std::vector<Credentia
         GlobalUnLock();
         return ret;
     }
-    for (int i = 0; i < num; i++) {
+    for (uint32_t i = 0; i < num; i++) {
         CredentialInfo credentialInfo;
         if (memcpy_s(&credentialInfo, sizeof(CredentialInfo),
             &credentialInfoHals[i], sizeof(CredentialInfoHal)) != EOK) {
@@ -170,7 +170,7 @@ int32_t GetSecureUid(int32_t userId, uint64_t &secureUid, std::vector<EnrolledIn
         GlobalUnLock();
         return ret;
     }
-    for (int i = 0; i < num; i++) {
+    for (uint32_t i = 0; i < num; i++) {
         EnrolledInfo enrolledInfo;
         if (memcpy_s(&enrolledInfo, sizeof(EnrolledInfo), &enrolledInfoHals[i], sizeof(EnrolledInfoHal)) != EOK) {
             LOG_ERROR("credentialInfo copy failed");
@@ -199,7 +199,7 @@ int32_t DeleteUserEnforce(int32_t userId, std::vector<CredentialInfo> &credentia
         return ret;
     }
     RefreshValidTokenTime();
-    for (int i = 0; i < num; i++) {
+    for (uint32_t i = 0; i < num; i++) {
         CredentialInfo credentialInfo;
         if (memcpy_s(&credentialInfo, sizeof(CredentialInfo),
             &credentialInfoHals[i], sizeof(CredentialInfoHal)) != EOK) {

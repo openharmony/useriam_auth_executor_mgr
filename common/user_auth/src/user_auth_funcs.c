@@ -110,7 +110,7 @@ int32_t RequestAuthResultFunc(uint64_t contextId, const Buffer *scheduleToken, U
             (void)memset_s(authToken, sizeof(UserAuthTokenHal), 0, sizeof(UserAuthTokenHal));
         }
     } else {
-        authToken->authResult = scheduleTokenStruct.scheduleResult;
+        authToken->authResult = (int32_t)scheduleTokenStruct.scheduleResult;
     }
     DestoryContext(userAuthContext);
     return ret;
