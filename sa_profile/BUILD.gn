@@ -19,7 +19,12 @@ ohos_sa_profile("coauth_sa_profile") {
   part_name = "${coauth_native_part_name}"
 }
 ohos_prebuilt_etc("useriam.init") {
-  source = "useriam.cfg"
+  if (use_musl) {
+    source = "useriam.cfg"
+  } else {
+    source = "useriam_sys.cfg"
+  }
+
   relative_install_dir = "init"
   part_name = "auth_executor_mgr"
   subsystem_name = "useriam"
