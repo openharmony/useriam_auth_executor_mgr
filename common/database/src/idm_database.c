@@ -702,6 +702,7 @@ ResultCode QueryCredentialFromExecutor(uint32_t authType, CredentialInfoHal **cr
         LOG_ERROR("no memory");
         return RESULT_NO_MEMORY;
     }
+    *num = 0;
     LinkedListNode *temp = g_userInfoList->head;
     while (temp != NULL) {
         UserInfo *user = (UserInfo *)temp->data;
@@ -709,7 +710,7 @@ ResultCode QueryCredentialFromExecutor(uint32_t authType, CredentialInfoHal **cr
         if (credentialQuery != NULL) {
             (*num)++;
             if (*num <= preApplyNum) {
-                *credentialInfos[*num - 1] = *credentialQuery;
+                (*credentialInfos)[*num - 1] = *credentialQuery;
                 temp = temp->next;
                 continue;
             }
@@ -731,7 +732,7 @@ ResultCode QueryCredentialFromExecutor(uint32_t authType, CredentialInfoHal **cr
             }
             Free(*credentialInfos);
             *credentialInfos = credentialsTemp;
-            *credentialInfos[*num - 1] = *credentialQuery;
+            (*credentialInfos)[*num - 1] = *credentialQuery;
         }
         temp = temp->next;
     }
